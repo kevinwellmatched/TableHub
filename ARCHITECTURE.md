@@ -134,6 +134,18 @@ Examples:
 - Project-scoped search should only return content the user can access.
 - Invite-only campaigns should require membership.
 
+## Auth and Profiles
+
+TableHub uses Supabase Auth with cookie-based server-side rendering helpers.
+
+The app has public auth pages for login and signup, then protects the main app
+sections behind a logged-in session. A user must also create a profile with a
+username and display name before entering the app shell.
+
+Only profile fields that are safe to show in tabletop spaces should appear in
+the app shell. Sign-in email addresses are private account data, not normal
+profile fields.
+
 ---
 
 ## First Target System

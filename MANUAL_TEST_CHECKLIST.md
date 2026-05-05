@@ -127,17 +127,29 @@ npm run build
 
 ### Manual Tests
 
-- [ ] Sign up with test email.
-- [ ] Log out.
-- [ ] Log back in.
-- [ ] Try protected route while logged out.
-- [ ] Create/update username.
-- [ ] Create/update display name.
-- [ ] Confirm email does not display on campaign/player screens.
+- [ ] `/login` renders.
+- [ ] `/signup` renders.
+- [ ] User can sign up with email/password.
+- [ ] If email confirmation is required, the signup page shows a clear confirmation message.
+- [ ] User can log in with email/password.
+- [ ] Unauthenticated user is redirected from `/dashboard` to `/login`.
+- [ ] Authenticated user without a profile is redirected to `/onboarding`.
+- [ ] Onboarding validates username length and allowed characters.
+- [ ] Onboarding validates display name length.
+- [ ] Duplicate username errors are readable.
+- [ ] Onboarding creates the profile.
+- [ ] Authenticated user with a profile can visit `/dashboard`.
+- [ ] Account page displays username and display name.
+- [ ] Account page can update username/display name.
+- [ ] App shell shows display name and username, not email.
+- [ ] Logout works.
+- [ ] Run `npm run test`.
+- [ ] Run `npm run lint`.
+- [ ] Run `npm run build`.
 
 ### Known Issues
 
-- Not started.
+- The Supabase `profiles` table and RLS policies must exist in the project database before manual auth testing.
 
 ---
 

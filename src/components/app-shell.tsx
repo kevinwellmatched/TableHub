@@ -2,16 +2,21 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Search, X } from "lucide-react";
+import { LogOut, Menu, Search, X } from "lucide-react";
 import { useState } from "react";
+import { logoutAction } from "@/lib/auth-actions";
 import { navItems } from "@/lib/tablehub-data";
 import { cn } from "@/lib/utils";
 
 type AppShellProps = {
   children: React.ReactNode;
+  profile: {
+    username: string;
+    displayName: string;
+  };
 };
 
-export function AppShell({ children }: AppShellProps) {
+export function AppShell({ children, profile }: AppShellProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const currentSection =
@@ -26,6 +31,7 @@ export function AppShell({ children }: AppShellProps) {
         <div className="flex min-w-0 flex-1 flex-col">
           <TopBar
             currentSection={currentSection.title}
+            profile={profile}
             mobileOpen={mobileOpen}
             onToggleMobile={() => setMobileOpen((open) => !open)}
           />
@@ -53,10 +59,10 @@ function Sidebar({ pathname }: { pathname: string }) {
         ))}
       </nav>
       <div className="absolute bottom-5 left-4 right-4 rounded-lg border border-[#FCA311]/25 bg-[#FCA311]/10 p-4">
-        <p className="text-sm font-semibold text-[#FCA311]">Frontend-only slice</p>
+        <p className="text-sm font-semibold text-[#FCA311]">Auth slice</p>
         <p className="mt-2 text-xs leading-5 text-[#E5E5E5]/70">
-          Supabase, auth, database tables, dice logic, and character sheets are not
-          connected yet.
+          Supabase login and profiles are connected. Projects, dice, files, and
+          sheets come in later slices.
         </p>
       </div>
     </aside>
@@ -65,10 +71,15 @@ function Sidebar({ pathname }: { pathname: string }) {
 
 function TopBar({
   currentSection,
+  profile,
   mobileOpen,
   onToggleMobile,
 }: {
   currentSection: string;
+  profile: {
+    username: string;
+    displayName: string;
+  };
   mobileOpen: boolean;
   onToggleMobile: () => void;
 }) {
@@ -105,6 +116,29 @@ function TopBar({
             </kbd>
           </div>
         </div>
+
+        <Link
+          href="/account"
+          className="hidden min-w-0 rounded-lg border border-[var(--line)] bg-[var(--panel-bg)] px-3 py-2 text-right transition hover:border-[#FCA311]/60 sm:block"
+        >
+          <span className="block truncate text-sm font-semibold text-[var(--text-main)]">
+            {profile.displayName}
+          </span>
+          <span className="block truncate text-xs text-[var(--text-muted)]">
+            @{profile.username}
+          </span>
+        </Link>
+
+        <form action={logoutAction} className="hidden sm:block">
+          <button
+            type="submit"
+            aria-label="Log out"
+            title="Log out"
+            className="flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--line)] text-[var(--text-muted)] transition hover:border-[#FCA311] hover:text-[#FCA311]"
+          >
+            <LogOut aria-hidden="true" className="h-4 w-4" />
+          </button>
+        </form>
       </div>
     </header>
   );

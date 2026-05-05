@@ -12,20 +12,21 @@ This is a first-pass conceptual data model. It is not yet a migration file.
 
 Extends Supabase Auth users.
 
-Likely fields:
+Current Slice 2 table:
 
-- id
-- username
-- display_name
-- avatar_url
-- created_at
-- updated_at
+- id uuid primary key references auth.users(id) on delete cascade
+- username citext unique not null
+- display_name text not null
+- avatar_url text
+- created_at timestamptz not null default now()
+- updated_at timestamptz not null default now()
 
 Rules:
 
 - Username should be globally unique.
 - Display name should be changeable.
 - Email should not be shown to other players.
+- Browser-visible profile reads and writes should be limited to the current user's row with Supabase Row Level Security.
 
 ---
 

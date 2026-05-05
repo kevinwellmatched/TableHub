@@ -96,6 +96,8 @@ Make the app feel like TableHub even before the database exists.
 
 ## Slice 2: Authentication and Profiles
 
+Status: Complete in the current auth/profile slice.
+
 ### Goal
 
 Users can sign up, log in, log out, and have app profiles.
