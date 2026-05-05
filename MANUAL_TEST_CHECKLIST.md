@@ -58,6 +58,8 @@ npm run build
 - [ ] Confirm `ROADMAP.md` exists.
 - [ ] Confirm `AGENTS.md` exists.
 - [ ] Confirm `MANUAL_TEST_CHECKLIST.md` exists.
+- [ ] Confirm `ARCHITECTURE.md` exists.
+- [ ] Confirm `DATA_MODEL.md` exists.
 - [ ] Confirm `.env.example` exists.
 - [ ] Confirm `.env.local` is ignored by Git.
 - [ ] Run `npm run lint` if configured.
@@ -69,19 +71,25 @@ npm run build
 
 ---
 
-## Slice 1: App Shell
+## Slice 1: App Shell v1
 
 ### Expected
 
 - Sidebar navigation exists.
 - Header exists.
-- Placeholder pages exist.
-- Dark/light mode works.
 - Search placeholder is visible.
+- Dashboard cards render.
+- Placeholder pages exist for each top-level section.
+- Mobile navigation is usable.
+- Light/dark foundations remain readable.
 - Layout is usable on desktop and mobile.
 
 ### Manual Tests
 
+- [ ] App loads locally.
+- [ ] Confirm the sidebar links work on desktop.
+- [ ] Confirm mobile navigation opens and links work on small screens.
+- [ ] Confirm Dashboard cards render.
 - [ ] Visit `/dashboard`.
 - [ ] Visit `/compendium`.
 - [ ] Visit `/systems`.
@@ -91,13 +99,17 @@ npm run build
 - [ ] Visit `/characters`.
 - [ ] Visit `/files`.
 - [ ] Visit `/account`.
-- [ ] Toggle dark/light mode.
+- [ ] Confirm `Search TableHub...` is visible.
+- [ ] Confirm `Ctrl+K` is visible as a planned shortcut.
 - [ ] Resize browser to mobile width.
 - [ ] Confirm navigation remains usable.
+- [ ] Confirm light/dark foundation does not break readability.
+- [ ] Run `npm run lint`.
+- [ ] Run `npm run build`.
 
 ### Known Issues
 
-- Not started.
+- None yet.
 
 ---
 

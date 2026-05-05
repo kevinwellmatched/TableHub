@@ -25,6 +25,8 @@ Every slice should end with:
 
 ## Slice 0: Repository and Project Setup
 
+Status: Complete.
+
 ### Goal
 
 Create the project foundation.
@@ -64,7 +66,9 @@ Create the project foundation.
 
 ---
 
-## Slice 1: App Shell
+## Slice 1: App Shell v1
+
+Status: Complete in the current frontend-only slice.
 
 ### Goal
 
@@ -86,7 +90,7 @@ Make the app feel like TableHub even before the database exists.
 - User can navigate between placeholder pages
 - Dark mode works
 - Light mode works
-- Mobile layout does not collapse into goblin soup
+- Mobile layout remains readable and usable
 
 ---
 
