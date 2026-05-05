@@ -134,6 +134,29 @@ Examples:
 - Project-scoped search should only return content the user can access.
 - Invite-only campaigns should require membership.
 
+## Project Membership Access
+
+Projects are the first real workspace object in TableHub. Access is based on
+membership rows in `project_members`.
+
+Current Project roles are:
+
+- Owner
+- GM
+- Player
+- Viewer
+
+The browser app uses normal Supabase server clients and the public anon key. It
+does not use a service role key and does not bypass Row Level Security.
+
+When the app reads Projects, it relies on database RLS to decide which rows the
+current user can see. UI filtering can make pages friendlier, but it is not the
+security boundary. If a user is not a member of a Project, the database should
+not return that Project to the app.
+
+New Projects are created through the `create_project` RPC so the Project row and
+the creator's Owner membership are created in one database operation.
+
 ## Auth and Profiles
 
 TableHub uses Supabase Auth with cookie-based server-side rendering helpers.

@@ -56,3 +56,33 @@ with check ((select auth.uid()) = id);
 ```
 
 The app reads and writes only the logged-in user's profile row.
+
+## Slice 3: Projects and Membership
+
+Slice 3 assumes the Project SQL has already been run in Supabase.
+
+The database should now include:
+
+- `public.projects`
+- `public.project_members`
+- `public.create_project(project_name text, project_description text)`
+
+The `projects` table stores the reusable workspace. A Project is where future
+campaigns, systems, compendiums, Settings Library sources, files, permissions,
+and project-specific overrides will connect.
+
+The `project_members` table stores which users belong to each Project and what
+role they have there:
+
+- Owner
+- GM
+- Player
+- Viewer
+
+The app creates Projects by calling `create_project`. That database function
+should insert the Project and the creator's Owner membership together. This
+keeps the first membership from being forgotten.
+
+Project access should be protected with Supabase Row Level Security. App code
+should use normal Supabase server clients and rely on RLS instead of using a
+service role key.

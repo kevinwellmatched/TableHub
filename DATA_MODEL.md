@@ -153,28 +153,34 @@ Examples:
 
 A workspace combining systems, compendiums, settings, and campaigns.
 
-Likely fields:
+Current Slice 3 table:
 
-- id
-- owner_id
-- name
-- description
-- theme
-- created_at
-- updated_at
+- id uuid primary key
+- owner_id uuid not null references auth.users(id)
+- name text not null
+- description text
+- created_at timestamptz not null default now()
+- updated_at timestamptz not null default now()
+
+Rules:
+
+- A Project is the main reusable workspace container.
+- Projects are protected by Supabase Row Level Security.
+- A user should only be able to read Projects where they have a matching membership.
+- The original master system, compendium, or Settings Library content should not be mutated from a Project. Project-specific changes belong in linked source and override tables in later slices.
 
 ### project_members
 
 Membership and role inside a project.
 
-Likely fields:
+Current Slice 3 table:
 
-- id
-- project_id
-- user_id
-- role
-- created_at
-- updated_at
+- id uuid primary key
+- project_id uuid not null references public.projects(id) on delete cascade
+- user_id uuid not null references auth.users(id) on delete cascade
+- role text not null
+- created_at timestamptz not null default now()
+- updated_at timestamptz not null default now()
 
 Roles:
 
@@ -182,6 +188,17 @@ Roles:
 - GM
 - Player
 - Viewer
+
+Role meaning:
+
+- Owner can manage the whole Project and its membership.
+- GM can prepare and run table material inside the Project.
+- Player can use player-facing tools and content that has been made available.
+- Viewer can read permitted Project content without editing it.
+
+Slice 3 also adds `public.create_project(project_name text, project_description text)`.
+The app uses this database function when creating a Project so the Project row
+and the creator's Owner membership are created together.
 
 ### project_sources
 

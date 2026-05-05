@@ -128,6 +128,8 @@ Users can sign up, log in, log out, and have app profiles.
 
 ## Slice 3: Projects and Membership
 
+Status: Complete in the current projects/membership foundation slice.
+
 ### Goal
 
 Create the workspace layer.
@@ -146,7 +148,8 @@ Create the workspace layer.
 
 - Logged-in user can create a Project
 - Creator becomes Owner
-- Project appears on dashboard
+- Project appears on `/projects`
+- Project detail dashboard loads
 - Project routes enforce access rules
 
 ---

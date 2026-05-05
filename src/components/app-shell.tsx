@@ -59,10 +59,10 @@ function Sidebar({ pathname }: { pathname: string }) {
         ))}
       </nav>
       <div className="absolute bottom-5 left-4 right-4 rounded-lg border border-[#FCA311]/25 bg-[#FCA311]/10 p-4">
-        <p className="text-sm font-semibold text-[#FCA311]">Auth slice</p>
+        <p className="text-sm font-semibold text-[#FCA311]">Projects slice</p>
         <p className="mt-2 text-xs leading-5 text-[#E5E5E5]/70">
-          Supabase login and profiles are connected. Projects, dice, files, and
-          sheets come in later slices.
+          Supabase login, profiles, and project membership are connected. Dice,
+          files, and sheets come in later slices.
         </p>
       </div>
     </aside>

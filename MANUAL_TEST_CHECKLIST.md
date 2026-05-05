@@ -153,27 +153,37 @@ npm run build
 
 ---
 
-## Slice 3: Projects and Membership
+## Slice 3: Projects and Membership Foundations
 
 ### Expected
 
 - User can create a Project.
 - Creator becomes Owner.
-- Project appears on dashboard.
+- Project appears on `/projects`.
+- Project detail page acts as the future project command center.
 - Project routes enforce access.
 
 ### Manual Tests
 
-- [ ] Create a Project.
-- [ ] Confirm Project appears in list.
-- [ ] Open Project dashboard.
-- [ ] Confirm current user is Owner.
-- [ ] Confirm logged-out users cannot access Project route.
-- [ ] Confirm unrelated users cannot access Project route.
+- [ ] Logged-out user cannot access `/projects`.
+- [ ] Logged-in user with profile can access `/projects`.
+- [ ] Empty projects state appears.
+- [ ] User can open `/projects/new`.
+- [ ] Project name is required.
+- [ ] Project name max length is enforced.
+- [ ] Description max length is enforced.
+- [ ] User can create a project.
+- [ ] User is redirected to project detail page after creation.
+- [ ] Created project appears on `/projects`.
+- [ ] Project detail page loads.
+- [ ] Project dashboard placeholder cards render.
+- [ ] Another user cannot access the project unless they are a member.
+- [ ] Run `npm run lint`.
+- [ ] Run `npm run build`.
 
 ### Known Issues
 
-- Not started.
+- The Supabase `projects`, `project_members`, and `create_project` SQL must exist in the project database before manual Project testing.
 
 ---
 
