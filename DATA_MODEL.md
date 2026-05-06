@@ -92,19 +92,53 @@ provenance.
 
 ### compendiums
 
-Reusable rules/reference libraries.
+Reusable master-library rules/reference containers.
 
-Likely fields:
+Current Slice 4B table:
 
-- id
-- owner_id
-- game_system_id
-- name
-- description
-- visibility
-- version
-- created_at
-- updated_at
+- id uuid primary key
+- owner_id uuid not null references auth.users(id)
+- game_system_id uuid not null references public.game_systems(id)
+- name text not null
+- slug text not null
+- description text
+- visibility text not null
+- license_name text
+- license_url text
+- source_type text not null
+- source_url text
+- source_notes text
+- version text not null
+- created_at timestamptz not null default now()
+- updated_at timestamptz not null default now()
+
+Rules:
+
+- A Compendium is a master-library record linked to one Game System.
+- Slice 4B stores the compendium container only. It does not create entries,
+  spells, monsters, classes, items, SRD rows, book text, or imported rules text.
+- Visibility supports `private`, `shared`, and `public`.
+- `shared` is reserved for later collaboration behavior and currently behaves
+  like private content unless the database policies say otherwise.
+- Authenticated users can read their own compendiums and public compendiums.
+- Only the owner should create, update, or delete their compendiums.
+- Access is enforced with Supabase Row Level Security.
+- Future Project customization must use linked copies with overrides instead of
+  mutating the master Compendium directly.
+
+Source and provenance fields:
+
+- `license_name`
+- `license_url`
+- `source_type`
+- `source_url`
+- `source_notes`
+- `version`
+
+These fields prepare TableHub for future manual entries, SRD content, owned-book
+references, Markdown/PDF/CSV imports, and external references. Future entries
+and import tools must preserve provenance clearly and must not use 5etools as a
+direct import source.
 
 ### compendium_entries
 

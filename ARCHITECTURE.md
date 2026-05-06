@@ -46,11 +46,24 @@ version, and source/provenance fields. Slice 4A does not import compendium
 content, rules text, spells, classes, SRD data, Markdown books, or PDFs. It only
 creates the foundation future imports can attach to cleanly.
 
+Master Compendiums are the second concrete Master Library record. A Compendium
+links to one Game System and stores library-container metadata such as name,
+description, visibility, version, and source/provenance fields. Slice 4B does
+not create compendium entries and does not import spells, monsters, classes,
+items, SRD rows, book text, third-party data, or 5etools data. It only creates
+the safe container that future entry and import slices can attach to.
+
 System provenance fields record license and source information so future SRD
 imports, private Markdown/PDF/CSV imports, manual entries, and external
 references do not become unclear or unsafe. Future Projects will link to Game
 Systems and store Project-specific overrides separately instead of mutating the
 master system record.
+
+Compendium provenance fields serve the same purpose for future reference
+content. Any future compendium entry, import, or external reference must track
+where the content came from and what license or ownership note applies. Future
+Projects will link to Compendiums through linked copies with overrides, not by
+directly changing master Compendium records.
 
 ### 2. Project Layer
 

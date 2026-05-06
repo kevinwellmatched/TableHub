@@ -96,10 +96,10 @@ export const dashboardCards: DashboardCard[] = [
     icon: Compass,
   },
   {
-    title: "Recent Compendium Entries",
-    eyebrow: "D&D 5e 2014",
-    description: "Fireball, Longsword, Grappled, Long Rest, and Inspiration.",
-    meta: "Static examples only",
+    title: "Master Compendiums",
+    eyebrow: "Containers first",
+    description: "Create reusable compendium records before entries and imports arrive.",
+    meta: "No entries yet",
     icon: BookOpen,
   },
   {

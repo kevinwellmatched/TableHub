@@ -233,18 +233,35 @@ npm run build
 
 - User can create compendiums linked to Game Systems.
 - Compendiums remain reusable master-library records.
-- No unsafe imports are added without provenance.
+- Compendiums include source/provenance metadata.
+- No entries, imported rules text, SRD rows, book text, third-party data, or
+  5etools data are added in this slice.
 
 ### Manual Tests
 
-- [ ] Create starter compendium.
-- [ ] Link compendium to a Game System.
-- [ ] Confirm compendium appears in lists.
-- [ ] Confirm linked system metadata is visible.
+- [ ] Logged-out user cannot access `/compendium`.
+- [ ] Logged-in user with profile can access `/compendium`.
+- [ ] Empty state appears.
+- [ ] User can open `/compendium/new`.
+- [ ] User must select a game system.
+- [ ] User can create a compendium linked to a game system.
+- [ ] Starter D&D 5e 2014 compendium prefill works.
+- [ ] Created compendium appears on `/compendium`.
+- [ ] Compendium detail page loads.
+- [ ] Linked game system metadata appears.
+- [ ] Source/provenance metadata appears.
+- [ ] Another user cannot edit/delete private compendiums.
+- [ ] Private compendiums are not visible to unrelated users.
+- [ ] Public compendiums are visible to authenticated users.
+- [ ] No compendium entries or imported rules text exist yet.
+- [ ] Run `npm run test`.
+- [ ] Run `npm run lint`.
+- [ ] Run `npm run build`.
 
 ### Known Issues
 
-- Not started.
+- The Supabase `compendiums` table and RLS policies must exist in the project
+  database before manual Master Compendium testing.
 
 ---
 

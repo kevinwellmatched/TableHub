@@ -156,7 +156,7 @@ Create the workspace layer.
 
 ## Slice 4: Systems, Compendiums, and Settings Library
 
-Status: In progress. Slice 4A Game Systems Foundation is complete in the current systems foundation slice.
+Status: In progress. Slice 4A Game Systems Foundation is complete, and Slice 4B Master Compendiums is complete in the current compendiums slice.
 
 ### Goal
 
@@ -186,7 +186,7 @@ Done when:
 
 ### Slice 4B: Master Compendiums
 
-Status: Not started.
+Status: Complete in the current master compendiums foundation slice.
 
 Goal:
 
@@ -195,9 +195,29 @@ Goal:
 - Do not import large content sets until provenance, visibility, and entry shape
   are clear.
 
+Build:
+
+- Compendium list page
+- Create Compendium page
+- Compendium detail dashboard
+- Required Game System link
+- Source/provenance metadata
+- D&D 5e 2014 starter compendium prefill
+- Supabase helpers that rely on Row Level Security
+
+Done when:
+
+- Logged-in user with a profile can open `/compendium`
+- User can create a compendium linked to an accessible Game System
+- User is redirected to the compendium detail page after creation
+- Created compendiums appear on `/compendium`
+- Compendium detail page shows linked system metadata and provenance fields
+- Future compendium placeholder cards render
+- No entries, imported rules text, SRD rows, book text, or 5etools data are added
+- Test, lint, and build pass
+
 ### Build
 
-- Master Compendiums
 - Master Settings Libraries
 - Master Entries
 - Entry types

@@ -132,3 +132,50 @@ Expected Row Level Security behavior:
 
 The app uses normal Supabase server clients and relies on RLS. Do not add a
 service role key to the app.
+
+## Slice 4B: Master Compendiums
+
+Slice 4B assumes the Master Compendiums SQL has already been run in Supabase.
+
+The database should now include:
+
+- `public.compendiums`
+
+The `compendiums` table stores reusable master-library containers for rules and
+reference material. Each Compendium links to one Game System through
+`game_system_id`.
+
+Important fields include:
+
+- `owner_id`
+- `game_system_id`
+- `name`
+- `slug`
+- `description`
+- `visibility`
+- `license_name`
+- `license_url`
+- `source_type`
+- `source_url`
+- `source_notes`
+- `version`
+
+Source and license fields are included now so future manual entries, SRD
+content, owned-book references, Markdown/PDF/CSV imports, and external
+references can keep clear provenance. Slice 4B stores compendium containers
+only. It does not seed or import spells, monsters, classes, items, compendium
+entries, SRD rows, copyrighted book text, third-party data, or 5etools data.
+
+Expected Row Level Security behavior:
+
+- Authenticated users can read compendiums they own.
+- Authenticated users can read compendiums marked `public`.
+- Only the owner can create, update, or delete their compendiums.
+- `shared` is reserved for later collaboration behavior and currently behaves
+  like private content unless later policies expand it.
+
+Future Project customization must use linked copies with overrides. A Project
+should not directly mutate a master Compendium record.
+
+The app uses normal Supabase server clients and relies on RLS. Do not add a
+service role key to the app.
