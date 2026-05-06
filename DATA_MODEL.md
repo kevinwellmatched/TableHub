@@ -34,7 +34,7 @@ Rules:
 
 ### game_systems
 
-Represents a ruleset.
+Represents a reusable master-library ruleset.
 
 Examples:
 
@@ -44,18 +44,51 @@ Examples:
 - Daggerheart
 - Custom/System Agnostic
 
-Likely fields:
+Current Slice 4A table:
 
-- id
-- owner_id
-- name
-- slug
-- edition
-- description
-- visibility
-- version
-- created_at
-- updated_at
+- id uuid primary key
+- name text not null
+- slug text not null
+- edition text
+- publisher text
+- description text
+- ruleset_year integer
+- visibility text not null
+- license_name text
+- license_url text
+- source_type text not null
+- source_url text
+- source_notes text
+- version text not null
+- created_by uuid not null references auth.users(id)
+- created_at timestamptz not null default now()
+- updated_at timestamptz not null default now()
+
+Rules:
+
+- A Game System is the safe master record for a ruleset. Projects should link to
+  systems later instead of mutating them directly.
+- Visibility currently supports `private`, `shared`, and `public`.
+- `shared` is reserved for later collaboration behavior and currently behaves
+  like private content.
+- Authenticated users can read their own systems and public systems.
+- Only the creator should create, update, or delete their systems.
+- Access is enforced with Supabase Row Level Security.
+
+Source and provenance fields:
+
+- `license_name`
+- `license_url`
+- `source_type`
+- `source_url`
+- `source_notes`
+- `version`
+
+These fields exist so future SRD imports, private Markdown/PDF/CSV imports,
+manual entries, and external references can be tracked clearly. TableHub should
+know where system metadata and future content came from before compendiums,
+entries, and imports are added. This helps avoid unsafe or unclear content
+provenance.
 
 ### compendiums
 

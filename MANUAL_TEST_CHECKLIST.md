@@ -187,26 +187,60 @@ npm run build
 
 ---
 
-## Slice 4: Systems, Compendiums, and Settings Library
+## Slice 4A: Game Systems Foundation
 
 ### Expected
 
-- User can create systems.
-- User can create compendiums.
-- User can create Settings Libraries.
-- User can create basic entries.
-- Entries support tags/folders at a basic level.
+- User can create Game Systems.
+- User can list accessible Game Systems.
+- User can view a Game System detail dashboard.
+- Game Systems include source/provenance metadata.
+- D&D 5e 2014 starter metadata can be prefilled.
+- No compendium book content is seeded or imported.
 
 ### Manual Tests
 
-- [ ] Create D&D 5e 2014 system.
+- [ ] Logged-out user cannot access `/systems`.
+- [ ] Logged-in user with profile can access `/systems`.
+- [ ] Empty systems state appears.
+- [ ] User can open `/systems/new`.
+- [ ] System name is required.
+- [ ] Long system name is rejected.
+- [ ] User can create a custom system.
+- [ ] User can prefill the D&D 5e 2014 starter system.
+- [ ] User is redirected to system detail page after creation.
+- [ ] Created system appears on `/systems`.
+- [ ] System detail page loads.
+- [ ] Source/provenance metadata displays.
+- [ ] Placeholder system dashboard cards render.
+- [ ] Another user cannot edit the system.
+- [ ] Private systems are not visible to unrelated users.
+- [ ] Public systems are visible to authenticated users.
+- [ ] Run `npm run test`.
+- [ ] Run `npm run lint`.
+- [ ] Run `npm run build`.
+
+### Known Issues
+
+- The Supabase `game_systems` table and RLS policies must exist in the project
+  database before manual Game Systems testing.
+
+---
+
+## Slice 4B: Master Compendiums
+
+### Expected
+
+- User can create compendiums linked to Game Systems.
+- Compendiums remain reusable master-library records.
+- No unsafe imports are added without provenance.
+
+### Manual Tests
+
 - [ ] Create starter compendium.
-- [ ] Create starter Settings Library.
-- [ ] Create basic compendium entry.
-- [ ] Create basic Settings Library entry.
-- [ ] Add tags.
-- [ ] Add folders/categories.
-- [ ] Confirm entries appear in lists.
+- [ ] Link compendium to a Game System.
+- [ ] Confirm compendium appears in lists.
+- [ ] Confirm linked system metadata is visible.
 
 ### Known Issues
 

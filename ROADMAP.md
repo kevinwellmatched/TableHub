@@ -156,13 +156,47 @@ Create the workspace layer.
 
 ## Slice 4: Systems, Compendiums, and Settings Library
 
+Status: In progress. Slice 4A Game Systems Foundation is complete in the current systems foundation slice.
+
 ### Goal
 
 Create reusable master libraries.
 
+### Slice 4A: Game Systems Foundation
+
+Status: Complete in the current systems foundation slice.
+
+Build:
+
+- Game Systems list page
+- Create Game System page
+- Game System detail dashboard
+- Source/provenance metadata
+- D&D 5e 2014 starter form prefill
+- Supabase helpers that rely on Row Level Security
+
+Done when:
+
+- Logged-in user with a profile can create a system
+- User is redirected to the system detail page after creation
+- Created systems appear on `/systems`
+- System detail page shows metadata and provenance fields
+- Future system dashboard placeholders render
+- Lint and build pass
+
+### Slice 4B: Master Compendiums
+
+Status: Not started.
+
+Goal:
+
+- Add reusable compendium records that link to Game Systems.
+- Keep master content safe for future Project linked copies and overrides.
+- Do not import large content sets until provenance, visibility, and entry shape
+  are clear.
+
 ### Build
 
-- Game Systems
 - Master Compendiums
 - Master Settings Libraries
 - Master Entries

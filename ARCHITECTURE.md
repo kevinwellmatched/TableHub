@@ -40,6 +40,18 @@ Examples:
 
 Master content should be protected from accidental mutation.
 
+Game Systems are the first concrete Master Library record. A Game System stores
+ruleset metadata such as name, edition, publisher, ruleset year, visibility,
+version, and source/provenance fields. Slice 4A does not import compendium
+content, rules text, spells, classes, SRD data, Markdown books, or PDFs. It only
+creates the foundation future imports can attach to cleanly.
+
+System provenance fields record license and source information so future SRD
+imports, private Markdown/PDF/CSV imports, manual entries, and external
+references do not become unclear or unsafe. Future Projects will link to Game
+Systems and store Project-specific overrides separately instead of mutating the
+master system record.
+
 ### 2. Project Layer
 
 A Project is a workspace that combines systems, compendiums, settings, and campaigns.
