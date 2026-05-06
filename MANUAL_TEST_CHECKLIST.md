@@ -310,6 +310,51 @@ npm run build
 
 ---
 
+## Slice 4D: Master Entry Types
+
+### Expected
+
+- User can create reusable Entry Type definitions.
+- Entry Types support future Compendium entries and Settings Library entries.
+- Entry Types are definitions only.
+- No actual compendium entries, setting entries, rich text, body content, tags,
+  folders, imports, field schemas, project links, overrides, copyrighted rules
+  text, or lore content are added in this slice.
+- Future Project customization must use linked copies with overrides.
+
+### Manual Tests
+
+- [ ] Logged-out user cannot access `/entry-types`.
+- [ ] Logged-in user with profile can access `/entry-types`.
+- [ ] Empty state appears.
+- [ ] User can open `/entry-types/new`.
+- [ ] Name is required.
+- [ ] Long name is rejected.
+- [ ] Description max length is enforced.
+- [ ] Invalid library kind is rejected.
+- [ ] Invalid visibility is rejected.
+- [ ] Invalid sort order is rejected.
+- [ ] Starter preset fills the form.
+- [ ] User can create a Compendium Entry Type.
+- [ ] User can create a Settings Library Entry Type.
+- [ ] User is redirected to detail page after creation.
+- [ ] Created Entry Type appears on `/entry-types`.
+- [ ] Entry Type detail page loads.
+- [ ] Placeholder cards for future entries/fields/overrides render.
+- [ ] Private Entry Types are not visible to unrelated users.
+- [ ] Public Entry Types are visible to authenticated users.
+- [ ] No actual compendium entries or setting entries exist yet.
+- [ ] Run `npm run test`.
+- [ ] Run `npm run lint`.
+- [ ] Run `npm run build`.
+
+### Known Issues
+
+- The Supabase `entry_types` table and RLS policies must exist in the project
+  database before manual Master Entry Types testing.
+
+---
+
 ## Slice 5: Project Imports and Linked Overrides
 
 ### Expected

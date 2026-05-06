@@ -156,7 +156,7 @@ Create the workspace layer.
 
 ## Slice 4: Systems, Compendiums, and Settings Library
 
-Status: In progress. Slice 4A Game Systems Foundation, Slice 4B Master Compendiums, and Slice 4C Master Settings Libraries are complete in their foundation slices.
+Status: In progress. Slice 4A Game Systems Foundation, Slice 4B Master Compendiums, Slice 4C Master Settings Libraries, and Slice 4D Master Entry Types are complete in their foundation slices.
 
 ### Goal
 
@@ -246,6 +246,39 @@ Done when:
 - Future Settings Library placeholder cards render
 - No setting entries, imported notes, PDFs, Markdown, CSVs, maps, or lore content
   are added
+- Test, lint, and build pass
+
+### Slice 4D: Master Entry Types
+
+Status: Complete in the current master Entry Types foundation slice.
+
+Goal:
+
+- Add reusable Entry Type definitions for future Compendium entries and Settings
+  Library entries.
+- Keep this slice definition-only, with no actual entries, rich text, tags,
+  folders, imports, field schemas, project links, or overrides.
+- Prepare future entries to point to Entry Types instead of storing loose type
+  labels.
+
+Build:
+
+- Entry Types utility list page at `/entry-types`
+- Create Entry Type page at `/entry-types/new`
+- Entry Type detail dashboard at `/entry-types/[entryTypeId]`
+- Starter preset buttons for Compendium and Settings Library types
+- Supabase helpers that rely on Row Level Security
+
+Done when:
+
+- Logged-in user with a profile can open `/entry-types`
+- User can create Compendium Entry Types and Settings Library Entry Types
+- User is redirected to the Entry Type detail page after creation
+- Created Entry Types appear on `/entry-types`
+- Entry Type detail page shows placeholder cards for future entries, fields,
+  tags, folders, and project overrides
+- No actual compendium entries, setting entries, imported rules text, or lore
+  content are added
 - Test, lint, and build pass
 
 ### Build

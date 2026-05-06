@@ -34,6 +34,7 @@ Examples:
 - Game systems
 - Master compendiums
 - Master Settings Libraries
+- Entry Type definitions
 - Campaign templates
 - Entry templates
 - Character sheet templates
@@ -61,6 +62,13 @@ timelines, lore pages, imports, or third-party lore content. It only creates the
 safe container that future entry, import, reveal, and Project-link slices can
 attach to.
 
+Entry Types are the fourth concrete Master Library foundation record. An Entry
+Type stores reusable category metadata for future Compendium entries and
+Settings Library entries, such as Rule, Spell, NPC, Place, or a custom type.
+Slice 4D creates definitions only. It does not create actual entries, rich-text
+body content, tags, folders, imports, field schemas, Project links, or
+overrides.
+
 System provenance fields record license and source information so future SRD
 imports, private Markdown/PDF/CSV imports, manual entries, and external
 references do not become unclear or unsafe. Future Projects will link to Game
@@ -78,6 +86,11 @@ lore. Any future setting entry, note import, campaign export, or external
 reference must track where the content came from. Future Projects will link to
 Settings Libraries through linked copies with overrides, not by directly
 changing master Settings Library records.
+
+Entry Types prepare both Compendium and Settings Library entry creation without
+creating any content yet. Future entries should point to Entry Types, and future
+Project customization must use linked copies with overrides rather than direct
+mutation of master definitions or master entries.
 
 ### 2. Project Layer
 

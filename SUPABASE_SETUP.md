@@ -226,3 +226,49 @@ should not directly mutate a master Compendium record.
 
 The app uses normal Supabase server clients and relies on RLS. Do not add a
 service role key to the app.
+
+## Slice 4D: Master Entry Types
+
+Slice 4D assumes the Master Entry Types SQL has already been run in Supabase.
+
+The database should now include:
+
+- `public.entry_types`
+
+The `entry_types` table stores reusable type definitions for future Compendium
+entries and Settings Library entries. It stores metadata only and does not store
+actual entries yet.
+
+Important fields include:
+
+- `owner_id`
+- `library_kind`
+- `name`
+- `slug`
+- `description`
+- `visibility`
+- `sort_order`
+
+`library_kind` must be either `compendium` or `settings_library`. Use the label
+"Settings Library," not "Worlds," for setting-lore libraries. These
+definitions prepare future entries such as rules, spells, items, monsters, NPCs,
+places, factions, deities, timeline events, and custom creator-defined types.
+Slice 4D does not create those entries. It does not store rich text, body
+content, tags, folders, custom field schemas, imports, copyrighted rules text,
+or lore content.
+
+Expected Row Level Security behavior:
+
+- Authenticated users can read Entry Types they own.
+- Authenticated users can read Entry Types marked `public`.
+- Only the owner can create, update, or delete their Entry Types.
+- `shared` is reserved for later collaboration behavior and currently behaves
+  like private content unless later policies expand it.
+
+Future Compendium and Settings Library entries should point to Entry Types.
+Future Project customization must use linked copies with overrides. A Project
+should not directly mutate master Entry Types, master Compendium entries, or
+master Settings Library entries.
+
+The app uses normal Supabase server clients and relies on RLS. Do not add a
+service role key to the app.

@@ -140,6 +140,42 @@ references, Markdown/PDF/CSV imports, and external references. Future entries
 and import tools must preserve provenance clearly and must not use 5etools as a
 direct import source.
 
+### entry_types
+
+Reusable type definitions for future Compendium and Settings Library entries.
+
+Current Slice 4D table:
+
+- id uuid primary key
+- owner_id uuid not null references auth.users(id)
+- library_kind text not null
+- name text not null
+- slug text not null
+- description text
+- visibility text not null
+- sort_order integer not null default 0
+- created_at timestamptz not null default now()
+- updated_at timestamptz not null default now()
+
+Rules:
+
+- Slice 4D stores Entry Type definitions only. It does not create actual
+  Compendium entries or Settings Library entries.
+- `library_kind` is either `compendium` or `settings_library`.
+- Use the label "Settings Library," not "Worlds," for setting-lore libraries.
+- Visibility supports `private`, `shared`, and `public`.
+- Authenticated users can read their own Entry Types and public Entry Types.
+- Only the owner should create, update, or delete their Entry Types.
+- Access is enforced with Supabase Row Level Security.
+- Entry Types do not store rich-text body content, tags, folders, imports, or
+  custom field schemas yet.
+- Future entries should point to Entry Types instead of storing an unstructured
+  type label.
+- Future Project customization must use linked copies with overrides instead of
+  mutating master Entry Types or master entries directly.
+- Starter presets are metadata only and must not import copyrighted rules text
+  or lore content.
+
 ### compendium_entries
 
 Entries inside compendiums.
@@ -148,7 +184,7 @@ Likely fields:
 
 - id
 - compendium_id
-- entry_type
+- entry_type_id
 - title
 - slug
 - aliases
@@ -160,7 +196,11 @@ Likely fields:
 - created_at
 - updated_at
 
-Entry types should support built-in and custom types.
+Setting entries do not exist yet. When added later, they should reference
+`entry_types`.
+
+Compendium entries do not exist yet. When added later, they should reference
+`entry_types`.
 
 ---
 
@@ -222,7 +262,7 @@ Likely fields:
 
 - id
 - settings_library_id
-- entry_type
+- entry_type_id
 - title
 - slug
 - aliases

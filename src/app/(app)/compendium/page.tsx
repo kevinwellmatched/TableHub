@@ -8,6 +8,7 @@ import {
   Plus,
   Sparkles,
   Tag,
+  Tags,
   type LucideIcon,
 } from "lucide-react";
 
@@ -33,6 +34,13 @@ export default async function CompendiumPage() {
         />
 
         <div className="flex flex-col gap-3 sm:flex-row">
+          <Link
+            href="/entry-types"
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[var(--line)] px-4 text-sm font-semibold text-[var(--text-main)] transition hover:border-[#FCA311]/60 hover:text-[#FCA311]"
+          >
+            <Tags aria-hidden="true" className="h-4 w-4" />
+            Manage Entry Types
+          </Link>
           <Link
             href="/compendium/new?starter=dnd-5e-2014"
             className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[#FCA311]/50 px-4 text-sm font-semibold text-[#FCA311] transition hover:bg-[#FCA311] hover:text-black"
