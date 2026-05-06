@@ -59,10 +59,10 @@ function Sidebar({ pathname }: { pathname: string }) {
         ))}
       </nav>
       <div className="absolute bottom-5 left-4 right-4 rounded-lg border border-[#FCA311]/25 bg-[#FCA311]/10 p-4">
-        <p className="text-sm font-semibold text-[#FCA311]">Compendium slice</p>
+        <p className="text-sm font-semibold text-[#FCA311]">Master libraries</p>
         <p className="mt-2 text-xs leading-5 text-[#E5E5E5]/70">
-          Game systems and master compendium containers are connected. Entries,
-          imports, files, and sheets come in later slices.
+          Game systems, master compendium containers, and Settings Library containers
+          are connected. Entries, imports, files, and sheets come in later slices.
         </p>
       </div>
     </aside>

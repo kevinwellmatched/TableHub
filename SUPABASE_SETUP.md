@@ -133,6 +133,53 @@ Expected Row Level Security behavior:
 The app uses normal Supabase server clients and relies on RLS. Do not add a
 service role key to the app.
 
+## Slice 4C: Master Settings Libraries
+
+Slice 4C assumes the Master Settings Libraries SQL has already been run in
+Supabase.
+
+The database should now include:
+
+- `public.settings_libraries`
+
+The `settings_libraries` table stores reusable master-library containers for
+setting lore. It stores metadata only and does not store setting entries yet.
+
+Important fields include:
+
+- `owner_id`
+- `name`
+- `slug`
+- `description`
+- `visibility`
+- `genre`
+- `tone`
+- `source_type`
+- `source_url`
+- `source_notes`
+- `version`
+
+Source fields are included now so future manual entries, owned-note references,
+Markdown/PDF/CSV imports, campaign exports, and external references can keep
+clear provenance. Slice 4C stores Settings Library containers only. It does not
+seed or import NPCs, places, factions, deities, maps, timelines, lore pages,
+setting entries, copyrighted text, third-party data, notes, PDFs, Markdown, or
+CSVs.
+
+Expected Row Level Security behavior:
+
+- Authenticated users can read Settings Libraries they own.
+- Authenticated users can read Settings Libraries marked `public`.
+- Only the owner can create, update, or delete their Settings Libraries.
+- `shared` is reserved for later collaboration behavior and currently behaves
+  like private content unless later policies expand it.
+
+Future Project customization must use linked copies with overrides. A Project
+should not directly mutate a master Settings Library record.
+
+The app uses normal Supabase server clients and relies on RLS. Do not add a
+service role key to the app.
+
 ## Slice 4B: Master Compendiums
 
 Slice 4B assumes the Master Compendiums SQL has already been run in Supabase.

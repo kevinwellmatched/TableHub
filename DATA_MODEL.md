@@ -168,18 +168,51 @@ Entry types should support built-in and custom types.
 
 ### settings_libraries
 
-Reusable lore/world bibles.
+Reusable master-library containers for setting lore.
 
-Likely fields:
+Current Slice 4C table:
 
-- id
-- owner_id
-- name
-- description
-- visibility
-- version
-- created_at
-- updated_at
+- id uuid primary key
+- owner_id uuid not null references auth.users(id)
+- name text not null
+- slug text not null
+- description text
+- visibility text not null
+- genre text
+- tone text
+- source_type text not null
+- source_url text
+- source_notes text
+- version text not null
+- created_at timestamptz not null default now()
+- updated_at timestamptz not null default now()
+
+Rules:
+
+- A Settings Library is a master-library record for reusable setting lore.
+- Slice 4C stores the Settings Library container only. It does not create setting
+  entries, NPCs, places, factions, deities, maps, timelines, lore pages, or
+  imported lore content.
+- Visibility supports `private`, `shared`, and `public`.
+- `shared` is reserved for later collaboration behavior and currently behaves
+  like private content unless the database policies say otherwise.
+- Authenticated users can read their own Settings Libraries and public Settings
+  Libraries.
+- Only the owner should create, update, or delete their Settings Libraries.
+- Access is enforced with Supabase Row Level Security.
+- Future Project customization must use linked copies with overrides instead of
+  mutating the master Settings Library directly.
+
+Source and provenance fields:
+
+- `source_type`
+- `source_url`
+- `source_notes`
+- `version`
+
+These fields prepare TableHub for future manual entries, owned-note references,
+Markdown/PDF/CSV imports, campaign exports, and external references. Future
+entries and import tools must preserve provenance clearly.
 
 ### setting_entries
 

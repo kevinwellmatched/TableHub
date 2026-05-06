@@ -52,7 +52,7 @@ export const navItems: NavItem[] = [
   {
     title: "Settings Library",
     href: "/settings-library",
-    description: "Reusable lore, worlds, factions, places, and histories.",
+    description: "Reusable lore, factions, places, and histories.",
     icon: Library,
   },
   {
@@ -112,7 +112,7 @@ export const dashboardCards: DashboardCard[] = [
   {
     title: "Settings Library",
     eyebrow: "Lore workspace",
-    description: "Keep reusable places, factions, NPCs, and secrets organized.",
+    description: "Keep reusable setting lore, factions, places, and secrets organized.",
     meta: "Linked overrides later",
     icon: Library,
   },

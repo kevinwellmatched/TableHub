@@ -156,7 +156,7 @@ Create the workspace layer.
 
 ## Slice 4: Systems, Compendiums, and Settings Library
 
-Status: In progress. Slice 4A Game Systems Foundation is complete, and Slice 4B Master Compendiums is complete in the current compendiums slice.
+Status: In progress. Slice 4A Game Systems Foundation, Slice 4B Master Compendiums, and Slice 4C Master Settings Libraries are complete in their foundation slices.
 
 ### Goal
 
@@ -216,9 +216,40 @@ Done when:
 - No entries, imported rules text, SRD rows, book text, or 5etools data are added
 - Test, lint, and build pass
 
+### Slice 4C: Master Settings Libraries
+
+Status: Complete in the current master Settings Libraries foundation slice.
+
+Goal:
+
+- Add reusable Settings Library records for setting-lore containers.
+- Keep master content safe for future Project linked copies and overrides.
+- Do not create entries or import notes, PDFs, Markdown, CSVs, maps, or lore
+  content until provenance, visibility, and entry shape are clear.
+
+Build:
+
+- Settings Library list page
+- Create Settings Library page
+- Settings Library detail dashboard
+- Source/provenance metadata
+- Starter fantasy Settings Library prefill
+- Supabase helpers that rely on Row Level Security
+
+Done when:
+
+- Logged-in user with a profile can open `/settings-library`
+- User can create a Settings Library
+- User is redirected to the Settings Library detail page after creation
+- Created Settings Libraries appear on `/settings-library`
+- Settings Library detail page shows provenance fields
+- Future Settings Library placeholder cards render
+- No setting entries, imported notes, PDFs, Markdown, CSVs, maps, or lore content
+  are added
+- Test, lint, and build pass
+
 ### Build
 
-- Master Settings Libraries
 - Master Entries
 - Entry types
 - Tags

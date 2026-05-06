@@ -265,6 +265,51 @@ npm run build
 
 ---
 
+## Slice 4C: Master Settings Libraries
+
+### Expected
+
+- User can create Settings Libraries.
+- Settings Libraries remain reusable master-library records.
+- Settings Libraries include source/provenance metadata.
+- No setting entries, imported notes, PDFs, Markdown, CSVs, maps, or lore content
+  are added in this slice.
+- Future Project customization must use linked copies with overrides.
+
+### Manual Tests
+
+- [ ] Logged-out user cannot access `/settings-library`.
+- [ ] Logged-in user with profile can access `/settings-library`.
+- [ ] Empty state appears.
+- [ ] User can open `/settings-library/new`.
+- [ ] Name is required.
+- [ ] Long name is rejected.
+- [ ] Description max length is enforced.
+- [ ] Genre max length is enforced.
+- [ ] Tone max length is enforced.
+- [ ] Source URL validation works.
+- [ ] User can create a Settings Library.
+- [ ] Starter fantasy Settings Library prefill works.
+- [ ] User is redirected to the detail page after creation.
+- [ ] Created Settings Library appears on `/settings-library`.
+- [ ] Settings Library detail page loads.
+- [ ] Source/provenance metadata appears.
+- [ ] Placeholder cards for future entries/project links/imports render.
+- [ ] Another user cannot edit/delete private Settings Libraries.
+- [ ] Private Settings Libraries are not visible to unrelated users.
+- [ ] Public Settings Libraries are visible to authenticated users.
+- [ ] No setting entries or imported lore content exist yet.
+- [ ] Run `npm run test`.
+- [ ] Run `npm run lint`.
+- [ ] Run `npm run build`.
+
+### Known Issues
+
+- The Supabase `settings_libraries` table and RLS policies must exist in the
+  project database before manual Master Settings Library testing.
+
+---
+
 ## Slice 5: Project Imports and Linked Overrides
 
 ### Expected
