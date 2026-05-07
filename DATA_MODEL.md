@@ -4,8 +4,9 @@ Version: 0.1
 
 This is a first-pass conceptual data model. It is not yet a migration file.
 
-Slice 4F is navigation polish only. It adds the `/master-library` overview and
-cross-links, but it does not change the data model, add tables, or add SQL.
+Slice 5A adds Project Source linking only. It links Projects to accessible
+master Game Systems, Compendiums, and Settings Libraries without mutating the
+master records and without adding project entry overrides yet.
 
 ---
 
@@ -343,31 +344,50 @@ and the creator's Owner membership are created together.
 
 ### project_sources
 
-Links a project to master sources.
+Links a Project to master sources.
 
-Likely fields:
+Current Slice 5A table:
 
-- id
-- project_id
-- source_type
-- source_id
-- source_version
-- created_at
-- updated_at
+- id uuid primary key
+- project_id uuid not null references public.projects(id) on delete cascade
+- source_type text not null
+- game_system_id uuid references public.game_systems(id)
+- compendium_id uuid references public.compendiums(id)
+- settings_library_id uuid references public.settings_libraries(id)
+- source_name text not null
+- source_version text
+- added_by uuid references auth.users(id)
+- created_at timestamptz not null default now()
+- updated_at timestamptz not null default now()
 
 Source types:
 
 - game_system
 - compendium
 - settings_library
-- campaign_template
-- character_sheet_template
+
+Rules:
+
+- Slice 5A only links master sources to Projects.
+- A Project Source points to exactly one supported master source.
+- The app currently limits source types to `game_system`, `compendium`, and
+  `settings_library`.
+- Campaign templates and character sheet templates are not part of Slice 5A.
+- Project Source links do not copy entries and do not create overrides yet.
+- The original Game System, Compendium, Settings Library, and Master Entry rows
+  must not be mutated from a Project.
+- Owner and GM management is shown in the UI when the current Project role is
+  available, but Supabase RLS remains the real permission boundary.
+- The app uses `public.attach_project_source` to create links so the database
+  can validate role and source access in one place.
 
 ### project_entry_overrides
 
 Stores project-specific overrides for linked entries.
 
-Likely fields:
+Deferred to Slice 5B.
+
+Likely future fields:
 
 - id
 - project_id
@@ -380,6 +400,7 @@ Likely fields:
 - updated_at
 
 This table is critical. It prevents project edits from mutating master content.
+It is not implemented in Slice 5A.
 
 ---
 

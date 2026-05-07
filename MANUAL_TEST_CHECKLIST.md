@@ -466,26 +466,54 @@ npm run build
 
 ---
 
-## Slice 5: Project Imports and Linked Overrides
+## Slice 5A: Project Sources Foundation
 
 ### Expected
 
-- A Project can link to master content.
-- Project overrides do not mutate master content.
-- UI marks overrides clearly.
+- A Project can link to accessible master Game Systems, Compendiums, and
+  Settings Libraries.
+- Project detail page shows attached sources or a clear empty state.
+- Project Source management lives at `/projects/[projectId]/sources`.
+- Owner and GM roles can attach and remove sources.
+- Master content remains unchanged.
+- `project_entry_overrides` remains deferred to Slice 5B.
+- No imports, rich text editor, tags/folders, Project search, or campaign source
+  linking are added.
 
 ### Manual Tests
 
-- [ ] Attach starter compendium to Project.
-- [ ] Open linked master entry from Project.
-- [ ] Override a field in Project context.
-- [ ] Confirm Project shows overridden value.
-- [ ] Confirm master entry remains unchanged.
-- [ ] Confirm UI indicates field is overridden.
+- [ ] Logged-out user cannot access `/projects`.
+- [ ] Logged-in user with profile can open a Project detail page.
+- [ ] Project detail page shows the Project Sources section.
+- [ ] Empty Project Sources state appears when no sources are attached.
+- [ ] Open `/projects/[projectId]/sources`.
+- [ ] Project Sources management page shows attached sources or an empty state.
+- [ ] Owner can attach an accessible Game System.
+- [ ] Owner can attach an accessible Compendium.
+- [ ] Owner can attach an accessible Settings Library.
+- [ ] Attached source cards show source name, source type, version when set, and
+      attached date.
+- [ ] Already-attached sources are not offered again when practical.
+- [ ] Owner can remove an attached source.
+- [ ] Project detail page updates after attach and remove.
+- [ ] GM can attach and remove sources if the database role policies allow it.
+- [ ] Player or Viewer does not see normal management controls.
+- [ ] Supabase denies attach/remove attempts for roles that should not manage
+      sources.
+- [ ] Master Game System, Compendium, Settings Library, and Master Entry rows are
+      not changed by attaching or removing a Project Source.
+- [ ] No `project_entry_overrides` UI exists yet.
+- [ ] Run `npm.cmd run test`.
+- [ ] Run `npm.cmd run lint`.
+- [ ] Run `npm.cmd run build`.
 
 ### Known Issues
 
-- Not started.
+- The Supabase `project_sources` table, `attach_project_source` RPC, helper
+  functions, and RLS policies must exist in the project database before manual
+  Project Sources testing.
+- Slice 5A does not implement project entry overrides. That is deferred to
+  Slice 5B.
 
 ---
 

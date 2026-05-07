@@ -359,14 +359,56 @@ Done when:
 Begin attaching reusable Master Library sources to Projects without mutating
 master content.
 
-### Build
+### Slice 5A: Project Sources Foundation
+
+Status: Complete in the current app-side foundation slice.
+
+Goal:
+
+- Link Projects to accessible master sources.
+- Keep master Game Systems, Compendiums, Settings Libraries, and Master Entries
+  unchanged.
+- Prepare for linked copies with overrides without building overrides yet.
+
+Build:
 
 - Attach systems to Projects
 - Attach Compendiums to Projects
 - Attach Settings Libraries to Projects
-- Store project-level overrides separately from master entries
-- Show original and modified versions
-- Manual update from master content
+- Project Sources section on Project detail page
+- Project Source management page at `/projects/[projectId]/sources`
+- App helpers and server actions that rely on Supabase RLS
+- Validation for allowed Slice 5A source types only
+
+Done when:
+
+- Project detail page shows attached sources or a clear empty state
+- Owner or GM can attach an accessible Game System
+- Owner or GM can attach an accessible Compendium
+- Owner or GM can attach an accessible Settings Library
+- Owner or GM can remove an attached source
+- Player and Viewer roles do not receive normal management controls
+- Supabase RLS remains the real permission boundary
+- No imports, overrides, rich text editing, tags/folders, or Project search are
+  added
+- Test, lint, and build pass
+
+### Slice 5B: Project Entry Override Groundwork
+
+Status: Not started.
+
+Goal:
+
+- Store project-level overrides separately from master entries.
+- Begin resolving effective Project entries from original master content plus
+  Project-specific changes.
+
+Build:
+
+- `project_entry_overrides` schema and RLS
+- Minimal override helper APIs
+- Read-only original vs project-specific value groundwork
+- No rich text editor or full override UI until the data path is safe
 
 ### Done When
 

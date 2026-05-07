@@ -336,3 +336,53 @@ Entry.
 
 The app uses normal Supabase server clients and relies on RLS. Do not add a
 service role key to the app.
+
+## Slice 5A: Project Sources Foundation
+
+Slice 5A assumes the Project Sources SQL has already been run in Supabase.
+
+The database should now include:
+
+- `public.project_sources`
+- `public.attach_project_source(target_project_id uuid, target_source_type text, target_source_id uuid)`
+- helper functions for Project role checks
+- RLS policies for reading and deleting Project Sources
+
+The `project_sources` table links a Project to accessible master source records.
+It does not copy entries and does not create project-specific overrides.
+
+Important fields include:
+
+- `project_id`
+- `source_type`
+- `game_system_id`
+- `compendium_id`
+- `settings_library_id`
+- `source_name`
+- `source_version`
+- `added_by`
+
+Supported Slice 5A source types are:
+
+- `game_system`
+- `compendium`
+- `settings_library`
+
+The app calls `attach_project_source` to attach a source. The RPC should check
+the current user's Project role and the user's RLS-backed access to the source.
+The app removes source links with a filtered delete from `project_sources`.
+
+Expected Row Level Security behavior:
+
+- Project members can read Project Source links for Projects they can access.
+- Project Owners and GMs can attach and remove supported source links.
+- Players and Viewers should not be able to attach or remove source links.
+- Source options should only include master records the current user can read.
+
+Slice 5A does not add `project_entry_overrides`, an override editor, original
+vs modified rendering, manual updates from master content, rich text editing,
+imports, tags/folders, Project search, or campaign source linking. Those remain
+later slices, with `project_entry_overrides` deferred to Slice 5B.
+
+The app uses normal Supabase server clients and relies on RLS. Do not add a
+service role key to the app.

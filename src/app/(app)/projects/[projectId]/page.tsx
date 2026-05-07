@@ -1,11 +1,14 @@
 import Link from "next/link";
+import type { LucideIcon } from "lucide-react";
 import {
   ArrowLeft,
   BookOpen,
   Boxes,
+  Database,
   Dice5,
   FileText,
   Library,
+  LinkIcon,
   Search,
   ScrollText,
   UsersRound,
@@ -13,6 +16,14 @@ import {
 } from "lucide-react";
 
 import { SectionCard } from "@/components/section-card";
+import {
+  formatProjectSourceType,
+  type ProjectSourceType,
+} from "@/lib/project-source-validation";
+import {
+  getProjectSources,
+  type ProjectSourceRow,
+} from "@/lib/project-sources";
 import { formatProjectRole, getProjectById } from "@/lib/projects";
 
 type ProjectDetailPageProps = {
@@ -72,6 +83,12 @@ const futureProjectSections = [
   },
 ];
 
+const sourceTypeIcons = {
+  game_system: Database,
+  compendium: BookOpen,
+  settings_library: Library,
+} satisfies Record<ProjectSourceType, LucideIcon>;
+
 export default async function ProjectDetailPage({ params }: ProjectDetailPageProps) {
   const { projectId } = await params;
   const project = await getProjectById(projectId);
@@ -79,6 +96,8 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
   if (!project) {
     return <ProjectUnavailableState />;
   }
+
+  const sources = await getProjectSources(project.id);
 
   return (
     <div className="space-y-8">
@@ -116,6 +135,47 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
         </div>
       </section>
 
+      <section className="space-y-4">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[#FCA311]/30 bg-[#14213D] text-[#FCA311]">
+              <LinkIcon aria-hidden="true" className="h-5 w-5" />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-[var(--text-main)]">
+                Project Sources
+              </h2>
+              <p className="text-sm text-[var(--text-muted)]">
+                Linked master sources attached to this Project.
+              </p>
+            </div>
+          </div>
+
+          <Link
+            href={`/projects/${project.id}/sources`}
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-[#FCA311]/50 px-4 text-sm font-semibold text-[#FCA311] transition hover:bg-[#FCA311] hover:text-black"
+          >
+            <LinkIcon aria-hidden="true" className="h-4 w-4" />
+            Manage Sources
+          </Link>
+        </div>
+
+        {sources.length > 0 ? (
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {sources.map((source) => (
+              <ProjectSourceSummaryCard key={source.id} source={source} />
+            ))}
+          </div>
+        ) : (
+          <section className="rounded-lg border border-[#FCA311]/30 bg-[#FCA311]/10 p-6">
+            <p className="text-sm leading-6 text-[var(--text-muted)]">
+              No sources are attached yet. Add a Game System, Compendium, or
+              Settings Library when this Project is ready for linked master content.
+            </p>
+          </section>
+        )}
+      </section>
+
       <section>
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[#FCA311]/30 bg-[#14213D] text-[#FCA311]">
@@ -144,6 +204,29 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
         </div>
       </section>
     </div>
+  );
+}
+
+function ProjectSourceSummaryCard({ source }: { source: ProjectSourceRow }) {
+  const Icon = sourceTypeIcons[source.source_type];
+
+  return (
+    <article className="rounded-lg border border-[var(--line)] bg-[var(--panel-bg)] p-5 shadow-[0_18px_60px_rgba(0,0,0,0.2)]">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-[#FCA311]/30 bg-[#14213D] text-[#FCA311]">
+          <Icon aria-hidden="true" className="h-5 w-5" />
+        </div>
+        <span className="rounded-md border border-[var(--line)] bg-black/25 px-2 py-1 text-xs font-medium text-[#FCA311]">
+          {formatProjectSourceType(source.source_type)}
+        </span>
+      </div>
+      <h3 className="mt-5 text-lg font-semibold text-[var(--text-main)]">
+        {source.source_name}
+      </h3>
+      <p className="mt-2 text-sm text-[var(--text-muted)]">
+        Version {source.source_version || "not set"}
+      </p>
+    </article>
   );
 }
 

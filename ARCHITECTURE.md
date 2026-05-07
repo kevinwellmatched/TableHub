@@ -132,6 +132,13 @@ A Project can have:
 - Tags/folders
 - Visibility rules
 
+Slice 5A implements the first Project Source links. A Project can attach an
+accessible Game System, Compendium, or Settings Library through
+`project_sources`. The app shows these links on the Project detail page and
+provides a small `/projects/[projectId]/sources` management page. These links
+do not copy entries, create overrides, import data, or change master records.
+Those behaviors remain later work.
+
 ### 3. Campaign Layer
 
 A Campaign is an active play space inside a Project.
@@ -184,6 +191,14 @@ Pattern:
 - `project_entry_override` stores changes for that project.
 - UI resolves the effective entry by combining master content plus overrides.
 
+Current implementation status:
+
+- Slice 5A implements `project_sources` for Game Systems, Compendiums, and
+  Settings Libraries.
+- Slice 5B is expected to begin `project_entry_overrides`.
+- Original vs modified rendering, manual master updates, imports, search,
+  tags/folders, and rich text editing are still deferred.
+
 Benefits:
 
 - Protects original compendium/settings content
@@ -230,6 +245,12 @@ not return that Project to the app.
 
 New Projects are created through the `create_project` RPC so the Project row and
 the creator's Owner membership are created in one database operation.
+
+Project Sources are created through the `attach_project_source` RPC. The app
+uses normal Supabase server clients, passes the requested Project and source,
+and lets the database validate membership, RLS visibility, and duplicate rules.
+Removing a Project Source uses a filtered delete against `project_sources`; RLS
+decides whether the row can actually be removed.
 
 ## Auth and Profiles
 
