@@ -29,6 +29,26 @@ TableHub is organized into four major conceptual layers.
 
 Reusable original content.
 
+TableHub is moving toward this product model:
+
+```text
+System
+  -> Library Source
+      -> Master Entry
+          -> Project Source Link
+              -> Project Entry Override
+```
+
+A Library Source is a reusable source/container under a System, such as a core
+rulebook, supplement, setting book, adventure module, GM screen, table
+collection, homebrew packet, or import batch. Compendiums and Settings
+Libraries are the current concrete container tables. Do not destructively
+migrate, delete, or rename those tables yet.
+
+Use "Adventures & Modules" instead of "Adventures & Campaigns" when describing
+source categories so reusable source containers are not confused with active
+Campaign play spaces.
+
 Examples:
 
 - Game systems
@@ -49,19 +69,20 @@ content, rules text, spells, classes, SRD data, Markdown books, or PDFs. It only
 creates the foundation future imports can attach to cleanly.
 
 Master Compendiums are the second concrete Master Library record. A Compendium
-links to one Game System and stores library-container metadata such as name,
-description, visibility, version, and source/provenance fields. Slice 4B does
-not create compendium entries and does not import spells, monsters, classes,
-items, SRD rows, book text, third-party data, or 5etools data. It only creates
-the safe container that future entry and import slices can attach to.
+links to one Game System and stores current Library Source container metadata
+such as name, description, visibility, version, and source/provenance fields.
+Slice 4B does not create compendium entries and does not import spells,
+monsters, classes, items, SRD rows, book text, third-party data, or 5etools
+data. It only creates the safe container that future entry and import slices can
+attach to.
 
 Master Settings Libraries are the third concrete Master Library record. A
-Settings Library stores reusable setting-lore container metadata such as name,
-description, visibility, genre, tone, version, and source/provenance fields.
-Slice 4C does not create setting entries, NPCs, places, factions, deities, maps,
-timelines, lore pages, imports, or third-party lore content. It only creates the
-safe container that future entry, import, reveal, and Project-link slices can
-attach to.
+Settings Library stores current Library Source metadata for reusable setting and
+world lore, such as name, description, visibility, genre, tone, version, and
+source/provenance fields. Slice 4C does not create setting entries, NPCs,
+places, factions, deities, maps, timelines, lore pages, imports, or third-party
+lore content. It only creates the safe container that future entry, import,
+reveal, and Project-link slices can attach to.
 
 Entry Types are the fourth concrete Master Library foundation record. An Entry
 Type stores reusable category metadata for future Compendium entries and
@@ -116,13 +137,15 @@ Project source linking and override groundwork.
 
 ### 2. Project Layer
 
-A Project is a workspace that combines systems, compendiums, settings, and campaigns.
+A Project is a workspace that should eventually choose one primary System,
+attach compatible Library Sources into its Project Library, and contain active
+Campaigns.
 
 Projects use linked copies with overrides.
 
 A Project can have:
 
-- One or more systems
+- One primary System
 - One or more compendiums
 - One or more Settings Libraries
 - One or more campaigns
@@ -132,12 +155,13 @@ A Project can have:
 - Tags/folders
 - Visibility rules
 
-Slice 5A implements the first Project Source links. A Project can attach an
-accessible Game System, Compendium, or Settings Library through
-`project_sources`. The app shows these links on the Project detail page and
-provides a small `/projects/[projectId]/sources` management page. These links
-do not copy entries, create overrides, import data, or change master records.
-Those behaviors remain later work.
+Slice 5A implements the first Project Source links, which are the current
+foundation for the Project Library. A Project can attach an accessible Game
+System, Compendium, or Settings Library through `project_sources`. The app shows
+these links on the Project detail page and provides a small
+`/projects/[projectId]/sources` management page. These links do not copy
+entries, create overrides, import data, or change master records. Those
+behaviors remain later work.
 
 ### 3. Campaign Layer
 
@@ -195,7 +219,7 @@ Current implementation status:
 
 - Slice 5A implements `project_sources` for Game Systems, Compendiums, and
   Settings Libraries.
-- Slice 5B is expected to begin `project_entry_overrides`.
+- Slice 5C is expected to begin `project_entry_overrides`.
 - Original vs modified rendering, manual master updates, imports, search,
   tags/folders, and rich text editing are still deferred.
 

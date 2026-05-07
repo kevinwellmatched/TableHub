@@ -40,7 +40,7 @@ export const navItems: NavItem[] = [
   {
     title: "Compendium",
     href: "/compendium",
-    description: "Rules, spells, monsters, items, and reference entries.",
+    description: "Rules and reference Library Sources.",
     icon: BookOpen,
   },
   {
@@ -58,7 +58,7 @@ export const navItems: NavItem[] = [
   {
     title: "Projects",
     href: "/projects",
-    description: "GM workspaces built from linked sources and overrides.",
+    description: "GM workspaces built from Project Libraries and overrides.",
     icon: Castle,
   },
   {
@@ -98,8 +98,9 @@ export const dashboardCards: DashboardCard[] = [
   {
     title: "Master Library",
     eyebrow: "Reusable originals",
-    description: "Build systems, compendiums, Settings Libraries, Entry Types, and Master Entries.",
-    meta: "Project links later",
+    description:
+      "Build Systems, Library Sources, Entry Types, and Master Entries.",
+    meta: "Project Library ready",
     icon: BookOpen,
   },
   {
@@ -112,7 +113,8 @@ export const dashboardCards: DashboardCard[] = [
   {
     title: "Settings Library",
     eyebrow: "Lore workspace",
-    description: "Keep reusable setting lore, factions, places, and secrets organized.",
+    description:
+      "Keep reusable setting lore Library Sources organized.",
     meta: "Linked overrides later",
     icon: Library,
   },

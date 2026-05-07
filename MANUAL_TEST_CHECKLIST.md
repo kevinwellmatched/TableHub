@@ -476,7 +476,7 @@ npm run build
 - Project Source management lives at `/projects/[projectId]/sources`.
 - Owner and GM roles can attach and remove sources.
 - Master content remains unchanged.
-- `project_entry_overrides` remains deferred to Slice 5B.
+- `project_entry_overrides` remains deferred to Slice 5C.
 - No imports, rich text editor, tags/folders, Project search, or campaign source
   linking are added.
 
@@ -513,7 +513,46 @@ npm run build
   functions, and RLS policies must exist in the project database before manual
   Project Sources testing.
 - Slice 5A does not implement project entry overrides. That is deferred to
-  Slice 5B.
+  Slice 5C.
+
+---
+
+## Slice 5B: Library Source Taxonomy Alignment
+
+### Expected
+
+- Library Source vocabulary is introduced safely in helper code, docs, and
+  beginner-facing copy.
+- Compendiums and Settings Libraries remain the current concrete container
+  tables.
+- No schema changes, migrations, table deletes, table renames, or route removals
+  are added.
+- Project Library means the attached sources for a Project.
+- Projects are documented as eventually having one primary System.
+- "Adventures & Modules" is used instead of "Adventures & Campaigns" for source
+  category language.
+
+### Manual Tests
+
+- [ ] `/master-library` still loads.
+- [ ] `/compendium` still loads.
+- [ ] `/settings-library` still loads.
+- [ ] `/projects/[projectId]/sources` still loads if Slice 5A SQL is applied.
+- [ ] Copy uses Library Source vocabulary where appropriate.
+- [ ] Compendiums and Settings Libraries are still visible as existing concrete
+      containers.
+- [ ] No schema changes were added.
+- [ ] No existing routes were removed.
+- [ ] Run `npm.cmd run test`.
+- [ ] Run `npm.cmd run lint`.
+- [ ] Run `npm.cmd run build`.
+
+### Known Issues
+
+- This slice does not migrate database tables into a unified Library Sources
+  table.
+- Manual route testing still depends on the existing local Supabase setup and
+  logged-in user state.
 
 ---
 

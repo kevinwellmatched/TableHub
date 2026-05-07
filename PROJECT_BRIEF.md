@@ -15,6 +15,7 @@ The goal is faster, smoother play with fewer context switches.
 TableHub should become the home base for:
 
 - Game system compendiums
+- Library Sources such as core rulebooks, supplements, setting books, adventure modules, GM screens, table collections, homebrew packets, and import batches
 - Campaign/project dashboards
 - Character sheets and character binders
 - Settings/lore libraries
@@ -143,13 +144,29 @@ Search should be prominent globally and should eventually support a `Ctrl+K` com
 
 A ruleset such as D&D 5e 2014, D&D 5e 2024/5.5e, Pathfinder 2e, Daggerheart, Shadowdark, Mothership, or a custom system.
 
+### Library Source
+
+A reusable source/container under a Game System. Library Source is the new product vocabulary for reusable content containers.
+
+Examples:
+
+- Core Rulebooks
+- Expansions & Supplements
+- Setting & World Lore
+- Adventures & Modules
+- Other reusable source collections
+
+Use "Adventures & Modules" instead of "Adventures & Campaigns" so source books are not confused with active Campaign play spaces.
+
+Compendiums and Settings Libraries are the current concrete container tables. Do not destructively migrate or rename them yet.
+
 ### Compendium
 
-A reusable master library of rules/reference content tied to a system or usable generically.
+A current concrete Library Source for rules/reference content tied to a system or usable generically.
 
 ### Settings Library
 
-A reusable lore/world bible. This replaces the earlier placeholder term "Worlds."
+A current concrete Library Source for lore/world material. This replaces the earlier placeholder term "Worlds."
 
 Examples:
 
@@ -165,11 +182,11 @@ Examples:
 
 ### Project
 
-A workspace that combines one or more systems, compendiums, settings, and campaigns.
+A workspace that should eventually choose one primary System, attach compatible Library Sources into its Project Library, and contain active Campaigns.
 
 A Project may contain multiple campaigns.
 
-When a game system, compendium, campaign template, or settings library is added to a Project, the Project gets editable linked copies/overrides. The original master content must remain safe.
+When a game system, Library Source, campaign template, or settings library is added to a Project, the Project gets editable linked copies/overrides. The original master content must remain safe.
 
 ### Campaign
 
@@ -208,6 +225,7 @@ The app must support:
 This rule applies to:
 
 - Game systems
+- Library Sources
 - Compendium entries
 - Settings Library entries
 - Campaign templates

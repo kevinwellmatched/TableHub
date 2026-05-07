@@ -47,7 +47,8 @@ const futureSettingsLibrarySections = [
   },
   {
     title: "Project Links",
-    description: "Projects will use linked copies with overrides instead of editing masters.",
+    description:
+      "Projects will attach this Library Source with linked copies and overrides.",
     meta: "Overrides later",
     icon: GitBranch,
   },
@@ -100,14 +101,14 @@ export default async function SettingsLibraryDetailPage({
         <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-3xl">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#FCA311]">
-              Master Settings Library
+              Settings Library Source
             </p>
             <h1 className="mt-3 text-3xl font-semibold tracking-normal text-[var(--text-main)] sm:text-4xl">
               {settingsLibrary.name}
             </h1>
             <p className="mt-3 text-base leading-7 text-[var(--text-muted)]">
               {settingsLibrary.description ||
-                "This master Settings Library does not have a description yet. It is a reusable lore container for future entries and project links."}
+                "This master Settings Library does not have a description yet. It is a reusable Library Source container for future entries and Project Library links."}
             </p>
           </div>
 
@@ -129,7 +130,7 @@ export default async function SettingsLibraryDetailPage({
 
       <MasterLibraryLinkPanel
         title="Related Master Library actions"
-        description="This Settings Library is a reusable original container. Master Entries belong here, and Project overrides come later."
+        description="This Settings Library is a reusable Library Source. Master Entries belong here, and Project overrides come later."
         links={[
           { label: "Back to Settings Library", href: "/settings-library" },
           { label: "Master Library", href: "/master-library" },
@@ -200,7 +201,7 @@ export default async function SettingsLibraryDetailPage({
               </h2>
               <p className="text-sm text-[var(--text-muted)]">
                 Basic entries are original master records. Project overrides come
-                later.
+                later through Project Library links.
               </p>
             </div>
           </div>
@@ -220,7 +221,7 @@ export default async function SettingsLibraryDetailPage({
           </div>
         ) : (
           <p className="mt-4 rounded-lg border border-[var(--line)] bg-black/15 p-4 text-sm text-[var(--text-muted)]">
-            No Master Entries belong to this Settings Library yet.
+            No Master Entries belong to this Settings Library Source yet.
           </p>
         )}
       </section>
@@ -236,7 +237,7 @@ export default async function SettingsLibraryDetailPage({
             </h2>
             <p className="text-sm text-[var(--text-muted)]">
               These areas are placeholders until entries, organization, imports,
-              reveal tools, and project linking are designed.
+              reveal tools, and Project Library linking are designed.
             </p>
           </div>
         </div>

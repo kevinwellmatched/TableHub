@@ -30,7 +30,7 @@ export default async function SettingsLibraryPage() {
       <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
         <PageHeader
           title="Settings Library"
-          description="Master Settings Libraries are reusable lore containers. Setting entries, imports, project links, and overrides come in later slices."
+          description="Settings Libraries are the current Library Source containers for reusable setting and world lore. Setting entries, imports, project links, and overrides come in later slices."
         />
 
         <div className="flex flex-col gap-3 sm:flex-row">
@@ -66,8 +66,8 @@ export default async function SettingsLibraryPage() {
       </div>
 
       <MasterLibraryLinkPanel
-        title="Reusable lore and setting containers"
-        description="Settings Libraries hold original setting material for later Project use. Create a container, define matching Entry Types, then add reusable Master Entries."
+        title="Reusable setting and world lore Library Sources"
+        description="Settings Libraries hold original setting material for later Project Library use. Create a container, define matching Entry Types, then add reusable Master Entries."
         links={[
           { label: "Master Library", href: "/master-library" },
           { label: "Entry Types", href: "/entry-types" },
@@ -81,8 +81,9 @@ export default async function SettingsLibraryPage() {
           <section className="rounded-lg border border-[#FCA311]/30 bg-[#FCA311]/10 p-5">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm leading-6 text-[var(--text-muted)]">
-                Basic entries are original master records. Project overrides come
-                later through linked copies, not direct edits to master content.
+                Basic entries are original master records inside a Library Source.
+                Project overrides come later through linked copies, not direct
+                edits to master content.
               </p>
               <Link
                 href="/master-entries/new"
@@ -175,8 +176,9 @@ function EmptySettingsLibraryState() {
           No Settings Libraries yet
         </h2>
         <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">
-          Create a Settings Library after you know what reusable lore container
-          you need. Entry Types and Master Entries can be added next.
+          Create a Settings Library after you know what reusable Library Source
+          you need for setting and world lore. Entry Types and Master Entries can
+          be added next.
         </p>
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
           <Link

@@ -382,7 +382,35 @@ Expected Row Level Security behavior:
 Slice 5A does not add `project_entry_overrides`, an override editor, original
 vs modified rendering, manual updates from master content, rich text editing,
 imports, tags/folders, Project search, or campaign source linking. Those remain
-later slices, with `project_entry_overrides` deferred to Slice 5B.
+later slices, with `project_entry_overrides` deferred to Slice 5C.
+
+The app uses normal Supabase server clients and relies on RLS. Do not add a
+service role key to the app.
+
+## Slice 5B: Library Source Taxonomy Alignment
+
+Slice 5B does not require new Supabase SQL.
+
+This slice introduces Library Source vocabulary and shared app constants only.
+TableHub is moving toward:
+
+```text
+System
+  -> Library Source
+      -> Master Entry
+          -> Project Source Link
+              -> Project Entry Override
+```
+
+Compendiums and Settings Libraries remain the current concrete container tables.
+Do not destructively migrate, delete, or rename them yet.
+
+Project Library means the Library Sources attached to a Project. Projects should
+eventually have one primary System, then attach compatible Library Sources.
+
+Use "Adventures & Modules" instead of "Adventures & Campaigns" when describing
+source categories so reusable adventure sources are not confused with active
+Campaign play spaces.
 
 The app uses normal Supabase server clients and relies on RLS. Do not add a
 service role key to the app.

@@ -41,14 +41,15 @@ const futureProjectSections = [
   },
   {
     title: "Compendiums",
-    description: "Rules and reference libraries will attach as linked sources.",
+    description: "Rules and reference Library Sources attach through the Project Library.",
     meta: "Linked copies later",
     icon: BookOpen,
   },
   {
     title: "Settings Library",
-    description: "Reusable lore, places, factions, NPCs, and secrets will connect here.",
-    meta: "Source links later",
+    description:
+      "Reusable lore Library Sources connect here through the Project Library.",
+    meta: "Library Sources",
     icon: Library,
   },
   {
@@ -143,10 +144,10 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
             </div>
             <div>
               <h2 className="text-xl font-semibold text-[var(--text-main)]">
-                Project Sources
+                Project Library
               </h2>
               <p className="text-sm text-[var(--text-muted)]">
-                Linked master sources attached to this Project.
+                Linked Library Sources attached to this Project.
               </p>
             </div>
           </div>
@@ -156,7 +157,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
             className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-[#FCA311]/50 px-4 text-sm font-semibold text-[#FCA311] transition hover:bg-[#FCA311] hover:text-black"
           >
             <LinkIcon aria-hidden="true" className="h-4 w-4" />
-            Manage Sources
+            Manage Project Library
           </Link>
         </div>
 
@@ -169,8 +170,9 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
         ) : (
           <section className="rounded-lg border border-[#FCA311]/30 bg-[#FCA311]/10 p-6">
             <p className="text-sm leading-6 text-[var(--text-muted)]">
-              No sources are attached yet. Add a Game System, Compendium, or
-              Settings Library when this Project is ready for linked master content.
+              No Library Sources are attached yet. Add a Game System, Compendium,
+              or Settings Library when this Project is ready for linked master
+              content.
             </p>
           </section>
         )}

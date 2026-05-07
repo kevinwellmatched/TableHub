@@ -31,7 +31,7 @@ export default async function CompendiumPage() {
       <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
         <PageHeader
           title="Compendium"
-          description="Master compendiums are reusable library containers linked to game systems. Entries, imports, project links, and overrides come in later slices."
+          description="Compendiums are the current Library Source containers for reusable rules and reference material linked to Systems. Entries, imports, project links, and overrides come in later slices."
         />
 
         <div className="flex flex-col gap-3 sm:flex-row">
@@ -67,8 +67,8 @@ export default async function CompendiumPage() {
       </div>
 
       <MasterLibraryLinkPanel
-        title="Reusable rules and reference libraries"
-        description="Compendiums are master-library containers for original rules/reference records. Create them after you have a Game System, then define Entry Types and Master Entries."
+        title="Reusable rules and reference Library Sources"
+        description="Compendiums are the current concrete containers for original rules/reference sources. Create them after you have a System, then define Entry Types and Master Entries."
         links={[
           { label: "Master Library", href: "/master-library" },
           { label: "Entry Types", href: "/entry-types" },
@@ -82,8 +82,9 @@ export default async function CompendiumPage() {
           <section className="rounded-lg border border-[#FCA311]/30 bg-[#FCA311]/10 p-5">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm leading-6 text-[var(--text-muted)]">
-                Basic entries are original master records. Project overrides come
-                later through linked copies, not direct edits to master content.
+                Basic entries are original master records inside a Library Source.
+                Project overrides come later through linked copies, not direct
+                edits to master content.
               </p>
               <Link
                 href="/master-entries/new"
@@ -169,8 +170,9 @@ function EmptyCompendiumState() {
           No compendiums yet
         </h2>
         <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">
-          Create a Compendium after you have a Game System. This stores the
-          reusable container only; no rules entries or imported book text are added.
+          Create a Compendium Library Source after you have a System. This stores
+          the reusable container only; no rules entries or imported book text are
+          added.
         </p>
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
           <Link

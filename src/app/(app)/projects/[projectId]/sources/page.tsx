@@ -83,14 +83,15 @@ export default async function ProjectSourcesPage({
         <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-3xl">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#FCA311]">
-              Project Sources
+              Project Library
             </p>
             <h1 className="mt-3 text-3xl font-semibold tracking-normal text-[var(--text-main)] sm:text-4xl">
               {project.name}
             </h1>
             <p className="mt-3 text-base leading-7 text-[var(--text-muted)]">
-              Link accessible master Game Systems, Compendiums, and Settings
-              Libraries to this Project without changing the master records.
+              Attach accessible Library Sources to this Project without changing
+              the master records. Slice 5A currently supports Game Systems,
+              Compendiums, and Settings Libraries.
             </p>
           </div>
 
@@ -114,8 +115,8 @@ export default async function ProjectSourcesPage({
 
       <section className="space-y-4">
         <SectionHeading
-          title="Attached sources"
-          description="These source links are the foundation for project-specific linked copies and overrides in later slices."
+          title="Attached Library Sources"
+          description="These source links are the Project Library foundation for project-specific linked copies and overrides in later slices."
         />
 
         {sources.length > 0 ? (
@@ -136,7 +137,7 @@ export default async function ProjectSourcesPage({
       {canManageSources ? (
         <section className="space-y-4">
           <SectionHeading
-            title="Attach a source"
+            title="Attach a Library Source"
             description="Only sources your account can read through Supabase RLS appear here."
           />
 
@@ -164,8 +165,8 @@ export default async function ProjectSourcesPage({
       ) : (
         <section className="rounded-lg border border-[var(--line)] bg-[var(--panel-bg)] p-5">
           <p className="text-sm leading-6 text-[var(--text-muted)]">
-            Source management is available to Project Owners and GMs. Supabase RLS
-            still protects the real attach and remove permissions.
+            Project Library management is available to Project Owners and GMs.
+            Supabase RLS still protects the real attach and remove permissions.
           </p>
         </section>
       )}
@@ -315,11 +316,11 @@ function EmptySourcesState() {
         <LinkIcon aria-hidden="true" className="h-6 w-6" />
       </div>
       <h2 className="mt-5 text-2xl font-semibold text-[var(--text-main)]">
-        No sources attached
+        No Library Sources attached
       </h2>
       <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-[var(--text-muted)]">
         Attach a Game System, Compendium, or Settings Library to start building
-        this Project from safe master content.
+        this Project Library from safe master content.
       </p>
     </section>
   );

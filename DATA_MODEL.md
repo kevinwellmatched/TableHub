@@ -4,9 +4,25 @@ Version: 0.1
 
 This is a first-pass conceptual data model. It is not yet a migration file.
 
+TableHub is moving toward:
+
+```text
+System
+  -> Library Source
+      -> Master Entry
+          -> Project Source Link
+              -> Project Entry Override
+```
+
 Slice 5A adds Project Source linking only. It links Projects to accessible
 master Game Systems, Compendiums, and Settings Libraries without mutating the
 master records and without adding project entry overrides yet.
+
+Slice 5B adds Library Source taxonomy helpers and documentation alignment only.
+It does not add a migration, rename tables, delete tables, or change existing
+routes. Compendiums and Settings Libraries remain the current concrete
+container tables while Library Source becomes the product vocabulary for
+reusable source containers.
 
 ---
 
@@ -34,7 +50,40 @@ Rules:
 
 ---
 
-## Systems and Compendiums
+## Systems and Library Sources
+
+### Library Source taxonomy
+
+Library Source is the product vocabulary for reusable source containers under a
+System. The current concrete container tables are still `compendiums` and
+`settings_libraries`.
+
+Controlled source categories:
+
+- `core_rulebook` - Core Rulebooks
+- `expansion_supplement` - Expansions & Supplements
+- `setting_world_lore` - Setting & World Lore
+- `adventure_module` - Adventures & Modules
+- `other` - Other
+
+Use "Adventures & Modules" instead of "Adventures & Campaigns" to avoid
+confusing reusable adventure sources with active Campaign records.
+
+Default clone policy by category:
+
+- Core Rulebooks -> `locked_to_system`
+- Expansions & Supplements -> `locked_to_system`
+- Setting & World Lore -> `cloneable_to_system`
+- Adventures & Modules -> `cloneable_to_system`
+- Other -> `locked_to_system` unless a later subtype indicates `system_agnostic`
+
+Default player visibility by category:
+
+- Core Rulebooks -> `visible`
+- Expansions & Supplements -> `visible`
+- Setting & World Lore -> `gm_only`
+- Adventures & Modules -> `gm_only`
+- Other -> `mixed`
 
 ### game_systems
 
@@ -96,7 +145,7 @@ provenance.
 
 ### compendiums
 
-Reusable master-library rules/reference containers.
+Current concrete Library Source containers for rules/reference material.
 
 Current Slice 4B table:
 
@@ -118,7 +167,7 @@ Current Slice 4B table:
 
 Rules:
 
-- A Compendium is a master-library record linked to one Game System.
+- A Compendium is a current Library Source record linked to one Game System.
 - Slice 4B stores the compendium container only. It does not create entries,
   spells, monsters, classes, items, SRD rows, book text, or imported rules text.
 - Visibility supports `private`, `shared`, and `public`.
@@ -238,7 +287,7 @@ Rules:
 
 ### settings_libraries
 
-Reusable master-library containers for setting lore.
+Current concrete Library Source containers for setting and world lore.
 
 Current Slice 4C table:
 
@@ -259,7 +308,7 @@ Current Slice 4C table:
 
 Rules:
 
-- A Settings Library is a master-library record for reusable setting lore.
+- A Settings Library is a current Library Source record for reusable setting lore.
 - Slice 4C stores the Settings Library container only. It does not create setting
   entries, NPCs, places, factions, deities, maps, timelines, lore pages, or
   imported lore content.
@@ -293,7 +342,8 @@ Settings Library entry app systems are intentionally deferred.
 
 ### projects
 
-A workspace combining systems, compendiums, settings, and campaigns.
+A workspace that should eventually choose one primary System, attach compatible
+Library Sources into its Project Library, and contain active Campaigns.
 
 Current Slice 3 table:
 
@@ -310,6 +360,7 @@ Rules:
 - Projects are protected by Supabase Row Level Security.
 - A user should only be able to read Projects where they have a matching membership.
 - The original master system, compendium, or Settings Library content should not be mutated from a Project. Project-specific changes belong in linked source and override tables in later slices.
+- Project Library means the set of Library Sources attached to a Project.
 
 ### project_members
 
@@ -344,7 +395,8 @@ and the creator's Owner membership are created together.
 
 ### project_sources
 
-Links a Project to master sources.
+Links a Project to master sources. This is the current database foundation for
+the Project Library.
 
 Current Slice 5A table:
 
@@ -385,7 +437,7 @@ Rules:
 
 Stores project-specific overrides for linked entries.
 
-Deferred to Slice 5B.
+Deferred to Slice 5C.
 
 Likely future fields:
 

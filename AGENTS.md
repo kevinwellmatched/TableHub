@@ -70,7 +70,21 @@ Do not assume WSL2 unless explicitly requested.
 
 Master content must remain safe.
 
-When a system, compendium, settings library, campaign template, entry template, or character sheet template is added to a Project, the Project should use linked copies with overrides.
+TableHub is moving toward this product model:
+
+```text
+System
+  -> Library Source
+      -> Master Entry
+          -> Project Source Link
+              -> Project Entry Override
+```
+
+Library Source is the product vocabulary for reusable source containers under a System. Compendiums and Settings Libraries are the current concrete container tables; do not destructively migrate, delete, or rename them until a later approved schema slice.
+
+Use "Adventures & Modules" instead of "Adventures & Campaigns" for source categories so source books are not confused with active Campaigns.
+
+When a system, Library Source, campaign template, entry template, or character sheet template is added to a Project, the Project should use linked copies with overrides.
 
 Do not directly mutate the original master content when a Project or Campaign customizes it.
 

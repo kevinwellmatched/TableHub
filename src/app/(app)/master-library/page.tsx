@@ -22,8 +22,9 @@ export const dynamic = "force-dynamic";
 const comingLater = [
   {
     title: "Project Sources",
-    description: "Projects will attach reusable master sources in a later slice.",
-    meta: "Slice 5 direction",
+    description:
+      "Projects attach compatible Library Sources into a Project Library.",
+    meta: "Project Library",
     icon: GitBranch,
   },
   {
@@ -60,7 +61,7 @@ export default async function MasterLibraryPage() {
       <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
         <PageHeader
           title="Master Library"
-          description="The reusable original content area for game systems, compendiums, Settings Libraries, entry types, and master entries."
+          description="The reusable original content area for Systems, Library Sources, Entry Types, and Master Entries. Compendiums and Settings Libraries are the current concrete source containers."
         />
 
         <div className="flex flex-col gap-3 sm:flex-row">
@@ -87,7 +88,7 @@ export default async function MasterLibraryPage() {
         </h2>
         <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
           Project-specific changes and overrides come later. Master records should
-          stay reusable originals so future Projects can link to them without
+          stay reusable originals so Projects can attach Library Sources without
           directly mutating the source content.
         </p>
       </section>
@@ -98,8 +99,9 @@ export default async function MasterLibraryPage() {
             Start with a Game System
           </h2>
           <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
-            Add D&D 5e 2014 or another ruleset first, then create a Compendium or
-            Settings Library, define Entry Types, and add Master Entries.
+            Add D&D 5e 2014 or another ruleset first, then create a Library Source
+            such as a Compendium or Settings Library, define Entry Types, and add
+            Master Entries.
           </p>
           <Link
             href="/systems/new?starter=dnd-5e-2014"
@@ -123,7 +125,7 @@ export default async function MasterLibraryPage() {
         />
         <MasterLibraryCard
           title="Compendiums"
-          description="Reusable rules and reference containers linked to game systems."
+          description="Current Library Source containers for rules and reference material linked to Systems."
           count={overview.compendiums.length}
           countName="compendium"
           href="/compendium"
@@ -133,7 +135,7 @@ export default async function MasterLibraryPage() {
         />
         <MasterLibraryCard
           title="Settings Libraries"
-          description="Reusable lore and setting containers for places, factions, histories, and notes."
+          description="Current Library Source containers for setting and world lore."
           count={overview.settingsLibraries.length}
           countName="Settings Library"
           countPlural="Settings Libraries"
@@ -154,7 +156,7 @@ export default async function MasterLibraryPage() {
         />
         <MasterLibraryCard
           title="Master Entries"
-          description="Reusable original records that belong to a Compendium or Settings Library."
+          description="Reusable original records that belong inside a Library Source."
           count={overview.masterEntries.length}
           countName="Master Entry"
           href="/master-entries"

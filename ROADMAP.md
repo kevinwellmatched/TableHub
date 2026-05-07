@@ -356,8 +356,9 @@ Done when:
 
 ### Goal
 
-Begin attaching reusable Master Library sources to Projects without mutating
-master content.
+Move toward Systems -> Library Sources -> Master Entries -> Project Overrides.
+Begin attaching reusable Library Sources to Projects without mutating master
+content.
 
 ### Slice 5A: Project Sources Foundation
 
@@ -368,6 +369,7 @@ Goal:
 - Link Projects to accessible master sources.
 - Keep master Game Systems, Compendiums, Settings Libraries, and Master Entries
   unchanged.
+- Treat the attached source list as the Project Library foundation.
 - Prepare for linked copies with overrides without building overrides yet.
 
 Build:
@@ -393,7 +395,42 @@ Done when:
   added
 - Test, lint, and build pass
 
-### Slice 5B: Project Entry Override Groundwork
+### Slice 5B: Library Source Taxonomy Alignment
+
+Status: Complete in the current taxonomy/docs/copy alignment slice.
+
+Goal:
+
+- Introduce Library Source as the product vocabulary for reusable source
+  containers under Systems.
+- Keep Compendiums and Settings Libraries as the current concrete container
+  tables.
+- Document the source category, subtype, clone policy, and default player
+  visibility taxonomy without forcing a schema migration yet.
+- Use "Adventures & Modules" instead of "Adventures & Campaigns" to avoid
+  confusion with active Campaigns.
+
+Build:
+
+- Shared `src/lib/library-source-taxonomy.ts` helper.
+- Focused taxonomy tests.
+- Documentation alignment for the product model pivot.
+- Safe beginner-facing copy updates on Master Library, source containers, and
+  Project Library pages.
+
+Done when:
+
+- `/master-library`, `/compendium`, `/settings-library`, and existing Project
+  Source routes remain in place.
+- No database schema changes, migrations, table deletes, or table renames are
+  added.
+- Compendiums and Settings Libraries are described as current concrete Library
+  Source containers.
+- Projects are described as eventually having one primary System and attached
+  Library Sources in a Project Library.
+- Test, lint, and build pass.
+
+### Slice 5C: Project Entry Override Groundwork
 
 Status: Not started.
 

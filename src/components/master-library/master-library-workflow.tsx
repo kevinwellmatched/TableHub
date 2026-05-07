@@ -1,9 +1,9 @@
 const workflowSteps = [
   "Create or choose a Game System.",
-  "Create a Compendium or Settings Library.",
+  "Create a Library Source, currently a Compendium or Settings Library.",
   "Define Entry Types.",
   "Create Master Entries.",
-  "Later, attach sources to Projects.",
+  "Attach compatible sources into a Project Library.",
 ];
 
 export function MasterLibraryWorkflow() {
