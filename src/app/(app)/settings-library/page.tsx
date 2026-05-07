@@ -11,6 +11,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { MasterLibraryLinkPanel } from "@/components/master-library/master-library-link-panel";
 import { PageHeader } from "@/components/page-header";
 import {
   formatSettingsLibrarySourceType,
@@ -63,6 +64,17 @@ export default async function SettingsLibraryPage() {
           </Link>
         </div>
       </div>
+
+      <MasterLibraryLinkPanel
+        title="Reusable lore and setting containers"
+        description="Settings Libraries hold original setting material for later Project use. Create a container, define matching Entry Types, then add reusable Master Entries."
+        links={[
+          { label: "Master Library", href: "/master-library" },
+          { label: "Entry Types", href: "/entry-types" },
+          { label: "Master Entries", href: "/master-entries" },
+          { label: "Create Settings Library", href: "/settings-library/new" },
+        ]}
+      />
 
       {settingsLibraries.length > 0 ? (
         <div className="space-y-6">
@@ -163,9 +175,8 @@ function EmptySettingsLibraryState() {
           No Settings Libraries yet
         </h2>
         <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">
-          Create your first reusable lore container. This slice stores Settings
-          Library metadata and provenance only; no setting entries or imported lore
-          content are added.
+          Create a Settings Library after you know what reusable lore container
+          you need. Entry Types and Master Entries can be added next.
         </p>
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
           <Link

@@ -419,6 +419,53 @@ npm run build
 
 ---
 
+## Slice 4F: Master Library Navigation Polish
+
+### Expected
+
+- `/master-library` is a protected overview for reusable original content.
+- Overview cards connect Systems, Compendiums, Settings Libraries, Entry Types,
+  and Master Entries.
+- Existing master-library list and detail pages have compact cross-links.
+- Empty states explain the next useful step.
+- This slice adds navigation polish only.
+- No SQL, new tables, imports, tags/folders, rich text editor, Project sources,
+  or overrides are added.
+
+### Manual Tests
+
+- [ ] Logged-out user cannot access `/master-library`.
+- [ ] Logged-in user with profile can access `/master-library`.
+- [ ] Master Library overview page loads.
+- [ ] Overview cards render for Systems, Compendiums, Settings Libraries, Entry
+      Types, and Master Entries.
+- [ ] Counts or list summaries render without crashing.
+- [ ] Each overview card links to the correct list page.
+- [ ] Create links go to the correct new pages.
+- [ ] `/systems` links back to Master Library overview.
+- [ ] `/compendium` links back to Master Library overview.
+- [ ] `/settings-library` links back to Master Library overview.
+- [ ] `/entry-types` links back to Master Library overview.
+- [ ] `/master-entries` links back to Master Library overview.
+- [ ] Detail pages show breadcrumb/back links where implemented.
+- [ ] Parent library links from Master Entry detail work where metadata exists.
+- [ ] Entry Type links from Master Entry detail work where metadata exists.
+- [ ] Empty states explain the next step.
+- [ ] Mobile layout remains usable.
+- [ ] No new SQL was added.
+- [ ] No imports, tags/folders, rich text, Project sources, or overrides were
+      added.
+- [ ] Run `npm.cmd run test`.
+- [ ] Run `npm.cmd run lint`.
+- [ ] Run `npm.cmd run build`.
+
+### Known Issues
+
+- Logged-in manual testing still depends on the existing Supabase database and
+  RLS setup from Slices 2 through 4E.
+
+---
+
 ## Slice 5: Project Imports and Linked Overrides
 
 ### Expected

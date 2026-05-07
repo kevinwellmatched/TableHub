@@ -12,6 +12,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { MasterLibraryBreadcrumbs } from "@/components/master-library/master-library-breadcrumbs";
+import { MasterLibraryLinkPanel } from "@/components/master-library/master-library-link-panel";
 import { SectionCard } from "@/components/section-card";
 import {
   formatSettingsLibrarySourceType,
@@ -78,6 +80,14 @@ export default async function SettingsLibraryDetailPage({
 
   return (
     <div className="space-y-8">
+      <MasterLibraryBreadcrumbs
+        items={[
+          { label: "Master Library", href: "/master-library" },
+          { label: "Settings Library", href: "/settings-library" },
+          { label: settingsLibrary.name },
+        ]}
+      />
+
       <Link
         href="/settings-library"
         className="inline-flex items-center gap-2 text-sm font-semibold text-[#FCA311] transition hover:text-[#ffb33c]"
@@ -116,6 +126,18 @@ export default async function SettingsLibraryDetailPage({
           </div>
         </div>
       </section>
+
+      <MasterLibraryLinkPanel
+        title="Related Master Library actions"
+        description="This Settings Library is a reusable original container. Master Entries belong here, and Project overrides come later."
+        links={[
+          { label: "Back to Settings Library", href: "/settings-library" },
+          { label: "Master Library", href: "/master-library" },
+          { label: "Create Master Entry", href: "/master-entries/new" },
+          { label: "View Master Entries", href: "/master-entries" },
+          { label: "Manage Entry Types", href: "/entry-types" },
+        ]}
+      />
 
       <section className="rounded-lg border border-[var(--line)] bg-[var(--panel-bg)] p-5 shadow-[0_18px_60px_rgba(0,0,0,0.2)]">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">

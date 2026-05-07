@@ -10,6 +10,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { MasterLibraryLinkPanel } from "@/components/master-library/master-library-link-panel";
 import { PageHeader } from "@/components/page-header";
 import {
   formatGameSystemSourceType,
@@ -48,6 +49,15 @@ export default async function SystemsPage() {
           </Link>
         </div>
       </div>
+
+      <MasterLibraryLinkPanel
+        title="Ruleset foundation"
+        description="Systems are the first layer of the Master Library workflow. Create or choose a ruleset before building reusable Compendiums and Master Entries around it."
+        links={[
+          { label: "Master Library", href: "/master-library" },
+          { label: "Create Compendium", href: "/compendium/new" },
+        ]}
+      />
 
       {systems.length > 0 ? (
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -124,8 +134,8 @@ function EmptySystemsState() {
           No game systems yet
         </h2>
         <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">
-          Create your first reusable ruleset record. This slice stores system
-          metadata and provenance only; compendiums, entries, and imports come later.
+          Start with a Game System. D&D 5e 2014 can be added manually from the
+          starter form, then you can create Compendiums and Entry Types around it.
         </p>
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
           <Link

@@ -12,6 +12,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { MasterLibraryBreadcrumbs } from "@/components/master-library/master-library-breadcrumbs";
+import { MasterLibraryLinkPanel } from "@/components/master-library/master-library-link-panel";
 import { SectionCard } from "@/components/section-card";
 import {
   formatMasterEntryBodyFormat,
@@ -78,8 +80,25 @@ export default async function MasterEntryDetailPage({
     return <MasterEntryUnavailableState />;
   }
 
+  const relatedLinks = [
+    { label: "Back to Master Entries", href: "/master-entries" },
+    { label: "Master Library", href: "/master-library" },
+    getMasterEntryParentLink(masterEntry),
+    masterEntry.entryType
+      ? { label: "Entry Type", href: `/entry-types/${masterEntry.entryType.id}` }
+      : null,
+  ].filter((link): link is { label: string; href: string } => Boolean(link));
+
   return (
     <div className="space-y-8">
+      <MasterLibraryBreadcrumbs
+        items={[
+          { label: "Master Library", href: "/master-library" },
+          { label: "Master Entries", href: "/master-entries" },
+          { label: masterEntry.title },
+        ]}
+      />
+
       <Link
         href="/master-entries"
         className="inline-flex items-center gap-2 text-sm font-semibold text-[#FCA311] transition hover:text-[#ffb33c]"
@@ -121,6 +140,12 @@ export default async function MasterEntryDetailPage({
           </div>
         </div>
       </section>
+
+      <MasterLibraryLinkPanel
+        title="Related Master Library actions"
+        description="This is a reusable original record. Use the parent library and Entry Type links to review its place in the Master Library workflow."
+        links={relatedLinks}
+      />
 
       <section className="rounded-lg border border-[var(--line)] bg-[var(--panel-bg)] p-5 shadow-[0_18px_60px_rgba(0,0,0,0.2)]">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">
@@ -209,6 +234,27 @@ export default async function MasterEntryDetailPage({
       </section>
     </div>
   );
+}
+
+function getMasterEntryParentLink(masterEntry: MasterEntryDetail) {
+  if (masterEntry.library_kind === "compendium" && masterEntry.compendium) {
+    return {
+      label: "Parent Compendium",
+      href: `/compendium/${masterEntry.compendium.id}`,
+    };
+  }
+
+  if (
+    masterEntry.library_kind === "settings_library" &&
+    masterEntry.settingsLibrary
+  ) {
+    return {
+      label: "Parent Settings Library",
+      href: `/settings-library/${masterEntry.settingsLibrary.id}`,
+    };
+  }
+
+  return null;
 }
 
 function MetadataGrid({ masterEntry }: { masterEntry: MasterEntryDetail }) {

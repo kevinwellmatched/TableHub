@@ -12,6 +12,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { MasterLibraryLinkPanel } from "@/components/master-library/master-library-link-panel";
 import { PageHeader } from "@/components/page-header";
 import {
   formatCompendiumSourceType,
@@ -64,6 +65,17 @@ export default async function CompendiumPage() {
           </Link>
         </div>
       </div>
+
+      <MasterLibraryLinkPanel
+        title="Reusable rules and reference libraries"
+        description="Compendiums are master-library containers for original rules/reference records. Create them after you have a Game System, then define Entry Types and Master Entries."
+        links={[
+          { label: "Master Library", href: "/master-library" },
+          { label: "Entry Types", href: "/entry-types" },
+          { label: "Master Entries", href: "/master-entries" },
+          { label: "Create Compendium", href: "/compendium/new" },
+        ]}
+      />
 
       {compendiums.length > 0 ? (
         <div className="space-y-6">
@@ -157,8 +169,8 @@ function EmptyCompendiumState() {
           No compendiums yet
         </h2>
         <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">
-          Create your first master-library container. This slice stores compendium
-          metadata and provenance only; no rules entries or imported book text are added.
+          Create a Compendium after you have a Game System. This stores the
+          reusable container only; no rules entries or imported book text are added.
         </p>
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
           <Link

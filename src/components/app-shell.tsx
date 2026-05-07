@@ -19,9 +19,11 @@ type AppShellProps = {
 export function AppShell({ children, profile }: AppShellProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const currentSection =
-    navItems.find((item) => pathname === item.href || pathname.startsWith(`${item.href}/`)) ??
-    navItems[0];
+  const currentSectionTitle = pathname.startsWith("/master-library")
+    ? "Master Library"
+    : (navItems.find(
+        (item) => pathname === item.href || pathname.startsWith(`${item.href}/`),
+      ) ?? navItems[0]).title;
 
   return (
     <div className="min-h-screen bg-[var(--app-bg)] text-[var(--text-main)]">
@@ -30,7 +32,7 @@ export function AppShell({ children, profile }: AppShellProps) {
 
         <div className="flex min-w-0 flex-1 flex-col">
           <TopBar
-            currentSection={currentSection.title}
+            currentSection={currentSectionTitle}
             profile={profile}
             mobileOpen={mobileOpen}
             onToggleMobile={() => setMobileOpen((open) => !open)}
@@ -58,13 +60,16 @@ function Sidebar({ pathname }: { pathname: string }) {
           <NavLink key={item.href} item={item} pathname={pathname} />
         ))}
       </nav>
-      <div className="absolute bottom-5 left-4 right-4 rounded-lg border border-[#FCA311]/25 bg-[#FCA311]/10 p-4">
+      <Link
+        href="/master-library"
+        className="absolute bottom-5 left-4 right-4 rounded-lg border border-[#FCA311]/25 bg-[#FCA311]/10 p-4 transition hover:border-[#FCA311]/70 hover:bg-[#FCA311]/15"
+      >
         <p className="text-sm font-semibold text-[#FCA311]">Master libraries</p>
         <p className="mt-2 text-xs leading-5 text-[#E5E5E5]/70">
-          Game systems, master compendium containers, and Settings Library containers
-          are connected. Entries, imports, files, and sheets come in later slices.
+          Open the reusable content workflow for systems, compendiums, Settings
+          Libraries, Entry Types, and Master Entries.
         </p>
-      </div>
+      </Link>
     </aside>
   );
 }

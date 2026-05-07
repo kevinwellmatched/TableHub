@@ -10,6 +10,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { MasterLibraryLinkPanel } from "@/components/master-library/master-library-link-panel";
 import { PageHeader } from "@/components/page-header";
 import {
   formatEntryTypeLibraryKind,
@@ -54,6 +55,15 @@ export default async function EntryTypesPage() {
           </Link>
         </div>
       </div>
+
+      <MasterLibraryLinkPanel
+        title="Categories before content"
+        description="Entry Types define future entry categories such as Spell, Rule, NPC, or Place. They are not entries themselves."
+        links={[
+          { label: "Master Library", href: "/master-library" },
+          { label: "Master Entries", href: "/master-entries" },
+        ]}
+      />
 
       {entryTypes.length > 0 ? (
         <div className="space-y-8">
@@ -185,9 +195,8 @@ function EmptyEntryTypesState() {
           No Entry Types yet
         </h2>
         <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">
-          Create your first reusable definition before building future Compendium
-          or Settings Library entries. This does not add rules text, lore pages,
-          tags, folders, imports, or project overrides.
+          Create Entry Types before creating Master Entries. These definitions
+          help future entries stay organized without adding content yet.
         </p>
         <Link
           href="/entry-types/new"

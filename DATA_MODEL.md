@@ -4,6 +4,9 @@ Version: 0.1
 
 This is a first-pass conceptual data model. It is not yet a migration file.
 
+Slice 4F is navigation polish only. It adds the `/master-library` overview and
+cross-links, but it does not change the data model, add tables, or add SQL.
+
 ---
 
 ## Identity and Profiles

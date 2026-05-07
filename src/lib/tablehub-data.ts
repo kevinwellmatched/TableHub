@@ -96,10 +96,10 @@ export const dashboardCards: DashboardCard[] = [
     icon: Compass,
   },
   {
-    title: "Master Compendiums",
-    eyebrow: "Containers first",
-    description: "Create reusable compendium records before entries and imports arrive.",
-    meta: "No entries yet",
+    title: "Master Library",
+    eyebrow: "Reusable originals",
+    description: "Build systems, compendiums, Settings Libraries, Entry Types, and Master Entries.",
+    meta: "Project links later",
     icon: BookOpen,
   },
   {

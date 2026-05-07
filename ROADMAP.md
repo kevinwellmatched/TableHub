@@ -156,7 +156,7 @@ Create the workspace layer.
 
 ## Slice 4: Systems, Compendiums, and Settings Library
 
-Status: In progress. Slice 4A Game Systems Foundation, Slice 4B Master Compendiums, Slice 4C Master Settings Libraries, Slice 4D Master Entry Types, and Slice 4E Basic Master Entries are complete in their foundation slices.
+Status: In progress. Slice 4A Game Systems Foundation, Slice 4B Master Compendiums, Slice 4C Master Settings Libraries, Slice 4D Master Entry Types, Slice 4E Basic Master Entries, and Slice 4F Master Library Navigation Polish are complete in their foundation slices.
 
 ### Goal
 
@@ -316,19 +316,54 @@ Done when:
   added
 - Test, lint, and build pass
 
+### Slice 4F: Master Library Navigation Polish
+
+Status: Complete in the current navigation polish slice.
+
+Goal:
+
+- Add a protected `/master-library` overview page for the reusable original
+  content workflow.
+- Make Systems, Compendiums, Settings Libraries, Entry Types, and Master Entries
+  easier to move between.
+- Keep the top-level sidebar labels unchanged.
+- Keep this slice UI/navigation-only.
+
+Build:
+
+- Master Library overview route at `/master-library`
+- Overview cards for Game Systems, Compendiums, Settings Libraries, Entry Types,
+  and Master Entries
+- Compact recommended workflow and Coming Later sections
+- Dashboard link into the Master Library workflow
+- Cross-links from master-library list pages
+- Breadcrumb/back-link polish on detail pages
+- Beginner-friendly empty-state copy
+
+Done when:
+
+- Logged-out users are redirected away from `/master-library`
+- Logged-in users with profiles can open `/master-library`
+- Overview cards link to the correct list and create pages
+- Existing list and detail pages expose compact Master Library links
+- No database schema changes, new tables, SQL, imports, tags/folders, rich text
+  editor, project sources, or overrides are added
+- Test, lint, and build pass
+
 ---
 
-## Slice 5: Project Imports and Linked Overrides
+## Slice 5: Project Source Linking and Override Groundwork
 
 ### Goal
 
-Prove the core architecture.
+Begin attaching reusable Master Library sources to Projects without mutating
+master content.
 
 ### Build
 
-- Attach systems to projects
-- Attach compendiums to projects
-- Attach settings libraries to projects
+- Attach systems to Projects
+- Attach Compendiums to Projects
+- Attach Settings Libraries to Projects
 - Store project-level overrides separately from master entries
 - Show original and modified versions
 - Manual update from master content

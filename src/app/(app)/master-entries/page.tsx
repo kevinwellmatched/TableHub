@@ -10,6 +10,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { MasterLibraryLinkPanel } from "@/components/master-library/master-library-link-panel";
 import { PageHeader } from "@/components/page-header";
 import {
   formatMasterEntryLibraryKind,
@@ -46,6 +47,17 @@ export default async function MasterEntriesPage() {
           Create Master Entry
         </Link>
       </div>
+
+      <MasterLibraryLinkPanel
+        title="Reusable originals"
+        description="Master Entries are original reusable records. Project-specific changes and overrides come later through linked copies, not direct edits to master content."
+        links={[
+          { label: "Master Library", href: "/master-library" },
+          { label: "Compendiums", href: "/compendium" },
+          { label: "Settings Library", href: "/settings-library" },
+          { label: "Entry Types", href: "/entry-types" },
+        ]}
+      />
 
       {masterEntries.length > 0 ? (
         <div className="space-y-8">
@@ -184,8 +196,8 @@ function EmptyMasterEntriesState() {
         </h2>
         <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">
           Create original reusable records after you have a parent Compendium or
-          Settings Library and matching Entry Types. This slice does not add
-          imports, tags, folders, project links, or overrides.
+          Settings Library and matching Entry Type. Project links and overrides
+          come later.
         </p>
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
           <Link

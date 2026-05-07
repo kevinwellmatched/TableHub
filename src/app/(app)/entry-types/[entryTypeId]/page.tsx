@@ -9,6 +9,8 @@ import {
   TextCursorInput,
 } from "lucide-react";
 
+import { MasterLibraryBreadcrumbs } from "@/components/master-library/master-library-breadcrumbs";
+import { MasterLibraryLinkPanel } from "@/components/master-library/master-library-link-panel";
 import { SectionCard } from "@/components/section-card";
 import {
   formatEntryTypeLibraryKind,
@@ -62,6 +64,14 @@ export default async function EntryTypeDetailPage({
 
   return (
     <div className="space-y-8">
+      <MasterLibraryBreadcrumbs
+        items={[
+          { label: "Master Library", href: "/master-library" },
+          { label: "Entry Types", href: "/entry-types" },
+          { label: entryType.name },
+        ]}
+      />
+
       <Link
         href="/entry-types"
         className="inline-flex items-center gap-2 text-sm font-semibold text-[#FCA311] transition hover:text-[#ffb33c]"
@@ -99,6 +109,17 @@ export default async function EntryTypeDetailPage({
           </div>
         </div>
       </section>
+
+      <MasterLibraryLinkPanel
+        title="Related Master Library actions"
+        description="This Entry Type defines a future category. Create Master Entries only after the matching parent library exists."
+        links={[
+          { label: "Back to Entry Types", href: "/entry-types" },
+          { label: "Master Library", href: "/master-library" },
+          { label: "Create Master Entry", href: "/master-entries/new" },
+          { label: "View Master Entries", href: "/master-entries" },
+        ]}
+      />
 
       <section className="rounded-lg border border-[var(--line)] bg-[var(--panel-bg)] p-5 shadow-[0_18px_60px_rgba(0,0,0,0.2)]">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">

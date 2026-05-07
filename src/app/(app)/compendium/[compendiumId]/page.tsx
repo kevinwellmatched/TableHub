@@ -13,6 +13,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { MasterLibraryBreadcrumbs } from "@/components/master-library/master-library-breadcrumbs";
+import { MasterLibraryLinkPanel } from "@/components/master-library/master-library-link-panel";
 import { SectionCard } from "@/components/section-card";
 import {
   formatCompendiumSourceType,
@@ -72,6 +74,14 @@ export default async function CompendiumDetailPage({
 
   return (
     <div className="space-y-8">
+      <MasterLibraryBreadcrumbs
+        items={[
+          { label: "Master Library", href: "/master-library" },
+          { label: "Compendium", href: "/compendium" },
+          { label: compendium.name },
+        ]}
+      />
+
       <Link
         href="/compendium"
         className="inline-flex items-center gap-2 text-sm font-semibold text-[#FCA311] transition hover:text-[#ffb33c]"
@@ -112,6 +122,18 @@ export default async function CompendiumDetailPage({
           </div>
         </div>
       </section>
+
+      <MasterLibraryLinkPanel
+        title="Related Master Library actions"
+        description="This Compendium is a reusable original container. Master Entries belong here, and Project overrides come later."
+        links={[
+          { label: "Back to Compendium", href: "/compendium" },
+          { label: "Master Library", href: "/master-library" },
+          { label: "Create Master Entry", href: "/master-entries/new" },
+          { label: "View Master Entries", href: "/master-entries" },
+          { label: "Manage Entry Types", href: "/entry-types" },
+        ]}
+      />
 
       <section className="rounded-lg border border-[var(--line)] bg-[var(--panel-bg)] p-5 shadow-[0_18px_60px_rgba(0,0,0,0.2)]">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">

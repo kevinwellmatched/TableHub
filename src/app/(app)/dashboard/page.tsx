@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { Library } from "lucide-react";
+
 import { PageHeader } from "@/components/page-header";
 import { SectionCard } from "@/components/section-card";
 import { dashboardCards, navItems, systemStatusCards } from "@/lib/tablehub-data";
@@ -27,6 +30,31 @@ export default function DashboardPage() {
           ))}
         </section>
       </div>
+
+      <section className="rounded-lg border border-[#FCA311]/30 bg-[#FCA311]/10 p-5">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex gap-4">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-[#FCA311]/30 bg-[#14213D] text-[#FCA311]">
+              <Library aria-hidden="true" className="h-5 w-5" />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-[var(--text-main)]">
+                Master Library
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
+                Build reusable systems, compendiums, Settings Libraries, entry
+                types, and master entries before attaching them to Projects.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/master-library"
+            className="inline-flex h-10 items-center justify-center rounded-lg border border-[#FCA311]/50 px-4 text-sm font-semibold text-[#FCA311] transition hover:bg-[#FCA311] hover:text-black"
+          >
+            Open Master Library
+          </Link>
+        </div>
+      </section>
 
       <section>
         <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-[#FCA311]">

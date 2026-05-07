@@ -13,6 +13,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { MasterLibraryBreadcrumbs } from "@/components/master-library/master-library-breadcrumbs";
+import { MasterLibraryLinkPanel } from "@/components/master-library/master-library-link-panel";
 import { SectionCard } from "@/components/section-card";
 import {
   formatGameSystemSourceType,
@@ -82,6 +84,14 @@ export default async function SystemDetailPage({ params }: SystemDetailPageProps
 
   return (
     <div className="space-y-8">
+      <MasterLibraryBreadcrumbs
+        items={[
+          { label: "Master Library", href: "/master-library" },
+          { label: "Systems", href: "/systems" },
+          { label: system.name },
+        ]}
+      />
+
       <Link
         href="/systems"
         className="inline-flex items-center gap-2 text-sm font-semibold text-[#FCA311] transition hover:text-[#ffb33c]"
@@ -113,6 +123,16 @@ export default async function SystemDetailPage({ params }: SystemDetailPageProps
           </div>
         </div>
       </section>
+
+      <MasterLibraryLinkPanel
+        title="Related Master Library actions"
+        description="Use this system as the reusable ruleset foundation for Compendiums and future Project source links."
+        links={[
+          { label: "Back to Systems", href: "/systems" },
+          { label: "Master Library", href: "/master-library" },
+          { label: "Create Compendium", href: "/compendium/new" },
+        ]}
+      />
 
       <section className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
         <InfoPanel title="System metadata" icon={Boxes}>
