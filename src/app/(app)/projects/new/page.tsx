@@ -3,8 +3,11 @@ import { ArrowLeft } from "lucide-react";
 
 import { CreateProjectForm } from "@/components/projects/create-project-form";
 import { PageHeader } from "@/components/page-header";
+import { getGameSystemsForProjectForm } from "@/lib/projects";
 
-export default function NewProjectPage() {
+export default async function NewProjectPage() {
+  const gameSystems = await getGameSystemsForProjectForm();
+
   return (
     <div className="space-y-8">
       <Link
@@ -30,7 +33,7 @@ export default function NewProjectPage() {
             future slices.
           </p>
           <div className="mt-6">
-            <CreateProjectForm />
+            <CreateProjectForm gameSystems={gameSystems} />
           </div>
         </div>
       </section>

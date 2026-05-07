@@ -6,6 +6,12 @@ import { BookOpen } from "lucide-react";
 import { createCompendiumAction } from "@/lib/compendium-actions";
 import { initialCompendiumFormState } from "@/lib/compendium-form-state";
 import {
+  LIBRARY_SOURCE_CATEGORY_OPTIONS,
+  LIBRARY_SOURCE_CLONE_POLICY_OPTIONS,
+  LIBRARY_SOURCE_PLAYER_VISIBILITY_OPTIONS,
+  LIBRARY_SOURCE_SUBTYPE_OPTIONS,
+} from "@/lib/library-source-taxonomy";
+import {
   COMPENDIUM_DESCRIPTION_MAX_LENGTH,
   COMPENDIUM_NAME_MAX_LENGTH,
   COMPENDIUM_SOURCE_NOTES_MAX_LENGTH,
@@ -31,6 +37,10 @@ const fallbackValues: CompendiumInput = {
   licenseName: "",
   licenseUrl: "",
   sourceType: "manual",
+  sourceCategory: "expansion_supplement",
+  sourceSubtype: "supplement",
+  clonePolicy: "locked_to_system",
+  defaultPlayerVisibility: "visible",
   sourceUrl: "",
   sourceNotes: "",
   version: "1.0.0",
@@ -156,6 +166,46 @@ export function CreateCompendiumForm({
             options={COMPENDIUM_SOURCE_TYPES.map((sourceType) => ({
               value: sourceType,
               label: sourceTypeLabels[sourceType],
+            }))}
+          />
+          <Select
+            label="Source category"
+            name="sourceCategory"
+            defaultValue={values.sourceCategory}
+            error={state.fieldErrors?.sourceCategory}
+            options={LIBRARY_SOURCE_CATEGORY_OPTIONS.map((option) => ({
+              value: option.value,
+              label: option.label,
+            }))}
+          />
+          <Select
+            label="Source subtype"
+            name="sourceSubtype"
+            defaultValue={values.sourceSubtype}
+            error={state.fieldErrors?.sourceSubtype}
+            options={LIBRARY_SOURCE_SUBTYPE_OPTIONS.map((option) => ({
+              value: option.value,
+              label: option.label,
+            }))}
+          />
+          <Select
+            label="Clone policy"
+            name="clonePolicy"
+            defaultValue={values.clonePolicy}
+            error={state.fieldErrors?.clonePolicy}
+            options={LIBRARY_SOURCE_CLONE_POLICY_OPTIONS.map((option) => ({
+              value: option.value,
+              label: option.label,
+            }))}
+          />
+          <Select
+            label="Default player visibility"
+            name="defaultPlayerVisibility"
+            defaultValue={values.defaultPlayerVisibility}
+            error={state.fieldErrors?.defaultPlayerVisibility}
+            options={LIBRARY_SOURCE_PLAYER_VISIBILITY_OPTIONS.map((option) => ({
+              value: option.value,
+              label: option.label,
             }))}
           />
           <TextInput

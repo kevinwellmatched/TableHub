@@ -8,11 +8,17 @@ import type {
   CompendiumVisibility,
   ValidCompendiumInput,
 } from "@/lib/compendium-validation";
+import type {
+  LibrarySourceCategory,
+  LibrarySourceClonePolicy,
+  LibrarySourcePlayerVisibility,
+  LibrarySourceSubtype,
+} from "@/lib/library-source-taxonomy";
 import { hasSupabaseEnv } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
 
 const COMPENDIUM_COLUMNS =
-  "id, owner_id, game_system_id, name, slug, description, visibility, license_name, license_url, source_type, source_url, source_notes, version, created_at, updated_at";
+  "id, owner_id, game_system_id, name, slug, description, visibility, license_name, license_url, source_type, source_category, source_subtype, clone_policy, default_player_visibility, source_url, source_notes, version, created_at, updated_at";
 
 const GAME_SYSTEM_FORM_COLUMNS =
   "id, name, edition, publisher, visibility, created_at";
@@ -28,6 +34,10 @@ export type CompendiumRow = {
   license_name: string | null;
   license_url: string | null;
   source_type: CompendiumSourceType;
+  source_category: LibrarySourceCategory;
+  source_subtype: LibrarySourceSubtype;
+  clone_policy: LibrarySourceClonePolicy;
+  default_player_visibility: LibrarySourcePlayerVisibility;
   source_url: string | null;
   source_notes: string | null;
   version: string;

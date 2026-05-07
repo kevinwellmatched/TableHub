@@ -63,7 +63,7 @@ export default async function ProjectSourcesPage({
 
   const [sources, options] = await Promise.all([
     getProjectSources(projectId),
-    getProjectSourceOptions(projectId),
+    getProjectSourceOptions(projectId, project.primary_game_system_id),
   ]);
   const canManageSources = ["owner", "gm"].includes(
     (project.role ?? "").toLowerCase(),
@@ -90,8 +90,8 @@ export default async function ProjectSourcesPage({
             </h1>
             <p className="mt-3 text-base leading-7 text-[var(--text-muted)]">
               Attach accessible Library Sources to this Project without changing
-              the master records. Slice 5A currently supports Game Systems,
-              Compendiums, and Settings Libraries.
+              the master records. When a primary System is set, compatible
+              Compendiums and Settings Libraries are shown first.
             </p>
           </div>
 
@@ -101,6 +101,12 @@ export default async function ProjectSourcesPage({
             </p>
             <p className="mt-2 text-lg font-semibold text-[var(--text-main)]">
               {formatProjectRole(project.role)}
+            </p>
+            <p className="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-[#FCA311]">
+              Primary System
+            </p>
+            <p className="mt-2 text-sm font-semibold text-[var(--text-main)]">
+              {project.primaryGameSystem?.name || "Not set"}
             </p>
           </div>
         </div>
@@ -138,7 +144,11 @@ export default async function ProjectSourcesPage({
         <section className="space-y-4">
           <SectionHeading
             title="Attach a Library Source"
-            description="Only sources your account can read through Supabase RLS appear here."
+            description={
+              project.primaryGameSystem
+                ? `Only readable sources matching ${project.primaryGameSystem.name}, plus system-neutral Settings Libraries, appear here.`
+                : "Only sources your account can read through Supabase RLS appear here. Selecting a primary System later will narrow future source choices."
+            }
           />
 
           <div className="grid gap-4 lg:grid-cols-3">

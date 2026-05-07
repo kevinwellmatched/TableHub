@@ -1,4 +1,14 @@
 import type { SettingsLibraryFormFieldErrors } from "@/lib/settings-library-form-state";
+import {
+  isLibrarySourceCategory,
+  isLibrarySourceClonePolicy,
+  isLibrarySourcePlayerVisibility,
+  isLibrarySourceSubtype,
+  type LibrarySourceCategory,
+  type LibrarySourceClonePolicy,
+  type LibrarySourcePlayerVisibility,
+  type LibrarySourceSubtype,
+} from "./library-source-taxonomy.ts";
 
 export const SETTINGS_LIBRARY_NAME_MAX_LENGTH = 120;
 export const SETTINGS_LIBRARY_DESCRIPTION_MAX_LENGTH = 2000;
@@ -31,6 +41,11 @@ export type SettingsLibraryInput = {
   genre: string;
   tone: string;
   sourceType: string;
+  gameSystemId: string;
+  sourceCategory: string;
+  sourceSubtype: string;
+  clonePolicy: string;
+  defaultPlayerVisibility: string;
   sourceUrl: string;
   sourceNotes: string;
   version: string;
@@ -44,6 +59,11 @@ export type ValidSettingsLibraryInput = {
   genre: string;
   tone: string;
   source_type: SettingsLibrarySourceType;
+  game_system_id: string | null;
+  source_category: LibrarySourceCategory;
+  source_subtype: LibrarySourceSubtype;
+  clone_policy: LibrarySourceClonePolicy;
+  default_player_visibility: LibrarySourcePlayerVisibility;
   source_url: string;
   source_notes: string;
   version: string;
@@ -57,6 +77,11 @@ export const STARTER_FANTASY_SETTINGS_LIBRARY: SettingsLibraryInput = {
   genre: "Fantasy",
   tone: "Adventurous, mysterious, table-ready",
   sourceType: "manual",
+  gameSystemId: "",
+  sourceCategory: "setting_world_lore",
+  sourceSubtype: "campaign_setting",
+  clonePolicy: "cloneable_to_system",
+  defaultPlayerVisibility: "gm_only",
   sourceUrl: "",
   sourceNotes:
     "Container only. No setting entries, imported notes, copyrighted text, or third-party data have been added.",
@@ -81,6 +106,11 @@ export function validateSettingsLibraryInput(input: SettingsLibraryInput) {
   const genre = input.genre.trim();
   const tone = input.tone.trim();
   const sourceType = input.sourceType.trim();
+  const gameSystemId = input.gameSystemId.trim();
+  const sourceCategory = input.sourceCategory.trim();
+  const sourceSubtype = input.sourceSubtype.trim();
+  const clonePolicy = input.clonePolicy.trim();
+  const defaultPlayerVisibility = input.defaultPlayerVisibility.trim();
   const sourceUrl = input.sourceUrl.trim();
   const sourceNotes = input.sourceNotes.trim();
   const version = input.version.trim();
@@ -116,6 +146,23 @@ export function validateSettingsLibraryInput(input: SettingsLibraryInput) {
     fieldErrors.sourceType = "Choose a supported source type.";
   }
 
+  if (!isLibrarySourceCategory(sourceCategory)) {
+    fieldErrors.sourceCategory = "Choose a supported source category.";
+  }
+
+  if (!isLibrarySourceSubtype(sourceSubtype)) {
+    fieldErrors.sourceSubtype = "Choose a supported source subtype.";
+  }
+
+  if (!isLibrarySourceClonePolicy(clonePolicy)) {
+    fieldErrors.clonePolicy = "Choose a supported clone policy.";
+  }
+
+  if (!isLibrarySourcePlayerVisibility(defaultPlayerVisibility)) {
+    fieldErrors.defaultPlayerVisibility =
+      "Choose a supported default player visibility.";
+  }
+
   if (sourceUrl && !isValidishUrl(sourceUrl)) {
     fieldErrors.sourceUrl = "Enter a valid URL, or leave it blank.";
   }
@@ -147,6 +194,12 @@ export function validateSettingsLibraryInput(input: SettingsLibraryInput) {
       genre,
       tone,
       source_type: sourceType as SettingsLibrarySourceType,
+      game_system_id: gameSystemId || null,
+      source_category: sourceCategory as LibrarySourceCategory,
+      source_subtype: sourceSubtype as LibrarySourceSubtype,
+      clone_policy: clonePolicy as LibrarySourceClonePolicy,
+      default_player_visibility:
+        defaultPlayerVisibility as LibrarySourcePlayerVisibility,
       source_url: sourceUrl,
       source_notes: sourceNotes,
       version,

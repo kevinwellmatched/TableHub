@@ -9,8 +9,13 @@ import {
   PROJECT_DESCRIPTION_MAX_LENGTH,
   PROJECT_NAME_MAX_LENGTH,
 } from "@/lib/project-validation";
+import type { GameSystemForProjectForm } from "@/lib/projects";
 
-export function CreateProjectForm() {
+type CreateProjectFormProps = {
+  gameSystems: GameSystemForProjectForm[];
+};
+
+export function CreateProjectForm({ gameSystems }: CreateProjectFormProps) {
   const [state, formAction, isPending] = useActionState(
     createProjectAction,
     initialProjectFormState,
@@ -40,6 +45,48 @@ export function CreateProjectForm() {
           </span>
         ) : null}
       </label>
+
+      {gameSystems.length > 0 ? (
+        <label className="block">
+          <span className="text-sm font-medium text-[var(--text-main)]">
+            Primary System
+          </span>
+          <select
+            name="primaryGameSystemId"
+            defaultValue=""
+            aria-invalid={state.fieldErrors?.primaryGameSystemId ? "true" : "false"}
+            aria-describedby={
+              state.fieldErrors?.primaryGameSystemId
+                ? "primaryGameSystemId-error"
+                : "primaryGameSystemId-help"
+            }
+            className="mt-2 h-11 w-full rounded-lg border border-[var(--line)] bg-black/25 px-3 text-sm text-[var(--text-main)] outline-none transition focus:border-[#FCA311] focus:ring-2 focus:ring-[#FCA311]/20"
+          >
+            <option value="">No primary System yet</option>
+            {gameSystems.map((system) => (
+              <option key={system.id} value={system.id}>
+                {formatGameSystemOption(system)}
+              </option>
+            ))}
+          </select>
+          {state.fieldErrors?.primaryGameSystemId ? (
+            <span
+              id="primaryGameSystemId-error"
+              className="mt-2 block text-sm text-[#FCA311]"
+            >
+              {state.fieldErrors.primaryGameSystemId}
+            </span>
+          ) : (
+            <span
+              id="primaryGameSystemId-help"
+              className="mt-2 block text-sm text-[var(--text-muted)]"
+            >
+              Optional for this slice. Choosing one helps filter future Project
+              Library sources.
+            </span>
+          )}
+        </label>
+      ) : null}
 
       <label className="block">
         <span className="text-sm font-medium text-[var(--text-main)]">
@@ -87,4 +134,9 @@ export function CreateProjectForm() {
       </button>
     </form>
   );
+}
+
+function formatGameSystemOption(system: GameSystemForProjectForm) {
+  const details = [system.edition, system.publisher].filter(Boolean).join(" - ");
+  return details ? `${system.name} (${details})` : system.name;
 }

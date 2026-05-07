@@ -26,6 +26,11 @@ test("accepts valid Settings Library details", () => {
     genre: "Fantasy",
     tone: "Adventurous, mysterious, table-ready",
     sourceType: "manual",
+    gameSystemId: "11111111-1111-4111-8111-111111111111",
+    sourceCategory: "setting_world_lore",
+    sourceSubtype: "campaign_setting",
+    clonePolicy: "cloneable_to_system",
+    defaultPlayerVisibility: "gm_only",
     sourceUrl: "https://example.com/source",
     sourceNotes: "Container only.",
     version: "0.1",
@@ -41,6 +46,11 @@ test("accepts valid Settings Library details", () => {
       genre: "Fantasy",
       tone: "Adventurous, mysterious, table-ready",
       source_type: "manual",
+      game_system_id: "11111111-1111-4111-8111-111111111111",
+      source_category: "setting_world_lore",
+      source_subtype: "campaign_setting",
+      clone_policy: "cloneable_to_system",
+      default_player_visibility: "gm_only",
       source_url: "https://example.com/source",
       source_notes: "Container only.",
       version: "0.1",
@@ -56,6 +66,11 @@ test("rejects missing required Settings Library values", () => {
     genre: "",
     tone: "",
     sourceType: "manual",
+    gameSystemId: "",
+    sourceCategory: "setting_world_lore",
+    sourceSubtype: "campaign_setting",
+    clonePolicy: "cloneable_to_system",
+    defaultPlayerVisibility: "gm_only",
     sourceUrl: "",
     sourceNotes: "",
     version: "",
@@ -76,6 +91,11 @@ test("rejects invalid Settings Library option values and URLs", () => {
     genre: "",
     tone: "",
     sourceType: "scraped_site",
+    gameSystemId: "",
+    sourceCategory: "setting_world_lore",
+    sourceSubtype: "campaign_setting",
+    clonePolicy: "cloneable_to_system",
+    defaultPlayerVisibility: "gm_only",
     sourceUrl: "not a url",
     sourceNotes: "",
     version: "0.1",
@@ -89,6 +109,60 @@ test("rejects invalid Settings Library option values and URLs", () => {
   }
 });
 
+test("rejects invalid Settings Library source metadata values", () => {
+  const result = validateSettingsLibraryInput({
+    name: "Unsafe Lore Source",
+    description: "",
+    visibility: "private",
+    genre: "",
+    tone: "",
+    sourceType: "manual",
+    gameSystemId: "",
+    sourceCategory: "campaign_book",
+    sourceSubtype: "wiki_scrape",
+    clonePolicy: "copy_everywhere",
+    defaultPlayerVisibility: "players_only",
+    sourceUrl: "",
+    sourceNotes: "",
+    version: "0.1",
+  });
+
+  assert.equal(result.ok, false);
+  if (!result.ok) {
+    assert.equal(result.fieldErrors.sourceCategory, "Choose a supported source category.");
+    assert.equal(result.fieldErrors.sourceSubtype, "Choose a supported source subtype.");
+    assert.equal(result.fieldErrors.clonePolicy, "Choose a supported clone policy.");
+    assert.equal(
+      result.fieldErrors.defaultPlayerVisibility,
+      "Choose a supported default player visibility.",
+    );
+  }
+});
+
+test("allows Settings Library game system to stay optional", () => {
+  const result = validateSettingsLibraryInput({
+    name: "System Neutral Lore",
+    description: "",
+    visibility: "private",
+    genre: "",
+    tone: "",
+    sourceType: "manual",
+    gameSystemId: "",
+    sourceCategory: "setting_world_lore",
+    sourceSubtype: "campaign_setting",
+    clonePolicy: "cloneable_to_system",
+    defaultPlayerVisibility: "gm_only",
+    sourceUrl: "",
+    sourceNotes: "",
+    version: "0.1",
+  });
+
+  assert.equal(result.ok, true);
+  if (result.ok) {
+    assert.equal(result.values.game_system_id, null);
+  }
+});
+
 test("enforces Settings Library field length limits", () => {
   const result = validateSettingsLibraryInput({
     name: "A".repeat(121),
@@ -97,6 +171,11 @@ test("enforces Settings Library field length limits", () => {
     genre: "A".repeat(81),
     tone: "A".repeat(121),
     sourceType: "manual",
+    gameSystemId: "",
+    sourceCategory: "setting_world_lore",
+    sourceSubtype: "campaign_setting",
+    clonePolicy: "cloneable_to_system",
+    defaultPlayerVisibility: "gm_only",
     sourceUrl: "",
     sourceNotes: "",
     version: "A".repeat(41),
@@ -121,6 +200,11 @@ test("provides safe starter fantasy Settings Library metadata only", () => {
     genre: "Fantasy",
     tone: "Adventurous, mysterious, table-ready",
     sourceType: "manual",
+    gameSystemId: "",
+    sourceCategory: "setting_world_lore",
+    sourceSubtype: "campaign_setting",
+    clonePolicy: "cloneable_to_system",
+    defaultPlayerVisibility: "gm_only",
     sourceUrl: "",
     sourceNotes:
       "Container only. No setting entries, imported notes, copyrighted text, or third-party data have been added.",

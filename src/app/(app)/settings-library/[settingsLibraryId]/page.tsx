@@ -25,6 +25,12 @@ import {
   getMasterEntriesBySettingsLibraryId,
   type MasterEntryListItem,
 } from "@/lib/master-entries";
+import {
+  formatLibrarySourceCategory,
+  formatLibrarySourceClonePolicy,
+  formatLibrarySourcePlayerVisibility,
+  formatLibrarySourceSubtype,
+} from "@/lib/library-source-taxonomy";
 
 type SettingsLibraryDetailPageProps = {
   params: Promise<{
@@ -122,6 +128,20 @@ export default async function SettingsLibraryDetailPage({
               label="Source"
               value={formatSettingsLibrarySourceType(settingsLibrary.source_type)}
             />
+            <HeroMeta
+              label="Category"
+              value={formatLibrarySourceCategory(settingsLibrary.source_category)}
+            />
+            <HeroMeta
+              label="Player default"
+              value={formatLibrarySourcePlayerVisibility(
+                settingsLibrary.default_player_visibility,
+              )}
+            />
+            <HeroMeta
+              label="System"
+              value={settingsLibrary.gameSystem?.name || "Not set"}
+            />
             <HeroMeta label="Genre" value={settingsLibrary.genre || "Not set"} />
             <HeroMeta label="Tone" value={settingsLibrary.tone || "Not set"} />
           </div>
@@ -168,6 +188,24 @@ export default async function SettingsLibraryDetailPage({
             <DetailItem
               label="Source type"
               value={formatSettingsLibrarySourceType(settingsLibrary.source_type)}
+            />
+            <DetailItem
+              label="Source category"
+              value={formatLibrarySourceCategory(settingsLibrary.source_category)}
+            />
+            <DetailItem
+              label="Source subtype"
+              value={formatLibrarySourceSubtype(settingsLibrary.source_subtype)}
+            />
+            <DetailItem
+              label="Clone policy"
+              value={formatLibrarySourceClonePolicy(settingsLibrary.clone_policy)}
+            />
+            <DetailItem
+              label="Default player visibility"
+              value={formatLibrarySourcePlayerVisibility(
+                settingsLibrary.default_player_visibility,
+              )}
             />
             <DetailItem
               label="Source URL"
@@ -293,11 +331,33 @@ function MetadataGrid({
         label="Visibility"
         value={formatSettingsLibraryVisibility(settingsLibrary.visibility)}
       />
+      <DetailItem
+        label="Game system"
+        value={settingsLibrary.gameSystem?.name || "Not set"}
+      />
       <DetailItem label="Genre" value={settingsLibrary.genre || "Not set"} />
       <DetailItem label="Tone" value={settingsLibrary.tone || "Not set"} />
       <DetailItem
         label="Source type"
         value={formatSettingsLibrarySourceType(settingsLibrary.source_type)}
+      />
+      <DetailItem
+        label="Source category"
+        value={formatLibrarySourceCategory(settingsLibrary.source_category)}
+      />
+      <DetailItem
+        label="Source subtype"
+        value={formatLibrarySourceSubtype(settingsLibrary.source_subtype)}
+      />
+      <DetailItem
+        label="Clone policy"
+        value={formatLibrarySourceClonePolicy(settingsLibrary.clone_policy)}
+      />
+      <DetailItem
+        label="Default player visibility"
+        value={formatLibrarySourcePlayerVisibility(
+          settingsLibrary.default_player_visibility,
+        )}
       />
       <DetailItem label="Version" value={settingsLibrary.version} />
       <DetailItem

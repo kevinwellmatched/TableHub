@@ -6,12 +6,14 @@ export const PROJECT_DESCRIPTION_MAX_LENGTH = 2000;
 type ProjectInput = {
   projectName: string;
   projectDescription: string;
+  primaryGameSystemId: string;
 };
 
 export function validateProjectInput(input: ProjectInput) {
   const fieldErrors: ProjectFormState["fieldErrors"] = {};
   const projectName = input.projectName.trim();
   const projectDescription = input.projectDescription.trim();
+  const primaryGameSystemId = input.primaryGameSystemId.trim();
 
   if (!projectName) {
     fieldErrors.projectName = "Project name is required.";
@@ -35,6 +37,7 @@ export function validateProjectInput(input: ProjectInput) {
     values: {
       projectName,
       projectDescription,
+      primaryGameSystemId,
     },
   };
 }

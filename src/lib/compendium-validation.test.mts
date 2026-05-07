@@ -24,6 +24,10 @@ test("accepts valid compendium details", () => {
     licenseName: "Manual placeholder",
     licenseUrl: "https://example.com/license",
     sourceType: "manual",
+    sourceCategory: "expansion_supplement",
+    sourceSubtype: "supplement",
+    clonePolicy: "locked_to_system",
+    defaultPlayerVisibility: "visible",
     sourceUrl: "https://example.com/source",
     sourceNotes: "No rules text imported.",
     version: "0.1",
@@ -40,6 +44,10 @@ test("accepts valid compendium details", () => {
       license_name: "Manual placeholder",
       license_url: "https://example.com/license",
       source_type: "manual",
+      source_category: "expansion_supplement",
+      source_subtype: "supplement",
+      clone_policy: "locked_to_system",
+      default_player_visibility: "visible",
       source_url: "https://example.com/source",
       source_notes: "No rules text imported.",
       version: "0.1",
@@ -56,6 +64,10 @@ test("rejects missing required compendium values", () => {
     licenseName: "",
     licenseUrl: "",
     sourceType: "manual",
+    sourceCategory: "expansion_supplement",
+    sourceSubtype: "supplement",
+    clonePolicy: "locked_to_system",
+    defaultPlayerVisibility: "visible",
     sourceUrl: "",
     sourceNotes: "",
     version: "",
@@ -78,6 +90,10 @@ test("rejects invalid visibility, source type, and URLs", () => {
     licenseName: "",
     licenseUrl: "not a url",
     sourceType: "scraped_site",
+    sourceCategory: "expansion_supplement",
+    sourceSubtype: "supplement",
+    clonePolicy: "locked_to_system",
+    defaultPlayerVisibility: "visible",
     sourceUrl: "also bad",
     sourceNotes: "",
     version: "0.1",
@@ -92,6 +108,36 @@ test("rejects invalid visibility, source type, and URLs", () => {
   }
 });
 
+test("rejects invalid Library Source metadata values", () => {
+  const result = validateCompendiumInput({
+    name: "Unsafe Metadata",
+    description: "",
+    gameSystemId: "11111111-1111-4111-8111-111111111111",
+    visibility: "private",
+    licenseName: "",
+    licenseUrl: "",
+    sourceType: "manual",
+    sourceCategory: "campaign_book",
+    sourceSubtype: "wiki_scrape",
+    clonePolicy: "copy_everywhere",
+    defaultPlayerVisibility: "players_only",
+    sourceUrl: "",
+    sourceNotes: "",
+    version: "0.1",
+  });
+
+  assert.equal(result.ok, false);
+  if (!result.ok) {
+    assert.equal(result.fieldErrors.sourceCategory, "Choose a supported source category.");
+    assert.equal(result.fieldErrors.sourceSubtype, "Choose a supported source subtype.");
+    assert.equal(result.fieldErrors.clonePolicy, "Choose a supported clone policy.");
+    assert.equal(
+      result.fieldErrors.defaultPlayerVisibility,
+      "Choose a supported default player visibility.",
+    );
+  }
+});
+
 test("provides safe D&D 5e 2014 starter compendium metadata only", () => {
   assert.deepEqual(DND_5E_2014_STARTER_COMPENDIUM, {
     name: "D&D 5e 2014 Starter Compendium",
@@ -102,6 +148,10 @@ test("provides safe D&D 5e 2014 starter compendium metadata only", () => {
     licenseName: "Manual placeholder",
     licenseUrl: "",
     sourceType: "manual",
+    sourceCategory: "expansion_supplement",
+    sourceSubtype: "supplement",
+    clonePolicy: "locked_to_system",
+    defaultPlayerVisibility: "visible",
     sourceUrl: "",
     sourceNotes:
       "Container only. No rules text, SRD content, book text, or third-party data imported.",

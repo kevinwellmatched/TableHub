@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import type { ProjectFormState } from "@/lib/project-form-state";
+import { isMissingPrimaryGameSystemColumnError } from "@/lib/projects";
 import { validateProjectInput } from "@/lib/project-validation";
 import { getCurrentUserProfile } from "@/lib/profiles";
 import { hasSupabaseEnv } from "@/lib/supabase/env";
@@ -52,7 +53,12 @@ export async function createProjectAction(
 ): Promise<ProjectFormState> {
   const projectName = readString(formData, "projectName");
   const projectDescription = readString(formData, "projectDescription");
-  const validation = validateProjectInput({ projectName, projectDescription });
+  const primaryGameSystemId = readString(formData, "primaryGameSystemId");
+  const validation = validateProjectInput({
+    projectName,
+    projectDescription,
+    primaryGameSystemId,
+  });
 
   if (!validation.ok) {
     return {
@@ -102,6 +108,27 @@ export async function createProjectAction(
       message:
         "Project was created, but the app could not find its ID. Please return to Projects and refresh the list.",
     };
+  }
+
+  if (validation.values.primaryGameSystemId) {
+    const { error: primarySystemError } = await supabase
+      .from("projects")
+      .update({
+        primary_game_system_id: validation.values.primaryGameSystemId,
+      })
+      .eq("id", createdProjectId);
+
+    if (
+      primarySystemError &&
+      !isMissingPrimaryGameSystemColumnError(primarySystemError)
+    ) {
+      return {
+        status: "error",
+        message:
+          primarySystemError.message ||
+          "Project was created, but the primary System could not be saved.",
+      };
+    }
   }
 
   revalidatePath("/projects");

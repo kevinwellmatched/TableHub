@@ -20,6 +20,7 @@ import {
   getCompendiums,
   type CompendiumListItem,
 } from "@/lib/compendiums";
+import { formatLibrarySourceCategory } from "@/lib/library-source-taxonomy";
 
 export const dynamic = "force-dynamic";
 
@@ -134,10 +135,18 @@ function CompendiumCard({ compendium }: { compendium: CompendiumListItem }) {
           value={compendium.gameSystem?.name || "System unavailable"}
         />
         <MetaItem label="Version" value={compendium.version} />
+        <MetaItem
+          label="Category"
+          value={formatLibrarySourceCategory(compendium.source_category)}
+        />
       </dl>
 
       <div className="mt-5 flex flex-wrap gap-2">
         <Badge icon={FileText} label={formatCompendiumSourceType(compendium.source_type)} />
+        <Badge
+          icon={Tags}
+          label={formatLibrarySourceCategory(compendium.source_category)}
+        />
         <Badge icon={Tag} label={compendium.slug} />
         <Badge icon={Layers} label="Entries later" />
       </div>

@@ -5,6 +5,11 @@ export type SettingsLibraryFormFieldErrors = {
   genre?: string;
   tone?: string;
   sourceType?: string;
+  gameSystemId?: string;
+  sourceCategory?: string;
+  sourceSubtype?: string;
+  clonePolicy?: string;
+  defaultPlayerVisibility?: string;
   sourceUrl?: string;
   sourceNotes?: string;
   version?: string;

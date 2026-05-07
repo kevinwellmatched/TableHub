@@ -126,12 +126,13 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
           </div>
 
           <div className="rounded-lg border border-[var(--line)] bg-black/25 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#FCA311]">
-              Your role
-            </p>
-            <p className="mt-2 text-lg font-semibold text-[var(--text-main)]">
-              {formatProjectRole(project.role)}
-            </p>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+              <HeroMeta label="Your role" value={formatProjectRole(project.role)} />
+              <HeroMeta
+                label="Primary System"
+                value={project.primaryGameSystem?.name || "Not set"}
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -229,6 +230,19 @@ function ProjectSourceSummaryCard({ source }: { source: ProjectSourceRow }) {
         Version {source.source_version || "not set"}
       </p>
     </article>
+  );
+}
+
+function HeroMeta({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#FCA311]">
+        {label}
+      </p>
+      <p className="mt-2 text-lg font-semibold text-[var(--text-main)]">
+        {value}
+      </p>
+    </div>
   );
 }
 

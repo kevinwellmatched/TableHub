@@ -19,6 +19,7 @@ import {
   getSettingsLibraries,
   type SettingsLibraryListItem,
 } from "@/lib/settings-libraries";
+import { formatLibrarySourceCategory } from "@/lib/library-source-taxonomy";
 
 export const dynamic = "force-dynamic";
 
@@ -136,14 +137,26 @@ function SettingsLibraryCard({
 
       <dl className="mt-5 grid grid-cols-2 gap-3 text-sm">
         <MetaItem label="Genre" value={settingsLibrary.genre || "Not set"} />
+        <MetaItem
+          label="System"
+          value={settingsLibrary.gameSystem?.name || "Not set"}
+        />
         <MetaItem label="Tone" value={settingsLibrary.tone || "Not set"} />
         <MetaItem label="Version" value={settingsLibrary.version} />
+        <MetaItem
+          label="Category"
+          value={formatLibrarySourceCategory(settingsLibrary.source_category)}
+        />
       </dl>
 
       <div className="mt-5 flex flex-wrap gap-2">
         <Badge
           icon={FileText}
           label={formatSettingsLibrarySourceType(settingsLibrary.source_type)}
+        />
+        <Badge
+          icon={Tags}
+          label={formatLibrarySourceCategory(settingsLibrary.source_category)}
         />
         <Badge icon={Tag} label={settingsLibrary.slug} />
       </div>

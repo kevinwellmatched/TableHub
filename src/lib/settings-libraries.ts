@@ -5,17 +5,27 @@ import type {
   SettingsLibraryVisibility,
   ValidSettingsLibraryInput,
 } from "@/lib/settings-library-validation";
+import type {
+  LibrarySourceCategory,
+  LibrarySourceClonePolicy,
+  LibrarySourcePlayerVisibility,
+  LibrarySourceSubtype,
+} from "@/lib/library-source-taxonomy";
 import { hasSupabaseEnv } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
 
 const SETTINGS_LIBRARY_COLUMNS =
-  "id, owner_id, name, slug, description, visibility, genre, tone, source_type, source_url, source_notes, version, created_at, updated_at";
+  "id, owner_id, game_system_id, name, slug, description, visibility, genre, tone, source_type, source_category, source_subtype, clone_policy, default_player_visibility, source_url, source_notes, version, created_at, updated_at";
+
+const GAME_SYSTEM_FORM_COLUMNS =
+  "id, name, edition, publisher, visibility, created_at";
 
 export type SettingsLibraryRow = {
   id: string;
   owner_id: string;
+  game_system_id: string | null;
   name: string;
   slug: string;
   description: string | null;
@@ -23,6 +33,10 @@ export type SettingsLibraryRow = {
   genre: string | null;
   tone: string | null;
   source_type: SettingsLibrarySourceType;
+  source_category: LibrarySourceCategory;
+  source_subtype: LibrarySourceSubtype;
+  clone_policy: LibrarySourceClonePolicy;
+  default_player_visibility: LibrarySourcePlayerVisibility;
   source_url: string | null;
   source_notes: string | null;
   version: string;
@@ -30,8 +44,23 @@ export type SettingsLibraryRow = {
   updated_at: string;
 };
 
-export type SettingsLibraryListItem = SettingsLibraryRow;
-export type SettingsLibraryDetail = SettingsLibraryRow;
+export type SettingsLibraryGameSystemSummary = {
+  id: string;
+  name: string;
+  edition: string | null;
+  publisher: string | null;
+  visibility: string;
+};
+
+export type SettingsLibraryListItem = SettingsLibraryRow & {
+  gameSystem: SettingsLibraryGameSystemSummary | null;
+};
+export type SettingsLibraryDetail = SettingsLibraryListItem;
+
+export type GameSystemForSettingsLibraryForm =
+  SettingsLibraryGameSystemSummary & {
+    created_at: string;
+  };
 
 async function getSignedInUserId(supabase: SupabaseClient) {
   const {
@@ -62,7 +91,7 @@ export async function getSettingsLibraries(): Promise<SettingsLibraryListItem[]>
     throw error;
   }
 
-  return (data ?? []) as SettingsLibraryListItem[];
+  return addGameSystemSummaries(supabase, (data ?? []) as SettingsLibraryRow[]);
 }
 
 export async function getSettingsLibraryById(
@@ -85,7 +114,12 @@ export async function getSettingsLibraryById(
     throw error;
   }
 
-  return data;
+  if (!data) {
+    return null;
+  }
+
+  const [settingsLibrary] = await addGameSystemSummaries(supabase, [data]);
+  return settingsLibrary;
 }
 
 export async function createSettingsLibrary(input: ValidSettingsLibraryInput) {
@@ -113,6 +147,28 @@ export async function createSettingsLibrary(input: ValidSettingsLibraryInput) {
   return { data, error };
 }
 
+export async function getGameSystemsForSettingsLibraryForm(): Promise<
+  GameSystemForSettingsLibraryForm[]
+> {
+  if (!hasSupabaseEnv()) {
+    redirect("/login");
+  }
+
+  const supabase = await createClient();
+  await getSignedInUserId(supabase);
+
+  const { data, error } = await supabase
+    .from("game_systems")
+    .select(GAME_SYSTEM_FORM_COLUMNS)
+    .order("name", { ascending: true });
+
+  if (error) {
+    throw error;
+  }
+
+  return (data ?? []) as GameSystemForSettingsLibraryForm[];
+}
+
 export function formatSettingsLibraryVisibility(
   visibility: SettingsLibraryVisibility,
 ) {
@@ -138,6 +194,49 @@ export function formatSettingsLibrarySourceType(
   };
 
   return labels[sourceType];
+}
+
+async function addGameSystemSummaries(
+  supabase: SupabaseClient,
+  settingsLibraries: SettingsLibraryRow[],
+): Promise<SettingsLibraryListItem[]> {
+  const gameSystemIds = Array.from(
+    new Set(
+      settingsLibraries.flatMap((settingsLibrary) =>
+        settingsLibrary.game_system_id ? [settingsLibrary.game_system_id] : [],
+      ),
+    ),
+  );
+
+  if (gameSystemIds.length === 0) {
+    return settingsLibraries.map((settingsLibrary) => ({
+      ...settingsLibrary,
+      gameSystem: null,
+    }));
+  }
+
+  const { data, error } = await supabase
+    .from("game_systems")
+    .select("id, name, edition, publisher, visibility")
+    .in("id", gameSystemIds);
+
+  if (error) {
+    throw error;
+  }
+
+  const gameSystemById = new Map(
+    ((data ?? []) as SettingsLibraryGameSystemSummary[]).map((system) => [
+      system.id,
+      system,
+    ]),
+  );
+
+  return settingsLibraries.map((settingsLibrary) => ({
+    ...settingsLibrary,
+    gameSystem: settingsLibrary.game_system_id
+      ? gameSystemById.get(settingsLibrary.game_system_id) ?? null
+      : null,
+  }));
 }
 
 export { SETTINGS_LIBRARY_COLUMNS };

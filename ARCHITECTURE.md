@@ -70,8 +70,10 @@ creates the foundation future imports can attach to cleanly.
 
 Master Compendiums are the second concrete Master Library record. A Compendium
 links to one Game System and stores current Library Source container metadata
-such as name, description, visibility, version, and source/provenance fields.
-Slice 4B does not create compendium entries and does not import spells,
+such as name, description, visibility, source category, source subtype, clone
+policy, default player visibility, version, and source/provenance fields.
+Slice 5C adds the source metadata fields non-destructively to the existing
+`compendiums` table. Slice 4B does not create compendium entries and does not import spells,
 monsters, classes, items, SRD rows, book text, third-party data, or 5etools
 data. It only creates the safe container that future entry and import slices can
 attach to.
@@ -79,7 +81,9 @@ attach to.
 Master Settings Libraries are the third concrete Master Library record. A
 Settings Library stores current Library Source metadata for reusable setting and
 world lore, such as name, description, visibility, genre, tone, version, and
-source/provenance fields. Slice 4C does not create setting entries, NPCs,
+source/provenance fields. Slice 5C adds optional Game System linking plus source
+category, source subtype, clone policy, and default player visibility fields to
+the existing `settings_libraries` table. Slice 4C does not create setting entries, NPCs,
 places, factions, deities, maps, timelines, lore pages, imports, or third-party
 lore content. It only creates the safe container that future entry, import,
 reveal, and Project-link slices can attach to.
@@ -163,6 +167,11 @@ these links on the Project detail page and provides a small
 entries, create overrides, import data, or change master records. Those
 behaviors remain later work.
 
+Slice 5C adds optional `projects.primary_game_system_id` support. New Projects
+can choose a primary System when one is available, existing Projects can remain
+unset, and Project Source attachment gently prefers sources that match the
+primary System without blocking the existing attach flow.
+
 ### 3. Campaign Layer
 
 A Campaign is an active play space inside a Project.
@@ -219,7 +228,9 @@ Current implementation status:
 
 - Slice 5A implements `project_sources` for Game Systems, Compendiums, and
   Settings Libraries.
-- Slice 5C is expected to begin `project_entry_overrides`.
+- Slice 5C adds Library Source metadata and optional Project primary System
+  groundwork.
+- Slice 5D is expected to begin `project_entry_overrides`.
 - Original vs modified rendering, manual master updates, imports, search,
   tags/folders, and rich text editing are still deferred.
 

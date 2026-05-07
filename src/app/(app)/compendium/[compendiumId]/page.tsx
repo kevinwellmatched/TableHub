@@ -26,6 +26,12 @@ import {
   getMasterEntriesByCompendiumId,
   type MasterEntryListItem,
 } from "@/lib/master-entries";
+import {
+  formatLibrarySourceCategory,
+  formatLibrarySourceClonePolicy,
+  formatLibrarySourcePlayerVisibility,
+  formatLibrarySourceSubtype,
+} from "@/lib/library-source-taxonomy";
 
 type CompendiumDetailPageProps = {
   params: Promise<{
@@ -117,6 +123,16 @@ export default async function CompendiumDetailPage({
               value={formatCompendiumSourceType(compendium.source_type)}
             />
             <HeroMeta
+              label="Category"
+              value={formatLibrarySourceCategory(compendium.source_category)}
+            />
+            <HeroMeta
+              label="Player default"
+              value={formatLibrarySourcePlayerVisibility(
+                compendium.default_player_visibility,
+              )}
+            />
+            <HeroMeta
               label="System"
               value={compendium.gameSystem?.name || "System unavailable"}
             />
@@ -177,6 +193,24 @@ export default async function CompendiumDetailPage({
             <DetailItem
               label="Source type"
               value={formatCompendiumSourceType(compendium.source_type)}
+            />
+            <DetailItem
+              label="Source category"
+              value={formatLibrarySourceCategory(compendium.source_category)}
+            />
+            <DetailItem
+              label="Source subtype"
+              value={formatLibrarySourceSubtype(compendium.source_subtype)}
+            />
+            <DetailItem
+              label="Clone policy"
+              value={formatLibrarySourceClonePolicy(compendium.clone_policy)}
+            />
+            <DetailItem
+              label="Default player visibility"
+              value={formatLibrarySourcePlayerVisibility(
+                compendium.default_player_visibility,
+              )}
             />
             <DetailItem
               label="Source URL"
@@ -302,6 +336,24 @@ function MetadataGrid({ compendium }: { compendium: CompendiumDetail }) {
       <DetailItem
         label="Source type"
         value={formatCompendiumSourceType(compendium.source_type)}
+      />
+      <DetailItem
+        label="Source category"
+        value={formatLibrarySourceCategory(compendium.source_category)}
+      />
+      <DetailItem
+        label="Source subtype"
+        value={formatLibrarySourceSubtype(compendium.source_subtype)}
+      />
+      <DetailItem
+        label="Clone policy"
+        value={formatLibrarySourceClonePolicy(compendium.clone_policy)}
+      />
+      <DetailItem
+        label="Default player visibility"
+        value={formatLibrarySourcePlayerVisibility(
+          compendium.default_player_visibility,
+        )}
       />
       <DetailItem label="Version" value={compendium.version} />
       <DetailItem label="Created" value={dateFormatter.format(new Date(compendium.created_at))} />

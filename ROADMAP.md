@@ -430,7 +430,44 @@ Done when:
   Library Sources in a Project Library.
 - Test, lint, and build pass.
 
-### Slice 5C: Project Entry Override Groundwork
+### Slice 5C: Library Source Metadata Schema Groundwork
+
+Status: Complete in the current schema-groundwork slice.
+
+Goal:
+
+- Add safe metadata fields to existing source-container tables before a future
+  unified `library_sources` table.
+- Keep Compendiums and Settings Libraries as the current concrete Library Source
+  containers.
+- Prepare Projects for one optional primary System.
+- Preserve Slice 5A Project Source linking.
+
+Build:
+
+- `projects.primary_game_system_id` SQL documentation and optional Project form
+  support.
+- `compendiums` source category, subtype, clone policy, and default player
+  visibility fields.
+- `settings_libraries` optional Game System, source category, subtype, clone
+  policy, and default player visibility fields.
+- Validation updates using the shared Library Source taxonomy helper.
+- Detail and list metadata display for Compendiums and Settings Libraries.
+- Gentle Project Library filtering when a Project has a primary System.
+
+Done when:
+
+- The SQL can be run without dropping or renaming existing tables.
+- Existing Projects, Compendiums, and Settings Libraries still load after the SQL
+  is applied.
+- Project creation works with or without a primary System.
+- Project Source attachment still works and prefers primary-System-compatible
+  sources when possible.
+- No imports, copyrighted content, unified `library_sources` migration, or
+  `master_entries` parent migration are added.
+- Test, lint, and build pass.
+
+### Slice 5D: Project Entry Override Groundwork
 
 Status: Not started.
 

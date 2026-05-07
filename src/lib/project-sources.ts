@@ -31,6 +31,7 @@ export type ProjectSourceOption = {
   name: string;
   version: string | null;
   created_at: string;
+  game_system_id?: string | null;
 };
 
 export type ProjectSourceOptions = {
@@ -77,6 +78,7 @@ export async function getProjectSources(
 
 export async function getProjectSourceOptions(
   projectId: string,
+  primaryGameSystemId: string | null = null,
 ): Promise<ProjectSourceOptions> {
   if (!hasSupabaseEnv()) {
     redirect("/login");
@@ -90,11 +92,15 @@ export async function getProjectSourceOptions(
 
   const [gameSystems, compendiums, settingsLibraries] = await Promise.all([
     loadSourceOptions(supabase, "game_systems", attachedIds.gameSystemIds),
-    loadSourceOptions(supabase, "compendiums", attachedIds.compendiumIds),
-    loadSourceOptions(
+    loadCompendiumSourceOptions(
       supabase,
-      "settings_libraries",
+      attachedIds.compendiumIds,
+      primaryGameSystemId,
+    ),
+    loadSettingsLibrarySourceOptions(
+      supabase,
       attachedIds.settingsLibraryIds,
+      primaryGameSystemId,
     ),
   ]);
 
@@ -103,6 +109,66 @@ export async function getProjectSourceOptions(
     compendiums,
     settingsLibraries,
   };
+}
+
+async function loadCompendiumSourceOptions(
+  supabase: SupabaseClient,
+  attachedIds: string[],
+  primaryGameSystemId: string | null,
+) {
+  let query = supabase
+    .from("compendiums")
+    .select("id, name, version, created_at, game_system_id")
+    .order("name", { ascending: true });
+
+  if (attachedIds.length > 0) {
+    query = query.not("id", "in", `(${attachedIds.join(",")})`);
+  }
+
+  if (primaryGameSystemId) {
+    query = query.eq("game_system_id", primaryGameSystemId);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    throw error;
+  }
+
+  return (data ?? []) as ProjectSourceOption[];
+}
+
+async function loadSettingsLibrarySourceOptions(
+  supabase: SupabaseClient,
+  attachedIds: string[],
+  primaryGameSystemId: string | null,
+) {
+  let query = supabase
+    .from("settings_libraries")
+    .select("id, name, version, created_at, game_system_id")
+    .order("name", { ascending: true });
+
+  if (attachedIds.length > 0) {
+    query = query.not("id", "in", `(${attachedIds.join(",")})`);
+  }
+
+  if (primaryGameSystemId) {
+    query = query.or(
+      `game_system_id.eq.${primaryGameSystemId},game_system_id.is.null`,
+    );
+  }
+
+  const { data, error } = await query;
+
+  if (!isMissingGameSystemIdColumnError(error)) {
+    if (error) {
+      throw error;
+    }
+
+    return (data ?? []) as ProjectSourceOption[];
+  }
+
+  return loadSourceOptions(supabase, "settings_libraries", attachedIds);
 }
 
 export async function attachProjectSource(
@@ -191,6 +257,21 @@ async function loadSourceOptions(
   }
 
   return (data ?? []) as ProjectSourceOption[];
+}
+
+function isMissingGameSystemIdColumnError(error: unknown) {
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+
+  const record = error as { code?: string; message?: string };
+  const message = record.message ?? "";
+
+  return (
+    record.code === "42703" ||
+    record.code === "PGRST204" ||
+    message.includes("game_system_id")
+  );
 }
 
 export { PROJECT_SOURCE_COLUMNS };

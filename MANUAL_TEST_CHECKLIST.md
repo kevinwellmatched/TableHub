@@ -476,7 +476,7 @@ npm run build
 - Project Source management lives at `/projects/[projectId]/sources`.
 - Owner and GM roles can attach and remove sources.
 - Master content remains unchanged.
-- `project_entry_overrides` remains deferred to Slice 5C.
+- `project_entry_overrides` remains deferred to Slice 5D.
 - No imports, rich text editor, tags/folders, Project search, or campaign source
   linking are added.
 
@@ -513,7 +513,7 @@ npm run build
   functions, and RLS policies must exist in the project database before manual
   Project Sources testing.
 - Slice 5A does not implement project entry overrides. That is deferred to
-  Slice 5C.
+  Slice 5D.
 
 ---
 
@@ -553,6 +553,48 @@ npm run build
   table.
 - Manual route testing still depends on the existing local Supabase setup and
   logged-in user state.
+
+---
+
+## Slice 5C: Library Source Metadata Schema Groundwork
+
+### Expected
+
+- Existing Compendiums and Settings Libraries gain Library Source metadata
+  fields without dropping, renaming, or migrating tables.
+- Projects can optionally store one primary System.
+- Compendium creation defaults to Expansions & Supplements, Supplement, Locked
+  to System, and Visible.
+- Settings Library creation defaults to Setting & World Lore, Campaign Setting,
+  Cloneable to System, and GM Only.
+- Project Source attachment still works and gently prefers sources matching the
+  Project primary System when one is set.
+
+### Manual Tests
+
+- [ ] Run the Slice 5C SQL from `SUPABASE_SETUP.md` in Supabase.
+- [ ] Create a Compendium with source category metadata.
+- [ ] Create a Settings Library with source category metadata.
+- [ ] Create a Project with a primary System.
+- [ ] Create a Project without a primary System.
+- [ ] Confirm existing Projects still load.
+- [ ] Confirm existing Compendiums still load.
+- [ ] Confirm existing Settings Libraries still load.
+- [ ] Confirm Project Sources still work at `/projects/[projectId]/sources`.
+- [ ] Confirm a Project with a primary System prefers matching Compendium and
+      Settings Library choices.
+- [ ] Run `npm.cmd run test`.
+- [ ] Run `npm.cmd run lint`.
+- [ ] Run `npm.cmd run build`.
+
+### Known Issues
+
+- The Supabase Slice 5C SQL must be run before new Compendium and Settings
+  Library metadata can be saved.
+- `projects.primary_game_system_id` and `settings_libraries.game_system_id`
+  intentionally remain nullable in this slice.
+- This slice does not create a unified `library_sources` table, move
+  `master_entries`, import content, or build Project Entry Overrides.
 
 ---
 

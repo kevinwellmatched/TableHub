@@ -4,6 +4,7 @@ export type ProjectFormState = {
   fieldErrors?: {
     projectName?: string;
     projectDescription?: string;
+    primaryGameSystemId?: string;
   };
 };
 

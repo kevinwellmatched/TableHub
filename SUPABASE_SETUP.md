@@ -133,6 +133,205 @@ Expected Row Level Security behavior:
 The app uses normal Supabase server clients and relies on RLS. Do not add a
 service role key to the app.
 
+## Slice 5C: Library Source Metadata Schema Groundwork
+
+Run this SQL in Supabase before manually testing Slice 5C forms. It is
+non-destructive: it does not drop tables, rename tables, move Master Entries, or
+create a unified `library_sources` table.
+
+```sql
+alter table public.projects
+add column if not exists primary_game_system_id uuid references public.game_systems(id);
+
+alter table public.compendiums
+add column if not exists source_category text not null default 'expansion_supplement',
+add column if not exists source_subtype text not null default 'supplement',
+add column if not exists clone_policy text not null default 'locked_to_system',
+add column if not exists default_player_visibility text not null default 'visible';
+
+alter table public.settings_libraries
+add column if not exists game_system_id uuid references public.game_systems(id),
+add column if not exists source_category text not null default 'setting_world_lore',
+add column if not exists source_subtype text not null default 'campaign_setting',
+add column if not exists clone_policy text not null default 'cloneable_to_system',
+add column if not exists default_player_visibility text not null default 'gm_only';
+
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'compendiums_source_category_check'
+  ) then
+    alter table public.compendiums
+    add constraint compendiums_source_category_check
+    check (source_category in (
+      'core_rulebook',
+      'expansion_supplement',
+      'setting_world_lore',
+      'adventure_module',
+      'other'
+    ));
+  end if;
+
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'compendiums_source_subtype_check'
+  ) then
+    alter table public.compendiums
+    add constraint compendiums_source_subtype_check
+    check (source_subtype in (
+      'srd',
+      'core_rulebook',
+      'starter_set',
+      'beginner_box',
+      'rules_cyclopedia',
+      'expansion_book',
+      'supplement',
+      'splatbook',
+      'sourcebook',
+      'bestiary',
+      'monster_book',
+      'campaign_setting',
+      'gazetteer',
+      'worldbook',
+      'lorebook',
+      'adventure',
+      'module',
+      'adventure_path',
+      'adventure_anthology',
+      'dungeon',
+      'hexcrawl',
+      'gm_screen',
+      'rollable_table_collection',
+      'reference_sheet',
+      'homebrew_packet',
+      'import_batch',
+      'other'
+    ));
+  end if;
+
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'compendiums_clone_policy_check'
+  ) then
+    alter table public.compendiums
+    add constraint compendiums_clone_policy_check
+    check (clone_policy in (
+      'locked_to_system',
+      'cloneable_to_system',
+      'system_agnostic'
+    ));
+  end if;
+
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'compendiums_default_player_visibility_check'
+  ) then
+    alter table public.compendiums
+    add constraint compendiums_default_player_visibility_check
+    check (default_player_visibility in ('visible', 'gm_only', 'mixed'));
+  end if;
+
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'settings_libraries_source_category_check'
+  ) then
+    alter table public.settings_libraries
+    add constraint settings_libraries_source_category_check
+    check (source_category in (
+      'core_rulebook',
+      'expansion_supplement',
+      'setting_world_lore',
+      'adventure_module',
+      'other'
+    ));
+  end if;
+
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'settings_libraries_source_subtype_check'
+  ) then
+    alter table public.settings_libraries
+    add constraint settings_libraries_source_subtype_check
+    check (source_subtype in (
+      'srd',
+      'core_rulebook',
+      'starter_set',
+      'beginner_box',
+      'rules_cyclopedia',
+      'expansion_book',
+      'supplement',
+      'splatbook',
+      'sourcebook',
+      'bestiary',
+      'monster_book',
+      'campaign_setting',
+      'gazetteer',
+      'worldbook',
+      'lorebook',
+      'adventure',
+      'module',
+      'adventure_path',
+      'adventure_anthology',
+      'dungeon',
+      'hexcrawl',
+      'gm_screen',
+      'rollable_table_collection',
+      'reference_sheet',
+      'homebrew_packet',
+      'import_batch',
+      'other'
+    ));
+  end if;
+
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'settings_libraries_clone_policy_check'
+  ) then
+    alter table public.settings_libraries
+    add constraint settings_libraries_clone_policy_check
+    check (clone_policy in (
+      'locked_to_system',
+      'cloneable_to_system',
+      'system_agnostic'
+    ));
+  end if;
+
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'settings_libraries_default_player_visibility_check'
+  ) then
+    alter table public.settings_libraries
+    add constraint settings_libraries_default_player_visibility_check
+    check (default_player_visibility in ('visible', 'gm_only', 'mixed'));
+  end if;
+end $$;
+```
+
+Notes:
+
+- `projects.primary_game_system_id` is nullable in this slice. Existing Projects
+  do not need a backfill before the app can load them.
+- `settings_libraries.game_system_id` is nullable. This supports system-neutral
+  lore sources and avoids forcing a backfill.
+- The app still creates Projects through `public.create_project`, then saves the
+  optional primary System with a normal RLS-protected update. If the SQL above
+  has not been run yet, Project creation should still complete without saving
+  the primary System.
+- Project Sources remain Slice 5A links. This slice only filters available
+  Compendium and Settings Library choices gently when a Project has a primary
+  System.
+- The app uses normal Supabase server clients and relies on RLS. Do not add a
+  service role key to the app.
+
 ## Slice 4C: Master Settings Libraries
 
 Slice 4C assumes the Master Settings Libraries SQL has already been run in
@@ -382,7 +581,7 @@ Expected Row Level Security behavior:
 Slice 5A does not add `project_entry_overrides`, an override editor, original
 vs modified rendering, manual updates from master content, rich text editing,
 imports, tags/folders, Project search, or campaign source linking. Those remain
-later slices, with `project_entry_overrides` deferred to Slice 5C.
+later slices, with `project_entry_overrides` deferred to Slice 5D.
 
 The app uses normal Supabase server clients and relies on RLS. Do not add a
 service role key to the app.

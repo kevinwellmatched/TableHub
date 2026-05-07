@@ -24,6 +24,11 @@ routes. Compendiums and Settings Libraries remain the current concrete
 container tables while Library Source becomes the product vocabulary for
 reusable source containers.
 
+Slice 5C adds non-destructive metadata columns to the current concrete Library
+Source tables and prepares Projects for one optional primary System. It does
+not create a unified `library_sources` table and does not move `master_entries`
+to a new parent model yet.
+
 ---
 
 ## Identity and Profiles
@@ -147,7 +152,7 @@ provenance.
 
 Current concrete Library Source containers for rules/reference material.
 
-Current Slice 4B table:
+Current table through Slice 5C:
 
 - id uuid primary key
 - owner_id uuid not null references auth.users(id)
@@ -159,6 +164,10 @@ Current Slice 4B table:
 - license_name text
 - license_url text
 - source_type text not null
+- source_category text not null default 'expansion_supplement'
+- source_subtype text not null default 'supplement'
+- clone_policy text not null default 'locked_to_system'
+- default_player_visibility text not null default 'visible'
 - source_url text
 - source_notes text
 - version text not null
@@ -168,6 +177,9 @@ Current Slice 4B table:
 Rules:
 
 - A Compendium is a current Library Source record linked to one Game System.
+- Slice 5C adds Library Source metadata directly to `compendiums` so it can
+  behave like a source container before a future unified `library_sources`
+  table.
 - Slice 4B stores the compendium container only. It does not create entries,
   spells, monsters, classes, items, SRD rows, book text, or imported rules text.
 - Visibility supports `private`, `shared`, and `public`.
@@ -184,6 +196,10 @@ Source and provenance fields:
 - `license_name`
 - `license_url`
 - `source_type`
+- `source_category`
+- `source_subtype`
+- `clone_policy`
+- `default_player_visibility`
 - `source_url`
 - `source_notes`
 - `version`
@@ -289,10 +305,11 @@ Rules:
 
 Current concrete Library Source containers for setting and world lore.
 
-Current Slice 4C table:
+Current table through Slice 5C:
 
 - id uuid primary key
 - owner_id uuid not null references auth.users(id)
+- game_system_id uuid references public.game_systems(id)
 - name text not null
 - slug text not null
 - description text
@@ -300,6 +317,10 @@ Current Slice 4C table:
 - genre text
 - tone text
 - source_type text not null
+- source_category text not null default 'setting_world_lore'
+- source_subtype text not null default 'campaign_setting'
+- clone_policy text not null default 'cloneable_to_system'
+- default_player_visibility text not null default 'gm_only'
 - source_url text
 - source_notes text
 - version text not null
@@ -309,6 +330,8 @@ Current Slice 4C table:
 Rules:
 
 - A Settings Library is a current Library Source record for reusable setting lore.
+- Slice 5C lets a Settings Library optionally point at a Game System. This stays
+  nullable so existing libraries and system-neutral lore containers remain safe.
 - Slice 4C stores the Settings Library container only. It does not create setting
   entries, NPCs, places, factions, deities, maps, timelines, lore pages, or
   imported lore content.
@@ -325,6 +348,10 @@ Rules:
 Source and provenance fields:
 
 - `source_type`
+- `source_category`
+- `source_subtype`
+- `clone_policy`
+- `default_player_visibility`
 - `source_url`
 - `source_notes`
 - `version`
@@ -345,10 +372,11 @@ Settings Library entry app systems are intentionally deferred.
 A workspace that should eventually choose one primary System, attach compatible
 Library Sources into its Project Library, and contain active Campaigns.
 
-Current Slice 3 table:
+Current table through Slice 5C:
 
 - id uuid primary key
 - owner_id uuid not null references auth.users(id)
+- primary_game_system_id uuid references public.game_systems(id)
 - name text not null
 - description text
 - created_at timestamptz not null default now()
@@ -361,6 +389,9 @@ Rules:
 - A user should only be able to read Projects where they have a matching membership.
 - The original master system, compendium, or Settings Library content should not be mutated from a Project. Project-specific changes belong in linked source and override tables in later slices.
 - Project Library means the set of Library Sources attached to a Project.
+- Slice 5C keeps `primary_game_system_id` optional. Existing Projects can load
+  without a primary System, and the app should not require this field until a
+  later slice safely backfills or updates old Projects.
 
 ### project_members
 
@@ -437,7 +468,7 @@ Rules:
 
 Stores project-specific overrides for linked entries.
 
-Deferred to Slice 5C.
+Deferred to Slice 5D.
 
 Likely future fields:
 

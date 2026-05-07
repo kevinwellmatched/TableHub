@@ -6,6 +6,13 @@ import { Library } from "lucide-react";
 import { createSettingsLibraryAction } from "@/lib/settings-library-actions";
 import { initialSettingsLibraryFormState } from "@/lib/settings-library-form-state";
 import {
+  LIBRARY_SOURCE_CATEGORY_OPTIONS,
+  LIBRARY_SOURCE_CLONE_POLICY_OPTIONS,
+  LIBRARY_SOURCE_PLAYER_VISIBILITY_OPTIONS,
+  LIBRARY_SOURCE_SUBTYPE_OPTIONS,
+} from "@/lib/library-source-taxonomy";
+import type { GameSystemForSettingsLibraryForm } from "@/lib/settings-libraries";
+import {
   SETTINGS_LIBRARY_DESCRIPTION_MAX_LENGTH,
   SETTINGS_LIBRARY_GENRE_MAX_LENGTH,
   SETTINGS_LIBRARY_NAME_MAX_LENGTH,
@@ -21,6 +28,7 @@ import {
 
 type CreateSettingsLibraryFormProps = {
   defaultValues?: SettingsLibraryInput;
+  gameSystems: GameSystemForSettingsLibraryForm[];
 };
 
 const fallbackValues: SettingsLibraryInput = {
@@ -30,6 +38,11 @@ const fallbackValues: SettingsLibraryInput = {
   genre: "",
   tone: "",
   sourceType: "manual",
+  gameSystemId: "",
+  sourceCategory: "setting_world_lore",
+  sourceSubtype: "campaign_setting",
+  clonePolicy: "cloneable_to_system",
+  defaultPlayerVisibility: "gm_only",
   sourceUrl: "",
   sourceNotes: "",
   version: "1.0.0",
@@ -54,6 +67,7 @@ const sourceTypeLabels: Record<SettingsLibrarySourceType, string> = {
 
 export function CreateSettingsLibraryForm({
   defaultValues,
+  gameSystems,
 }: CreateSettingsLibraryFormProps) {
   const [state, formAction, isPending] = useActionState(
     createSettingsLibraryAction,
@@ -121,6 +135,19 @@ export function CreateSettingsLibraryForm({
           defaultValue={values.version}
           error={state.fieldErrors?.version}
         />
+        {gameSystems.length > 0 ? (
+          <Select
+            label="Game system"
+            name="gameSystemId"
+            defaultValue={values.gameSystemId}
+            error={state.fieldErrors?.gameSystemId}
+            options={gameSystems.map((system) => ({
+              value: system.id,
+              label: formatGameSystemOption(system),
+            }))}
+            placeholder="No system selected"
+          />
+        ) : null}
       </section>
 
       <section className="space-y-5 rounded-lg border border-[var(--line)] bg-black/15 p-5">
@@ -143,6 +170,46 @@ export function CreateSettingsLibraryForm({
             options={SETTINGS_LIBRARY_SOURCE_TYPES.map((sourceType) => ({
               value: sourceType,
               label: sourceTypeLabels[sourceType],
+            }))}
+          />
+          <Select
+            label="Source category"
+            name="sourceCategory"
+            defaultValue={values.sourceCategory}
+            error={state.fieldErrors?.sourceCategory}
+            options={LIBRARY_SOURCE_CATEGORY_OPTIONS.map((option) => ({
+              value: option.value,
+              label: option.label,
+            }))}
+          />
+          <Select
+            label="Source subtype"
+            name="sourceSubtype"
+            defaultValue={values.sourceSubtype}
+            error={state.fieldErrors?.sourceSubtype}
+            options={LIBRARY_SOURCE_SUBTYPE_OPTIONS.map((option) => ({
+              value: option.value,
+              label: option.label,
+            }))}
+          />
+          <Select
+            label="Clone policy"
+            name="clonePolicy"
+            defaultValue={values.clonePolicy}
+            error={state.fieldErrors?.clonePolicy}
+            options={LIBRARY_SOURCE_CLONE_POLICY_OPTIONS.map((option) => ({
+              value: option.value,
+              label: option.label,
+            }))}
+          />
+          <Select
+            label="Default player visibility"
+            name="defaultPlayerVisibility"
+            defaultValue={values.defaultPlayerVisibility}
+            error={state.fieldErrors?.defaultPlayerVisibility}
+            options={LIBRARY_SOURCE_PLAYER_VISIBILITY_OPTIONS.map((option) => ({
+              value: option.value,
+              label: option.label,
             }))}
           />
           <TextInput
@@ -178,6 +245,11 @@ export function CreateSettingsLibraryForm({
       </button>
     </form>
   );
+}
+
+function formatGameSystemOption(system: GameSystemForSettingsLibraryForm) {
+  const details = [system.edition, system.publisher].filter(Boolean).join(" - ");
+  return details ? `${system.name} (${details})` : system.name;
 }
 
 function TextInput({
@@ -248,12 +320,14 @@ function Select({
   error,
   options,
   defaultValue,
+  placeholder,
 }: {
   label: string;
   name: string;
   error?: string;
   options: Array<{ value: string; label: string }>;
   defaultValue: string;
+  placeholder?: string;
 }) {
   const errorId = `${name}-error`;
 
@@ -267,6 +341,7 @@ function Select({
         aria-describedby={error ? errorId : undefined}
         className="mt-2 h-11 w-full rounded-lg border border-[var(--line)] bg-black/25 px-3 text-sm text-[var(--text-main)] outline-none transition focus:border-[#FCA311] focus:ring-2 focus:ring-[#FCA311]/20"
       >
+        {placeholder ? <option value="">{placeholder}</option> : null}
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}

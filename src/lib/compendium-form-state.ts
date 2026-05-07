@@ -6,6 +6,10 @@ export type CompendiumFormFieldErrors = {
   licenseName?: string;
   licenseUrl?: string;
   sourceType?: string;
+  sourceCategory?: string;
+  sourceSubtype?: string;
+  clonePolicy?: string;
+  defaultPlayerVisibility?: string;
   sourceUrl?: string;
   sourceNotes?: string;
   version?: string;

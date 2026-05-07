@@ -1,4 +1,14 @@
 import type { CompendiumFormFieldErrors } from "@/lib/compendium-form-state";
+import {
+  isLibrarySourceCategory,
+  isLibrarySourceClonePolicy,
+  isLibrarySourcePlayerVisibility,
+  isLibrarySourceSubtype,
+  type LibrarySourceCategory,
+  type LibrarySourceClonePolicy,
+  type LibrarySourcePlayerVisibility,
+  type LibrarySourceSubtype,
+} from "./library-source-taxonomy.ts";
 
 export const COMPENDIUM_NAME_MAX_LENGTH = 120;
 export const COMPENDIUM_DESCRIPTION_MAX_LENGTH = 2000;
@@ -28,6 +38,10 @@ export type CompendiumInput = {
   licenseName: string;
   licenseUrl: string;
   sourceType: string;
+  sourceCategory: string;
+  sourceSubtype: string;
+  clonePolicy: string;
+  defaultPlayerVisibility: string;
   sourceUrl: string;
   sourceNotes: string;
   version: string;
@@ -42,6 +56,10 @@ export type ValidCompendiumInput = {
   license_name: string;
   license_url: string;
   source_type: CompendiumSourceType;
+  source_category: LibrarySourceCategory;
+  source_subtype: LibrarySourceSubtype;
+  clone_policy: LibrarySourceClonePolicy;
+  default_player_visibility: LibrarySourcePlayerVisibility;
   source_url: string;
   source_notes: string;
   version: string;
@@ -56,6 +74,10 @@ export const DND_5E_2014_STARTER_COMPENDIUM: CompendiumInput = {
   licenseName: "Manual placeholder",
   licenseUrl: "",
   sourceType: "manual",
+  sourceCategory: "expansion_supplement",
+  sourceSubtype: "supplement",
+  clonePolicy: "locked_to_system",
+  defaultPlayerVisibility: "visible",
   sourceUrl: "",
   sourceNotes:
     "Container only. No rules text, SRD content, book text, or third-party data imported.",
@@ -82,6 +104,10 @@ export function validateCompendiumInput(input: CompendiumInput) {
   const licenseName = input.licenseName.trim();
   const licenseUrl = input.licenseUrl.trim();
   const sourceType = input.sourceType.trim();
+  const sourceCategory = input.sourceCategory.trim();
+  const sourceSubtype = input.sourceSubtype.trim();
+  const clonePolicy = input.clonePolicy.trim();
+  const defaultPlayerVisibility = input.defaultPlayerVisibility.trim();
   const sourceUrl = input.sourceUrl.trim();
   const sourceNotes = input.sourceNotes.trim();
   const version = input.version.trim();
@@ -117,6 +143,23 @@ export function validateCompendiumInput(input: CompendiumInput) {
     fieldErrors.sourceType = "Choose a supported source type.";
   }
 
+  if (!isLibrarySourceCategory(sourceCategory)) {
+    fieldErrors.sourceCategory = "Choose a supported source category.";
+  }
+
+  if (!isLibrarySourceSubtype(sourceSubtype)) {
+    fieldErrors.sourceSubtype = "Choose a supported source subtype.";
+  }
+
+  if (!isLibrarySourceClonePolicy(clonePolicy)) {
+    fieldErrors.clonePolicy = "Choose a supported clone policy.";
+  }
+
+  if (!isLibrarySourcePlayerVisibility(defaultPlayerVisibility)) {
+    fieldErrors.defaultPlayerVisibility =
+      "Choose a supported default player visibility.";
+  }
+
   if (sourceUrl && !isValidishUrl(sourceUrl)) {
     fieldErrors.sourceUrl = "Enter a valid URL, or leave it blank.";
   }
@@ -149,6 +192,11 @@ export function validateCompendiumInput(input: CompendiumInput) {
       license_name: licenseName,
       license_url: licenseUrl,
       source_type: sourceType as CompendiumSourceType,
+      source_category: sourceCategory as LibrarySourceCategory,
+      source_subtype: sourceSubtype as LibrarySourceSubtype,
+      clone_policy: clonePolicy as LibrarySourceClonePolicy,
+      default_player_visibility:
+        defaultPlayerVisibility as LibrarySourcePlayerVisibility,
       source_url: sourceUrl,
       source_notes: sourceNotes,
       version,

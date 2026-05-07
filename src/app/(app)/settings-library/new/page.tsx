@@ -3,6 +3,7 @@ import { ArrowLeft, Sparkles } from "lucide-react";
 
 import { CreateSettingsLibraryForm } from "@/components/settings-library/create-settings-library-form";
 import { PageHeader } from "@/components/page-header";
+import { getGameSystemsForSettingsLibraryForm } from "@/lib/settings-libraries";
 import { STARTER_FANTASY_SETTINGS_LIBRARY } from "@/lib/settings-library-validation";
 
 type NewSettingsLibraryPageProps = {
@@ -14,7 +15,10 @@ type NewSettingsLibraryPageProps = {
 export default async function NewSettingsLibraryPage({
   searchParams,
 }: NewSettingsLibraryPageProps) {
-  const { starter } = await searchParams;
+  const [{ starter }, gameSystems] = await Promise.all([
+    searchParams,
+    getGameSystemsForSettingsLibraryForm(),
+  ]);
   const defaultValues =
     starter === "fantasy" ? STARTER_FANTASY_SETTINGS_LIBRARY : undefined;
 
@@ -59,7 +63,10 @@ export default async function NewSettingsLibraryPage({
             Slice 4C.
           </p>
           <div className="mt-6">
-            <CreateSettingsLibraryForm defaultValues={defaultValues} />
+            <CreateSettingsLibraryForm
+              defaultValues={defaultValues}
+              gameSystems={gameSystems}
+            />
           </div>
         </div>
       </section>
