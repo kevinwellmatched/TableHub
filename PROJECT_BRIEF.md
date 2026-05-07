@@ -32,12 +32,17 @@ The first target system is **D&D 5e 2014**.
 
 TableHub has three major faces.
 
-### 1. Compendium Library
+### 1. Reusable Library
 
-A book-style, readable, browsable, searchable library for game systems and rules content.
+A readable, browsable, searchable hub for Systems, Library Sources, Entry Types,
+and Master Entries.
 
 Examples of content:
 
+- Core rulebooks
+- Expansions and supplements
+- Setting and world lore sources
+- Adventures and modules
 - Rules
 - Classes
 - Subclasses
@@ -125,14 +130,17 @@ The app should support dark mode and light mode. GMs should eventually be able t
 Use these labels for the first app shell:
 
 1. Dashboard
-2. Compendium
+2. Library
 3. Systems
-4. Settings Library
-5. Projects
-6. Campaigns
-7. Characters
-8. Files
-9. Account
+4. Projects
+5. Campaigns
+6. Characters
+7. Files
+8. Account
+
+`Library` opens `/master-library`. Compendium, Settings Library, Entry Types,
+and Master Entries remain real workflows and routes, but they live under the
+broader Library mental model instead of separate top-level sidebar buckets.
 
 Search should be prominent globally and should eventually support a `Ctrl+K` command palette.
 

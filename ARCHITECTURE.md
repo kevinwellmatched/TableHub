@@ -132,12 +132,13 @@ use linked copies with overrides instead of directly mutating a master entry.
 The app reads and writes Master Entries with normal Supabase clients and relies
 on Row Level Security for access.
 
-Slice 4F adds navigation polish around this layer. The protected
-`/master-library` overview page links together Game Systems, Compendiums,
-Settings Libraries, Entry Types, and Master Entries as one reusable-original
-workflow. It does not add database schema, SQL, new tables, imports,
-tags/folders, rich text editing, Project sources, or overrides. Slice 5 begins
-Project source linking and override groundwork.
+Slice 4F adds navigation polish around this layer. Slice 5C.1 promotes the
+protected `/master-library` overview into the top-level `Library` sidebar item.
+The page links together Systems, Library Sources, Entry Types, and Master
+Entries as one reusable-original workflow while preserving `/compendium`,
+`/settings-library`, `/entry-types`, and `/master-entries` as concrete internal
+routes. It does not add database schema, SQL, new tables, imports, tags/folders,
+rich text editing, Project sources, or overrides.
 
 ### 2. Project Layer
 

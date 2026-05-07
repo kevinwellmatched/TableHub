@@ -8,7 +8,7 @@ TableHub is a private-first tabletop roleplaying game hub for GMs and players.
 
 It combines:
 
-- Compendium library
+- Reusable Library hub
 - GM workspace
 - Player binder
 - Settings/lore wiki
@@ -125,14 +125,18 @@ General rules:
 Use these initial app sections:
 
 - Dashboard
-- Compendium
+- Library
 - Systems
-- Settings Library
 - Projects
 - Campaigns
 - Characters
 - Files
 - Account
+
+`Library` links to `/master-library`. The concrete `/compendium`,
+`/settings-library`, `/entry-types`, and `/master-entries` workflows remain
+reachable from Library pages and internal links, but they should not be separate
+top-level sidebar items.
 
 Avoid using "Games" as a major technical model unless clarified later.
 

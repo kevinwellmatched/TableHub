@@ -39,11 +39,11 @@ export default function DashboardPage() {
             </div>
             <div>
               <h2 className="text-lg font-semibold text-[var(--text-main)]">
-                Master Library
+                Library
               </h2>
               <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
-                Build reusable systems, compendiums, Settings Libraries, entry
-                types, and master entries before attaching them to Projects.
+                Build reusable Library Sources, Entry Types, and Master Entries
+                before attaching them to Projects.
               </p>
             </div>
           </div>
@@ -51,7 +51,7 @@ export default function DashboardPage() {
             href="/master-library"
             className="inline-flex h-10 items-center justify-center rounded-lg border border-[#FCA311]/50 px-4 text-sm font-semibold text-[#FCA311] transition hover:bg-[#FCA311] hover:text-black"
           >
-            Open Master Library
+            Open Library
           </Link>
         </div>
       </section>
@@ -69,7 +69,7 @@ export default function DashboardPage() {
 
       <section>
         <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-[#FCA311]">
-          Explore TableHub
+          Primary workspaces
         </h2>
         <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {navItems.map((section) => (

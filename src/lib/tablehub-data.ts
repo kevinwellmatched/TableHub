@@ -1,5 +1,4 @@
 import {
-  BookOpen,
   Boxes,
   Castle,
   CircleUserRound,
@@ -20,6 +19,7 @@ export type NavItem = {
   href: string;
   description: string;
   icon: LucideIcon;
+  activePathPrefixes?: string[];
 };
 
 export type DashboardCard = {
@@ -38,22 +38,23 @@ export const navItems: NavItem[] = [
     icon: FolderKanban,
   },
   {
-    title: "Compendium",
-    href: "/compendium",
-    description: "Rules and reference Library Sources.",
-    icon: BookOpen,
+    title: "Library",
+    href: "/master-library",
+    description: "Reusable Systems, Library Sources, Entry Types, and Master Entries.",
+    icon: Library,
+    activePathPrefixes: [
+      "/master-library",
+      "/compendium",
+      "/settings-library",
+      "/entry-types",
+      "/master-entries",
+    ],
   },
   {
     title: "Systems",
     href: "/systems",
     description: "Rulesets beginning with D&D 5e 2014.",
     icon: Boxes,
-  },
-  {
-    title: "Settings Library",
-    href: "/settings-library",
-    description: "Reusable lore, factions, places, and histories.",
-    icon: Library,
   },
   {
     title: "Projects",
@@ -96,12 +97,12 @@ export const dashboardCards: DashboardCard[] = [
     icon: Compass,
   },
   {
-    title: "Master Library",
-    eyebrow: "Reusable originals",
+    title: "Library",
+    eyebrow: "Reusable content",
     description:
-      "Build Systems, Library Sources, Entry Types, and Master Entries.",
-    meta: "Project Library ready",
-    icon: BookOpen,
+      "Open the reusable content hub for Library Sources, Entry Types, and Master Entries.",
+    meta: "Linked overrides later",
+    icon: Library,
   },
   {
     title: "Active Characters",
@@ -109,14 +110,6 @@ export const dashboardCards: DashboardCard[] = [
     description: "Track character profiles, campaign membership, and sheet plans.",
     meta: "Sheets not built yet",
     icon: ScrollText,
-  },
-  {
-    title: "Settings Library",
-    eyebrow: "Lore workspace",
-    description:
-      "Keep reusable setting lore Library Sources organized.",
-    meta: "Linked overrides later",
-    icon: Library,
   },
   {
     title: "Dice Roller",
@@ -147,6 +140,19 @@ export const dashboardCards: DashboardCard[] = [
     icon: UsersRound,
   },
 ];
+
+export function getActiveNavItem(pathname: string) {
+  return (
+    navItems.find((item) => isNavItemActive(item, pathname)) ?? navItems[0]
+  );
+}
+
+export function isNavItemActive(item: NavItem, pathname: string) {
+  const prefixes = item.activePathPrefixes ?? [item.href];
+  return prefixes.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
+}
 
 export const systemStatusCards = [
   {

@@ -1,6 +1,6 @@
 const workflowSteps = [
   "Create or choose a Game System.",
-  "Create a Library Source, currently a Compendium or Settings Library.",
+  "Create a Library Source for rules, lore, modules, or other reusable material.",
   "Define Entry Types.",
   "Create Master Entries.",
   "Attach compatible sources into a Project Library.",

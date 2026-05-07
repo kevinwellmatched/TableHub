@@ -424,8 +424,8 @@ npm run build
 ### Expected
 
 - `/master-library` is a protected overview for reusable original content.
-- Overview cards connect Systems, Compendiums, Settings Libraries, Entry Types,
-  and Master Entries.
+- Overview cards connect Systems, concrete Library Source workflows, Entry
+  Types, and Master Entries.
 - Existing master-library list and detail pages have compact cross-links.
 - Empty states explain the next useful step.
 - This slice adds navigation polish only.
@@ -437,8 +437,8 @@ npm run build
 - [ ] Logged-out user cannot access `/master-library`.
 - [ ] Logged-in user with profile can access `/master-library`.
 - [ ] Master Library overview page loads.
-- [ ] Overview cards render for Systems, Compendiums, Settings Libraries, Entry
-      Types, and Master Entries.
+- [ ] Overview cards render for Systems, concrete Library Source workflows,
+      Entry Types, and Master Entries.
 - [ ] Counts or list summaries render without crashing.
 - [ ] Each overview card links to the correct list page.
 - [ ] Create links go to the correct new pages.
@@ -595,6 +595,42 @@ npm run build
   intentionally remain nullable in this slice.
 - This slice does not create a unified `library_sources` table, move
   `master_entries`, import content, or build Project Entry Overrides.
+
+---
+
+## Slice 5C.1: Library Navigation Alignment
+
+### Expected
+
+- Sidebar shows `Library`, not `Compendium` or `Settings Library`, as the
+  top-level reusable-content entry.
+- `Library` opens `/master-library`.
+- Existing concrete Library workflows remain reachable from Library pages and
+  internal links.
+- No SQL, migrations, route removals, table renames, form shape changes, imports,
+  rich text, tags/folders, or overrides are added.
+
+### Manual Tests
+
+- [ ] Sidebar shows `Library`.
+- [ ] Sidebar does not show `Compendium` as a top-level item.
+- [ ] Sidebar does not show `Settings Library` as a top-level item.
+- [ ] `Library` opens `/master-library`.
+- [ ] `/compendium` still loads.
+- [ ] `/settings-library` still loads.
+- [ ] `/entry-types` still loads.
+- [ ] `/master-entries` still loads.
+- [ ] Existing create/view flows for Compendiums remain reachable.
+- [ ] Existing create/view flows for Settings Libraries remain reachable.
+- [ ] No SQL was added.
+- [ ] Run `npm.cmd run test`.
+- [ ] Run `npm.cmd run lint`.
+- [ ] Run `npm.cmd run build`.
+
+### Known Issues
+
+- This slice only changes navigation/copy organization. It does not create a
+  unified `library_sources` table or change existing database relationships.
 
 ---
 

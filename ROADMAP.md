@@ -326,7 +326,8 @@ Goal:
   content workflow.
 - Make Systems, Compendiums, Settings Libraries, Entry Types, and Master Entries
   easier to move between.
-- Keep the top-level sidebar labels unchanged.
+- Keep the then-current top-level sidebar labels unchanged. Slice 5C.1 later
+  promotes `/master-library` to the top-level `Library` sidebar item.
 - Keep this slice UI/navigation-only.
 
 Build:
@@ -465,6 +466,36 @@ Done when:
   sources when possible.
 - No imports, copyrighted content, unified `library_sources` migration, or
   `master_entries` parent migration are added.
+- Test, lint, and build pass.
+
+### Slice 5C.1: Library Navigation Alignment
+
+Status: Complete in the current navigation/copy polish slice.
+
+Goal:
+
+- Make `Library` the top-level reusable-content sidebar entry.
+- Keep Systems, Projects, Campaigns, Characters, Files, and Account as
+  top-level app sections.
+- Keep the existing concrete Library workflows reachable without presenting
+  Compendium and Settings Library as separate top-level mental buckets.
+
+Build:
+
+- Sidebar label/order update:
+  Dashboard, Library, Systems, Projects, Campaigns, Characters, Files, Account.
+- `Library` links to `/master-library`.
+- `/compendium`, `/settings-library`, `/entry-types`, and `/master-entries`
+  remain active under the Library sidebar item.
+- Dashboard copy points users to Library as the reusable content hub.
+- `/master-library` explains Library Sources and links to Systems,
+  rules-reference sources, lore-world sources, Entry Types, and Master Entries.
+
+Done when:
+
+- No SQL, migrations, table renames, route removals, form shape changes,
+  imports, rich text, tags/folders, or overrides are added.
+- Existing Library routes still load.
 - Test, lint, and build pass.
 
 ### Slice 5D: Project Entry Override Groundwork

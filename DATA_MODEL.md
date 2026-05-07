@@ -29,6 +29,10 @@ Source tables and prepares Projects for one optional primary System. It does
 not create a unified `library_sources` table and does not move `master_entries`
 to a new parent model yet.
 
+Slice 5C.1 is navigation and copy alignment only. It groups Compendium,
+Settings Library, Entry Types, and Master Entries under the top-level `Library`
+sidebar item without changing routes, tables, columns, or data relationships.
+
 ---
 
 ## Identity and Profiles

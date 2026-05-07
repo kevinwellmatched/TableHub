@@ -53,6 +53,14 @@ const comingLater = [
   },
 ];
 
+const librarySourceCategories = [
+  "Core Rulebooks",
+  "Expansions & Supplements",
+  "Setting & World Lore",
+  "Adventures & Modules",
+  "Other",
+];
+
 export default async function MasterLibraryPage() {
   const overview = await getMasterLibraryOverview();
 
@@ -60,8 +68,8 @@ export default async function MasterLibraryPage() {
     <div className="space-y-8">
       <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
         <PageHeader
-          title="Master Library"
-          description="The reusable original content area for Systems, Library Sources, Entry Types, and Master Entries. Compendiums and Settings Libraries are the current concrete source containers."
+          title="Library"
+          description="The reusable content hub for Systems, Library Sources, Entry Types, and Master Entries. Build original sources here, then attach them to Projects without changing the originals."
         />
 
         <div className="flex flex-col gap-3 sm:flex-row">
@@ -83,14 +91,28 @@ export default async function MasterLibraryPage() {
       </div>
 
       <section className="rounded-lg border border-[#FCA311]/30 bg-[#FCA311]/10 p-5">
-        <h2 className="text-lg font-semibold text-[var(--text-main)]">
-          Keep master records safe
-        </h2>
-        <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
-          Project-specific changes and overrides come later. Master records should
-          stay reusable originals so Projects can attach Library Sources without
-          directly mutating the source content.
-        </p>
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
+          <div>
+            <h2 className="text-lg font-semibold text-[var(--text-main)]">
+              Library Sources stay reusable
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
+              Library Sources are reusable containers under Systems. They include
+              rules references, lore sources, modules, private homebrew packets,
+              and other original material that Projects can link to later.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {librarySourceCategories.map((category) => (
+              <span
+                key={category}
+                className="rounded-md border border-[#FCA311]/25 bg-black/20 px-2 py-1 text-xs font-medium text-[#FCA311]"
+              >
+                {category}
+              </span>
+            ))}
+          </div>
+        </div>
       </section>
 
       {overview.totalCount === 0 ? (
@@ -99,9 +121,8 @@ export default async function MasterLibraryPage() {
             Start with a Game System
           </h2>
           <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
-            Add D&D 5e 2014 or another ruleset first, then create a Library Source
-            such as a Compendium or Settings Library, define Entry Types, and add
-            Master Entries.
+            Add D&D 5e 2014 or another ruleset first, then create a Library
+            Source for rules or lore, define Entry Types, and add Master Entries.
           </p>
           <Link
             href="/systems/new?starter=dnd-5e-2014"
@@ -114,7 +135,7 @@ export default async function MasterLibraryPage() {
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
         <MasterLibraryCard
-          title="Game Systems"
+          title="Systems"
           description="Ruleset foundations such as D&D 5e 2014 or a private custom system."
           count={overview.gameSystems.length}
           countName="system"
@@ -124,29 +145,29 @@ export default async function MasterLibraryPage() {
           icon={Boxes}
         />
         <MasterLibraryCard
-          title="Compendiums"
-          description="Current Library Source containers for rules and reference material linked to Systems."
+          title="Rules-reference sources"
+          description="Create Compendiums for core rulebooks, expansions, supplements, and other rules-reference sources."
           count={overview.compendiums.length}
           countName="compendium"
           href="/compendium"
           createHref="/compendium/new"
-          createLabel="Create Compendium"
+          createLabel="Create Source"
           icon={BookOpen}
         />
         <MasterLibraryCard
-          title="Settings Libraries"
-          description="Current Library Source containers for setting and world lore."
+          title="Lore-world sources"
+          description="Create Settings Libraries for setting lore, worldbuilding, factions, places, and adventures."
           count={overview.settingsLibraries.length}
           countName="Settings Library"
           countPlural="Settings Libraries"
           href="/settings-library"
           createHref="/settings-library/new"
-          createLabel="Create Settings Library"
+          createLabel="Create Source"
           icon={Library}
         />
         <MasterLibraryCard
           title="Entry Types"
-          description="Reusable category definitions for future Compendium and Settings Library entries."
+          description="Reusable category definitions for entries inside Library Sources."
           count={overview.entryTypes.length}
           countName="Entry Type"
           href="/entry-types"
