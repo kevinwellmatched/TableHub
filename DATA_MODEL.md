@@ -176,31 +176,57 @@ Rules:
 - Starter presets are metadata only and must not import copyrighted rules text
   or lore content.
 
-### compendium_entries
+### master_entries
 
-Entries inside compendiums.
+Shared original entries for both Compendiums and Settings Libraries.
 
-Likely fields:
+Current Slice 4E table:
 
-- id
-- compendium_id
-- entry_type_id
-- title
-- slug
-- aliases
-- summary
-- body
-- properties
-- visibility
-- version
-- created_at
-- updated_at
+- id uuid primary key
+- owner_id uuid not null references auth.users(id)
+- library_kind text not null
+- compendium_id uuid references public.compendiums(id)
+- settings_library_id uuid references public.settings_libraries(id)
+- entry_type_id uuid not null references public.entry_types(id)
+- title text not null
+- slug text not null
+- aliases text[] not null default '{}'
+- summary text
+- body text
+- body_format text not null
+- properties jsonb not null default '{}'
+- visibility text not null
+- sort_order integer not null default 0
+- license_name text
+- license_url text
+- source_type text not null
+- source_url text
+- source_notes text
+- version text not null
+- created_at timestamptz not null default now()
+- updated_at timestamptz not null default now()
 
-Setting entries do not exist yet. When added later, they should reference
-`entry_types`.
+Rules:
 
-Compendium entries do not exist yet. When added later, they should reference
-`entry_types`.
+- `master_entries` is the shared table for both Compendium entries and Settings
+  Library entries. Do not create separate app systems for `compendium_entries`
+  and `setting_entries` yet.
+- Each Master Entry belongs to exactly one parent library. If `library_kind` is
+  `compendium`, `compendium_id` is required and `settings_library_id` must be
+  empty. If `library_kind` is `settings_library`, `settings_library_id` is
+  required and `compendium_id` must be empty.
+- Each Master Entry points to one Entry Type.
+- Body content is simple plain text or Markdown textarea content for now.
+- `properties` stores optional structured JSON object data.
+- Visibility supports `private`, `shared`, and `public`.
+- Access is enforced with Supabase Row Level Security.
+- Slice 4E does not add rich text editing, Markdown paste conversion, wiki
+  links, tags, folders, imports, project linking, project overrides, public
+  marketplace behavior, 5etools imports, SRD content, or copyrighted book text.
+- Master Entries are original reusable content. Future Project customization
+  must use linked copies with overrides instead of mutating Master Entries
+  directly.
+- Use the label "Settings Library," not "Worlds," for setting-lore libraries.
 
 ---
 
@@ -254,36 +280,8 @@ These fields prepare TableHub for future manual entries, owned-note references,
 Markdown/PDF/CSV imports, campaign exports, and external references. Future
 entries and import tools must preserve provenance clearly.
 
-### setting_entries
-
-Entries inside a Settings Library.
-
-Likely fields:
-
-- id
-- settings_library_id
-- entry_type_id
-- title
-- slug
-- aliases
-- summary
-- body
-- properties
-- visibility
-- version
-- created_at
-- updated_at
-
-Examples:
-
-- NPC
-- Location
-- Faction
-- Deity
-- Timeline Event
-- Region
-- Organization
-- Custom type
+Settings Library entries now use the shared `master_entries` table. Separate
+Settings Library entry app systems are intentionally deferred.
 
 ---
 

@@ -4,6 +4,7 @@ import {
   ClipboardList,
   Eye,
   FileArchive,
+  FileText,
   FolderTree,
   GitBranch,
   Library,
@@ -18,6 +19,10 @@ import {
   getSettingsLibraryById,
   type SettingsLibraryDetail,
 } from "@/lib/settings-libraries";
+import {
+  getMasterEntriesBySettingsLibraryId,
+  type MasterEntryListItem,
+} from "@/lib/master-entries";
 
 type SettingsLibraryDetailPageProps = {
   params: Promise<{
@@ -67,6 +72,9 @@ export default async function SettingsLibraryDetailPage({
   if (!settingsLibrary) {
     return <SettingsLibraryUnavailableState />;
   }
+
+  const masterEntries =
+    await getMasterEntriesBySettingsLibraryId(settingsLibraryId);
 
   return (
     <div className="space-y-8">
@@ -159,6 +167,43 @@ export default async function SettingsLibraryDetailPage({
       </section>
 
       <section>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[#FCA311]/30 bg-[#14213D] text-[#FCA311]">
+              <FileText aria-hidden="true" className="h-5 w-5" />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-[var(--text-main)]">
+                Master Entries
+              </h2>
+              <p className="text-sm text-[var(--text-muted)]">
+                Basic entries are original master records. Project overrides come
+                later.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/master-entries/new"
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-[#FCA311]/50 px-4 text-sm font-semibold text-[#FCA311] transition hover:bg-[#FCA311] hover:text-black"
+          >
+            Create Master Entry
+          </Link>
+        </div>
+
+        {masterEntries.length > 0 ? (
+          <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {masterEntries.map((entry) => (
+              <ParentMasterEntryCard key={entry.id} entry={entry} />
+            ))}
+          </div>
+        ) : (
+          <p className="mt-4 rounded-lg border border-[var(--line)] bg-black/15 p-4 text-sm text-[var(--text-muted)]">
+            No Master Entries belong to this Settings Library yet.
+          </p>
+        )}
+      </section>
+
+      <section>
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[#FCA311]/30 bg-[#14213D] text-[#FCA311]">
             <FolderTree aria-hidden="true" className="h-5 w-5" />
@@ -187,6 +232,28 @@ export default async function SettingsLibraryDetailPage({
         </div>
       </section>
     </div>
+  );
+}
+
+function ParentMasterEntryCard({ entry }: { entry: MasterEntryListItem }) {
+  return (
+    <article className="rounded-lg border border-[var(--line)] bg-[var(--panel-bg)] p-5 shadow-[0_18px_60px_rgba(0,0,0,0.2)]">
+      <h3 className="text-lg font-semibold text-[var(--text-main)]">
+        {entry.title}
+      </h3>
+      <p className="mt-2 line-clamp-3 text-sm leading-6 text-[var(--text-muted)]">
+        {entry.summary || "No summary yet."}
+      </p>
+      <p className="mt-4 text-xs font-semibold uppercase tracking-[0.14em] text-[#FCA311]/85">
+        {entry.entryType?.name || "Entry Type unavailable"} - v{entry.version}
+      </p>
+      <Link
+        href={`/master-entries/${entry.id}`}
+        className="mt-4 inline-flex h-10 items-center justify-center rounded-lg border border-[#FCA311]/50 px-4 text-sm font-semibold text-[#FCA311] transition hover:bg-[#FCA311] hover:text-black"
+      >
+        Open Master Entry
+      </Link>
+    </article>
   );
 }
 

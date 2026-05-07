@@ -272,3 +272,67 @@ master Settings Library entries.
 
 The app uses normal Supabase server clients and relies on RLS. Do not add a
 service role key to the app.
+
+## Slice 4E: Basic Master Entries Foundation
+
+Slice 4E assumes the Basic Master Entries SQL has already been run in Supabase.
+
+The database should now include:
+
+- `public.master_entries`
+
+The `master_entries` table stores reusable original entries for both
+Compendiums and Settings Libraries. It is one shared model; this slice does not
+create separate `compendium_entries` or `setting_entries` app systems.
+
+Important fields include:
+
+- `owner_id`
+- `library_kind`
+- `compendium_id`
+- `settings_library_id`
+- `entry_type_id`
+- `title`
+- `slug`
+- `aliases`
+- `summary`
+- `body`
+- `body_format`
+- `properties`
+- `visibility`
+- `sort_order`
+- `license_name`
+- `license_url`
+- `source_type`
+- `source_url`
+- `source_notes`
+- `version`
+
+Each Master Entry belongs to exactly one parent library. Compendium entries use
+`library_kind = 'compendium'` and a `compendium_id`. Settings Library entries
+use `library_kind = 'settings_library'` and a `settings_library_id`. Every entry
+also points to one `entry_types` row.
+
+Slice 4E stores simple plain text or Markdown textarea content only.
+`properties` stores JSON object data. It does not add rich text editing,
+Markdown paste conversion, wiki links, tags, folders, imports, Project links,
+Project overrides, marketplace behavior, SRD content, copyrighted rules text, or
+5etools imports.
+
+Expected Row Level Security behavior:
+
+- Authenticated users can read Master Entries they own.
+- Authenticated users can read public Master Entries when the parent library is
+  also public.
+- Public Master Entries under private parent libraries should not be visible to
+  unrelated users.
+- Only the owner can create, update, or delete their Master Entries.
+- `shared` is reserved for later collaboration behavior and currently behaves
+  like private content unless later policies expand it.
+
+Master Entries are original reusable content. Future Project customization must
+use linked copies with overrides. A Project should not directly mutate a Master
+Entry.
+
+The app uses normal Supabase server clients and relies on RLS. Do not add a
+service role key to the app.

@@ -35,6 +35,13 @@ export default async function CompendiumPage() {
 
         <div className="flex flex-col gap-3 sm:flex-row">
           <Link
+            href="/master-entries"
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[var(--line)] px-4 text-sm font-semibold text-[var(--text-main)] transition hover:border-[#FCA311]/60 hover:text-[#FCA311]"
+          >
+            <Layers aria-hidden="true" className="h-4 w-4" />
+            View Master Entries
+          </Link>
+          <Link
             href="/entry-types"
             className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[var(--line)] px-4 text-sm font-semibold text-[var(--text-main)] transition hover:border-[#FCA311]/60 hover:text-[#FCA311]"
           >
@@ -59,11 +66,29 @@ export default async function CompendiumPage() {
       </div>
 
       {compendiums.length > 0 ? (
-        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {compendiums.map((compendium) => (
-            <CompendiumCard key={compendium.id} compendium={compendium} />
-          ))}
-        </section>
+        <div className="space-y-6">
+          <section className="rounded-lg border border-[#FCA311]/30 bg-[#FCA311]/10 p-5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm leading-6 text-[var(--text-muted)]">
+                Basic entries are original master records. Project overrides come
+                later through linked copies, not direct edits to master content.
+              </p>
+              <Link
+                href="/master-entries/new"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-[#FCA311]/50 px-4 text-sm font-semibold text-[#FCA311] transition hover:bg-[#FCA311] hover:text-black"
+              >
+                <Plus aria-hidden="true" className="h-4 w-4" />
+                Create Master Entry
+              </Link>
+            </div>
+          </section>
+
+          <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {compendiums.map((compendium) => (
+              <CompendiumCard key={compendium.id} compendium={compendium} />
+            ))}
+          </section>
+        </div>
       ) : (
         <EmptyCompendiumState />
       )}

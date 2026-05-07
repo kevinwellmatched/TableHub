@@ -355,6 +355,70 @@ npm run build
 
 ---
 
+## Slice 4E: Basic Master Entries Foundation
+
+### Expected
+
+- User can create basic original Master Entries.
+- Master Entries use one shared table for Compendium entries and Settings
+  Library entries.
+- Each Master Entry belongs to exactly one parent Compendium or Settings
+  Library and points to one Entry Type.
+- Body content is plain text or Markdown textarea content only.
+- Properties are stored as JSON object data.
+- No rich text editing, Markdown paste conversion, wiki links, tags, folders,
+  imports, Project links, Project overrides, public marketplace behavior, SRD
+  content, copyrighted book text, or 5etools imports are added in this slice.
+- Future Project customization must use linked copies with overrides.
+
+### Manual Tests
+
+- [ ] Logged-out user cannot access `/master-entries`.
+- [ ] Logged-in user with profile can access `/master-entries`.
+- [ ] Empty state appears.
+- [ ] User can open `/master-entries/new`.
+- [ ] Helpful message appears if no Compendiums, Settings Libraries, or Entry
+      Types exist.
+- [ ] Title is required.
+- [ ] Long title is rejected.
+- [ ] Invalid library kind is rejected.
+- [ ] Parent library is required.
+- [ ] Parent mismatch is rejected.
+- [ ] Entry Type is required.
+- [ ] Too many aliases are rejected.
+- [ ] Invalid body format is rejected.
+- [ ] Invalid properties JSON is rejected.
+- [ ] Properties JSON array is rejected.
+- [ ] Invalid visibility is rejected.
+- [ ] Invalid sort order is rejected.
+- [ ] Invalid source URL is rejected.
+- [ ] Starter preset fills the form.
+- [ ] User can create a Compendium Master Entry.
+- [ ] User can create a Settings Library Master Entry.
+- [ ] User is redirected to detail page after creation.
+- [ ] Created entry appears on `/master-entries`.
+- [ ] Created entry appears or is linked from its parent Compendium or Settings
+      Library detail page.
+- [ ] Master Entry detail page loads.
+- [ ] Body, aliases, properties, source/provenance, and placeholder cards
+      render.
+- [ ] Private Master Entries are not visible to unrelated users.
+- [ ] Public Master Entries under public parent libraries are visible to
+      authenticated users.
+- [ ] Public Master Entries under private parent libraries are not visible to
+      unrelated users.
+- [ ] No imports, tags/folders, Project links, or overrides exist yet.
+- [ ] Run `npm.cmd run test`.
+- [ ] Run `npm.cmd run lint`.
+- [ ] Run `npm.cmd run build`.
+
+### Known Issues
+
+- The Supabase `master_entries` table and RLS policies must exist in the project
+  database before manual Basic Master Entries testing.
+
+---
+
 ## Slice 5: Project Imports and Linked Overrides
 
 ### Expected

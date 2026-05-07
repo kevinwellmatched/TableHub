@@ -6,6 +6,7 @@ import { getSupabaseAnonKey, getSupabaseUrl, hasSupabaseEnv } from "./env";
 const protectedRoutes = [
   "/dashboard",
   "/compendium",
+  "/master-entries",
   "/systems",
   "/settings-library",
   "/projects",

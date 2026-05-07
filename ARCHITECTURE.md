@@ -35,6 +35,7 @@ Examples:
 - Master compendiums
 - Master Settings Libraries
 - Entry Type definitions
+- Master Entries
 - Campaign templates
 - Entry templates
 - Character sheet templates
@@ -69,6 +70,15 @@ Slice 4D creates definitions only. It does not create actual entries, rich-text
 body content, tags, folders, imports, field schemas, Project links, or
 overrides.
 
+Master Entries are the fifth concrete Master Library foundation record. A Master
+Entry is shared by Compendiums and Settings Libraries through one
+`master_entries` model. Each entry belongs to exactly one parent library, points
+to one Entry Type, and stores simple plain text or Markdown textarea content,
+aliases, summary, JSON properties, visibility, version, and source/provenance
+metadata. Slice 4E does not add rich text editing, Markdown paste conversion,
+wiki links, tags, folders, imports, Project links, Project overrides, public
+marketplace behavior, SRD content, copyrighted book text, or 5etools imports.
+
 System provenance fields record license and source information so future SRD
 imports, private Markdown/PDF/CSV imports, manual entries, and external
 references do not become unclear or unsafe. Future Projects will link to Game
@@ -91,6 +101,11 @@ Entry Types prepare both Compendium and Settings Library entry creation without
 creating any content yet. Future entries should point to Entry Types, and future
 Project customization must use linked copies with overrides rather than direct
 mutation of master definitions or master entries.
+
+Master Entries are original reusable content. Future Project customization must
+use linked copies with overrides instead of directly mutating a master entry.
+The app reads and writes Master Entries with normal Supabase clients and relies
+on Row Level Security for access.
 
 ### 2. Project Layer
 

@@ -156,7 +156,7 @@ Create the workspace layer.
 
 ## Slice 4: Systems, Compendiums, and Settings Library
 
-Status: In progress. Slice 4A Game Systems Foundation, Slice 4B Master Compendiums, Slice 4C Master Settings Libraries, and Slice 4D Master Entry Types are complete in their foundation slices.
+Status: In progress. Slice 4A Game Systems Foundation, Slice 4B Master Compendiums, Slice 4C Master Settings Libraries, Slice 4D Master Entry Types, and Slice 4E Basic Master Entries are complete in their foundation slices.
 
 ### Goal
 
@@ -281,21 +281,40 @@ Done when:
   content are added
 - Test, lint, and build pass
 
-### Build
+### Slice 4E: Basic Master Entries Foundation
 
-- Master Entries
-- Entry types
-- Tags
-- Folders
-- Basic CRUD screens
+Status: Complete in the current basic Master Entries foundation slice.
 
-### Done When
+Goal:
 
-- User can create a system
-- User can create a compendium
-- User can create a Settings Library
-- User can create basic entries
-- Entries can be tagged and categorized
+- Add basic reusable original entries for Compendiums and Settings Libraries.
+- Use one shared `master_entries` model for both library kinds.
+- Keep content simple with textarea plain text or Markdown only.
+- Keep future Project customization safe through linked copies with overrides.
+
+Build:
+
+- Master Entries utility list page at `/master-entries`
+- Create Master Entry page at `/master-entries/new`
+- Master Entry detail page at `/master-entries/[masterEntryId]`
+- Supabase helpers that rely on Row Level Security
+- Starter preset buttons for placeholder Compendium and Settings Library notes
+- Links from Compendium, Settings Library, and Entry Type foundation pages
+
+Done when:
+
+- Logged-in user with a profile can open `/master-entries`
+- User can create Compendium Master Entries and Settings Library Master Entries
+- User is redirected to the Master Entry detail page after creation
+- Created entries appear on `/master-entries`
+- Created entries are linked from parent Compendium or Settings Library detail
+  pages
+- Master Entry detail page shows aliases, body, properties, source/provenance,
+  and placeholder cards
+- No rich text editing, imports, tags, folders, wiki links, Project links,
+  Project overrides, SRD content, copyrighted book text, or 5etools imports are
+  added
+- Test, lint, and build pass
 
 ---
 

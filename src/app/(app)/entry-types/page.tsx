@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
   CalendarDays,
   ExternalLink,
+  FileText,
   Layers,
   Library,
   Plus,
@@ -36,13 +37,22 @@ export default async function EntryTypesPage() {
           description="Reusable type definitions for future Compendium and Settings Library entries. This slice defines categories only; it does not create actual entries."
         />
 
-        <Link
-          href="/entry-types/new"
-          className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#FCA311] px-4 text-sm font-semibold text-black transition hover:bg-[#ffb33c]"
-        >
-          <Plus aria-hidden="true" className="h-4 w-4" />
-          Create Entry Type
-        </Link>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <Link
+            href="/master-entries"
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-[var(--line)] px-4 text-sm font-semibold text-[var(--text-main)] transition hover:border-[#FCA311]/60 hover:text-[#FCA311]"
+          >
+            <FileText aria-hidden="true" className="h-4 w-4" />
+            View Master Entries
+          </Link>
+          <Link
+            href="/entry-types/new"
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#FCA311] px-4 text-sm font-semibold text-black transition hover:bg-[#ffb33c]"
+          >
+            <Plus aria-hidden="true" className="h-4 w-4" />
+            Create Entry Type
+          </Link>
+        </div>
       </div>
 
       {entryTypes.length > 0 ? (
