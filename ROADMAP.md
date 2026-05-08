@@ -530,6 +530,42 @@ Build:
 - Tests cover effective entry resolution, field detection, properties merge,
   override visibility validation, and properties JSON validation
 
+### Slice 5E: Project Library Visibility and Player Read Mode
+
+Status: Implemented in this slice.
+
+Goal:
+
+- Let Players and Viewers safely read Project Library entries that are visible
+  to them.
+- Keep Owners and GMs in the Project Entry Override management experience.
+
+Build:
+
+- Project Library visibility resolver based on source default player visibility
+  plus `project_entry_overrides.override_visibility`
+- Player/Viewer read-only mode for `/projects/[projectId]/library`
+- Player/Viewer read-only mode for
+  `/projects/[projectId]/library/[masterEntryId]`
+- Owner/GM visibility badges for visible, GM-only, hidden, and inherited states
+- SQL documentation that replaces the broad Slice 5D override read policy
+- Tests for visibility resolution, role read rules, management permissions, and
+  read-mode data shaping
+- No rich text editor, Markdown paste conversion, wiki links, imports,
+  tags/folders, Project search, inline reveal blocks, or campaign-level
+  overrides yet
+
+### Done When
+
+- Owners and GMs can see all reachable Project Library entries and manage
+  overrides.
+- Players and Viewers see only entries resolved as `visible`.
+- Players and Viewers cannot see override reasons, edit/reset controls, hidden
+  entries, GM-only entries, or original vs overridden comparison sections.
+- `master_entries.visibility` remains master-library visibility and is not used
+  as Project player visibility.
+- Test, lint, and build pass.
+
 ---
 
 ## Slice 6: Rich Text Wiki and Entry Editing

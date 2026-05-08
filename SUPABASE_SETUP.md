@@ -335,6 +335,343 @@ Expected Row Level Security behavior:
 The app uses normal Supabase server clients and relies on RLS. Do not add a
 service role key to the app.
 
+## Slice 5E: Project Library Visibility and Player Read Mode
+
+Run this SQL in Supabase before manually testing Player or Viewer Project
+Library reads.
+
+This slice tightens the Slice 5D override read policy. Slice 5D allowed all
+Project members to read Project Entry Override rows while the UI was
+Owner/GM-only. Slice 5E removes that broad read path because override rows can
+contain GM notes, override reasons, hidden titles, and hidden body text.
+
+This SQL is policy/function-only. It does not create new app tables, rename
+Compendiums or Settings Libraries, or create a unified `library_sources` table.
+
+```sql
+create schema if not exists private;
+
+create or replace function private.current_project_role(target_project_id uuid)
+returns text
+language sql
+security definer
+set search_path = public
+as $$
+  select pm.role
+  from public.project_members pm
+  where pm.project_id = target_project_id
+    and pm.user_id = auth.uid()
+  limit 1;
+$$;
+
+create or replace function private.resolve_project_library_visibility(
+  source_default_visibility text,
+  override_visibility text
+)
+returns text
+language sql
+immutable
+set search_path = public
+as $$
+  select case
+    when override_visibility = 'visible' then 'visible'
+    when override_visibility = 'gm_only' then 'gm_only'
+    when override_visibility = 'hidden' then 'hidden'
+    when source_default_visibility = 'visible' then 'visible'
+    when source_default_visibility = 'gm_only' then 'gm_only'
+    else 'gm_only'
+  end;
+$$;
+
+create or replace function private.project_entry_source_default_visibility(
+  target_project_id uuid,
+  entry_library_kind text,
+  entry_compendium_id uuid,
+  entry_settings_library_id uuid
+)
+returns text
+language sql
+security definer
+set search_path = public
+as $$
+  select case
+    when entry_library_kind = 'compendium' then (
+      select c.default_player_visibility
+      from public.project_sources ps
+      join public.compendiums c
+        on c.id = ps.compendium_id
+      where ps.project_id = target_project_id
+        and ps.source_type = 'compendium'
+        and ps.compendium_id = entry_compendium_id
+      limit 1
+    )
+    when entry_library_kind = 'settings_library' then (
+      select sl.default_player_visibility
+      from public.project_sources ps
+      join public.settings_libraries sl
+        on sl.id = ps.settings_library_id
+      where ps.project_id = target_project_id
+        and ps.source_type = 'settings_library'
+        and ps.settings_library_id = entry_settings_library_id
+      limit 1
+    )
+    else null
+  end;
+$$;
+
+create or replace function private.can_read_project_library_entry(
+  target_project_id uuid,
+  target_master_entry_id uuid,
+  entry_library_kind text,
+  entry_compendium_id uuid,
+  entry_settings_library_id uuid
+)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  current_role text;
+  source_default_visibility text;
+  entry_override_visibility text;
+  resolved_visibility text;
+begin
+  current_role := private.current_project_role(target_project_id);
+
+  if current_role is null then
+    return false;
+  end if;
+
+  source_default_visibility := private.project_entry_source_default_visibility(
+    target_project_id,
+    entry_library_kind,
+    entry_compendium_id,
+    entry_settings_library_id
+  );
+
+  if source_default_visibility is null then
+    return false;
+  end if;
+
+  if current_role in ('owner', 'gm') then
+    return true;
+  end if;
+
+  if current_role not in ('player', 'viewer') then
+    return false;
+  end if;
+
+  select peo.override_visibility
+  into entry_override_visibility
+  from public.project_entry_overrides peo
+  where peo.project_id = target_project_id
+    and peo.master_entry_id = target_master_entry_id
+  limit 1;
+
+  resolved_visibility := private.resolve_project_library_visibility(
+    source_default_visibility,
+    entry_override_visibility
+  );
+
+  return resolved_visibility = 'visible';
+end;
+$$;
+
+create or replace function private.read_project_library_entries_for_current_user(
+  target_project_id uuid,
+  target_master_entry_id uuid default null
+)
+returns table (
+  master_entry_id uuid,
+  source_type text,
+  source_id uuid,
+  source_name text,
+  effective_title text,
+  effective_summary text,
+  effective_body text,
+  effective_properties jsonb
+)
+language sql
+security definer
+set search_path = public
+as $$
+  select
+    me.id as master_entry_id,
+    ps.source_type,
+    case
+      when ps.source_type = 'compendium' then ps.compendium_id
+      else ps.settings_library_id
+    end as source_id,
+    ps.source_name,
+    coalesce(nullif(peo.override_title, ''), me.title) as effective_title,
+    coalesce(nullif(peo.override_summary, ''), me.summary) as effective_summary,
+    coalesce(nullif(peo.override_body, ''), me.body) as effective_body,
+    coalesce(me.properties, '{}'::jsonb)
+      || coalesce(peo.override_properties, '{}'::jsonb) as effective_properties
+  from public.project_sources ps
+  join public.master_entries me
+    on (
+      ps.source_type = 'compendium'
+      and me.library_kind = 'compendium'
+      and me.compendium_id = ps.compendium_id
+    )
+    or (
+      ps.source_type = 'settings_library'
+      and me.library_kind = 'settings_library'
+      and me.settings_library_id = ps.settings_library_id
+    )
+  left join public.project_entry_overrides peo
+    on peo.project_id = ps.project_id
+    and peo.master_entry_id = me.id
+  where ps.project_id = target_project_id
+    and ps.source_type in ('compendium', 'settings_library')
+    and (target_master_entry_id is null or me.id = target_master_entry_id)
+    and private.can_read_project_library_entry(
+      ps.project_id,
+      me.id,
+      me.library_kind,
+      me.compendium_id,
+      me.settings_library_id
+    )
+  order by ps.source_name, me.sort_order, effective_title;
+$$;
+
+create or replace function public.read_project_library_entries(
+  target_project_id uuid,
+  target_master_entry_id uuid default null
+)
+returns table (
+  master_entry_id uuid,
+  source_type text,
+  source_id uuid,
+  source_name text,
+  effective_title text,
+  effective_summary text,
+  effective_body text,
+  effective_properties jsonb
+)
+language sql
+security invoker
+set search_path = public
+as $$
+  select *
+  from private.read_project_library_entries_for_current_user(
+    target_project_id,
+    target_master_entry_id
+  );
+$$;
+
+grant usage on schema private to authenticated;
+grant execute on function private.current_project_role(uuid) to authenticated;
+grant execute on function private.resolve_project_library_visibility(text, text)
+  to authenticated;
+grant execute on function private.project_entry_source_default_visibility(
+  uuid,
+  text,
+  uuid,
+  uuid
+) to authenticated;
+grant execute on function private.can_read_project_library_entry(
+  uuid,
+  uuid,
+  text,
+  uuid,
+  uuid
+) to authenticated;
+grant execute on function private.read_project_library_entries_for_current_user(
+  uuid,
+  uuid
+) to authenticated;
+grant execute on function public.read_project_library_entries(uuid, uuid)
+  to authenticated;
+
+drop policy if exists "Project members can read project entry overrides"
+  on public.project_entry_overrides;
+
+drop policy if exists "Project owners and GMs can read project entry overrides"
+  on public.project_entry_overrides;
+
+create policy "Project owners and GMs can read project entry overrides"
+on public.project_entry_overrides
+for select
+to authenticated
+using (
+  private.current_project_role(project_entry_overrides.project_id)
+    in ('owner', 'gm')
+  and exists (
+    select 1
+    from public.project_sources ps
+    join public.master_entries me
+      on me.id = project_entry_overrides.master_entry_id
+    where ps.project_id = project_entry_overrides.project_id
+      and (
+        (
+          ps.source_type = 'compendium'
+          and me.library_kind = 'compendium'
+          and ps.compendium_id = me.compendium_id
+        )
+        or (
+          ps.source_type = 'settings_library'
+          and me.library_kind = 'settings_library'
+          and ps.settings_library_id = me.settings_library_id
+        )
+      )
+  )
+);
+
+drop policy if exists "Project members can read reachable project library master entries"
+  on public.master_entries;
+
+create policy "Project members can read reachable project library master entries"
+on public.master_entries
+for select
+to authenticated
+using (
+  exists (
+    select 1
+    from public.project_sources ps
+    where (
+      (
+        ps.source_type = 'compendium'
+        and master_entries.library_kind = 'compendium'
+        and ps.compendium_id = master_entries.compendium_id
+      )
+      or (
+        ps.source_type = 'settings_library'
+        and master_entries.library_kind = 'settings_library'
+        and ps.settings_library_id = master_entries.settings_library_id
+      )
+    )
+    and private.can_read_project_library_entry(
+      ps.project_id,
+      master_entries.id,
+      master_entries.library_kind,
+      master_entries.compendium_id,
+      master_entries.settings_library_id
+    )
+  )
+);
+```
+
+Expected Row Level Security behavior:
+
+- Owners and GMs can read all reachable Project Library entries.
+- Owners and GMs can read and manage Project Entry Override rows.
+- Players and Viewers cannot directly read Project Entry Override rows.
+- Players and Viewers use the `read_project_library_entries` RPC, which returns
+  only effective visible entry fields and never returns override reasons or
+  original-vs-overridden comparison data.
+- Players and Viewers can read only Master Entries that are reachable through
+  an attached Compendium or Settings Library source and resolved as visible.
+- `master_entries.visibility` remains master-library visibility. It is not
+  reinterpreted as Project player visibility.
+- Game System sources stay out of entry listing for now because Systems are
+  metadata containers at this app stage.
+
+The app uses normal Supabase server clients and relies on RLS plus the safe
+read RPC. Do not add a service role key to the app.
+
 ## Slice 5C: Library Source Metadata Schema Groundwork
 
 Run this SQL in Supabase before manually testing Slice 5C forms. It is

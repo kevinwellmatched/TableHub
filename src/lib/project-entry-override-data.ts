@@ -4,13 +4,24 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
 
 import {
+  canProjectRoleManageOverrides,
+  canProjectRoleReadResolvedVisibility,
+  resolveProjectLibraryVisibility,
   getProjectEntryOverrideStatus,
   resolveProjectEntry,
+  shapeProjectLibraryEntryForReadMode,
   type EffectiveProjectEntry,
+  type ProjectLibraryReadEntry,
+  type ProjectLibraryResolvedVisibility,
+  type ProjectLibraryRole,
   type ProjectEntryOverrideRow,
   type ProjectEntryOriginal,
   type ValidProjectEntryOverrideInput,
 } from "@/lib/project-entry-overrides";
+import {
+  isLibrarySourcePlayerVisibility,
+  type LibrarySourcePlayerVisibility,
+} from "@/lib/library-source-taxonomy";
 import type { ProjectSourceType } from "@/lib/project-source-validation";
 import { PROJECT_SOURCE_COLUMNS, type ProjectSourceRow } from "@/lib/project-sources";
 import type { MasterEntryRow } from "@/lib/master-entries";
@@ -28,16 +39,57 @@ export type ProjectLibrarySourceContext = {
   sourceType: Extract<ProjectSourceType, "compendium" | "settings_library">;
   sourceId: string;
   sourceName: string;
+  defaultPlayerVisibility: LibrarySourcePlayerVisibility;
 };
 
 export type ProjectLibraryEntryListItem = MasterEntryRow & {
   source: ProjectLibrarySourceContext;
   override: ProjectEntryOverrideRow | null;
   effective: EffectiveProjectEntry;
+  resolvedVisibility: ProjectLibraryResolvedVisibility;
   overrideStatus: ReturnType<typeof getProjectEntryOverrideStatus>;
 };
 
 export type ProjectLibraryEntryDetail = ProjectLibraryEntryListItem;
+
+export type ProjectLibraryReadSourceContext = {
+  sourceType: ProjectLibraryReadEntry["sourceType"];
+  sourceId: string;
+  sourceName: string;
+};
+
+export type ProjectLibraryEntriesResult =
+  | {
+      mode: "management";
+      sources: ProjectLibrarySourceContext[];
+      entries: ProjectLibraryEntryListItem[];
+    }
+  | {
+      mode: "read";
+      sources: ProjectLibraryReadSourceContext[];
+      entries: ProjectLibraryReadEntry[];
+    };
+
+export type ProjectLibraryEntryResult =
+  | {
+      mode: "management";
+      entry: ProjectLibraryEntryDetail;
+    }
+  | {
+      mode: "read";
+      entry: ProjectLibraryReadEntry;
+    };
+
+type ProjectLibraryReadRpcRow = {
+  master_entry_id: string;
+  source_type: ProjectLibraryReadEntry["sourceType"];
+  source_id: string;
+  source_name: string;
+  effective_title: string;
+  effective_summary: string | null;
+  effective_body: string | null;
+  effective_properties: ProjectLibraryReadEntry["properties"];
+};
 
 async function getSignedInUserId(supabase: SupabaseClient) {
   const {
@@ -53,10 +105,8 @@ async function getSignedInUserId(supabase: SupabaseClient) {
 
 export async function getProjectLibraryEntries(
   projectId: string,
-): Promise<{
-  sources: ProjectLibrarySourceContext[];
-  entries: ProjectLibraryEntryListItem[];
-}> {
+  role: ProjectLibraryRole,
+): Promise<ProjectLibraryEntriesResult> {
   if (!hasSupabaseEnv()) {
     redirect("/login");
   }
@@ -64,11 +114,18 @@ export async function getProjectLibraryEntries(
   const supabase = await createClient();
   await getSignedInUserId(supabase);
 
-  const sourceRows = await loadProjectSourceRows(supabase, projectId);
-  const sourceContexts = getEntrySourceContexts(sourceRows);
+  if (!canProjectRoleManageOverrides(role)) {
+    return loadReadableProjectLibraryEntries(supabase, projectId);
+  }
+
+  const sourceContexts = await loadProjectLibrarySourceContexts(
+    supabase,
+    projectId,
+  );
 
   if (sourceContexts.length === 0) {
     return {
+      mode: "management",
       sources: [],
       entries: [],
     };
@@ -89,6 +146,7 @@ export async function getProjectLibraryEntries(
   );
 
   return {
+    mode: "management",
     sources: sourceContexts,
     entries: sortProjectLibraryEntries(
       entries.flatMap((entry) => {
@@ -113,7 +171,8 @@ export async function getProjectLibraryEntries(
 export async function getProjectLibraryEntry(
   projectId: string,
   masterEntryId: string,
-): Promise<ProjectLibraryEntryDetail | null> {
+  role: ProjectLibraryRole,
+): Promise<ProjectLibraryEntryResult | null> {
   if (!hasSupabaseEnv()) {
     redirect("/login");
   }
@@ -121,8 +180,19 @@ export async function getProjectLibraryEntry(
   const supabase = await createClient();
   await getSignedInUserId(supabase);
 
+  if (!canProjectRoleManageOverrides(role)) {
+    const readEntries = await loadReadableProjectLibraryEntries(
+      supabase,
+      projectId,
+      masterEntryId,
+    );
+
+    const [entry] = readEntries.entries;
+    return entry ? { mode: "read", entry } : null;
+  }
+
   const [sourceRows, masterEntry] = await Promise.all([
-    loadProjectSourceRows(supabase, projectId),
+    loadProjectLibrarySourceContexts(supabase, projectId),
     loadMasterEntryById(supabase, masterEntryId),
   ]);
 
@@ -132,7 +202,7 @@ export async function getProjectLibraryEntry(
 
   const sourceContext = findSourceContextForEntry(
     masterEntry,
-    getEntrySourceContexts(sourceRows),
+    sourceRows,
   );
 
   if (!sourceContext) {
@@ -141,7 +211,16 @@ export async function getProjectLibraryEntry(
 
   const override = await loadOverrideForEntry(supabase, projectId, masterEntryId);
 
-  return buildProjectLibraryEntry(masterEntry, sourceContext, override);
+  const entry = buildProjectLibraryEntry(masterEntry, sourceContext, override);
+
+  if (!canProjectRoleReadResolvedVisibility(role, entry.resolvedVisibility)) {
+    return null;
+  }
+
+  return {
+    mode: "management",
+    entry,
+  };
 }
 
 export async function upsertProjectEntryOverride(
@@ -205,8 +284,31 @@ async function loadProjectSourceRows(
   return (data ?? []) as ProjectSourceRow[];
 }
 
+async function loadProjectLibrarySourceContexts(
+  supabase: SupabaseClient,
+  projectId: string,
+) {
+  const sourceRows = await loadProjectSourceRows(supabase, projectId);
+  const compendiumDefaults = await loadCompendiumDefaultVisibility(
+    supabase,
+    getProjectSourceIds(sourceRows, "compendium"),
+  );
+  const settingsLibraryDefaults = await loadSettingsLibraryDefaultVisibility(
+    supabase,
+    getProjectSourceIds(sourceRows, "settings_library"),
+  );
+
+  return getEntrySourceContexts(
+    sourceRows,
+    compendiumDefaults,
+    settingsLibraryDefaults,
+  );
+}
+
 function getEntrySourceContexts(
   sources: ProjectSourceRow[],
+  compendiumDefaults: Map<string, LibrarySourcePlayerVisibility>,
+  settingsLibraryDefaults: Map<string, LibrarySourcePlayerVisibility>,
 ): ProjectLibrarySourceContext[] {
   return sources.flatMap((source) => {
     if (source.source_type === "compendium" && source.compendium_id) {
@@ -215,6 +317,8 @@ function getEntrySourceContexts(
         sourceType: source.source_type,
         sourceId: source.compendium_id,
         sourceName: source.source_name,
+        defaultPlayerVisibility:
+          compendiumDefaults.get(source.compendium_id) ?? "visible",
       };
     }
 
@@ -227,11 +331,63 @@ function getEntrySourceContexts(
         sourceType: source.source_type,
         sourceId: source.settings_library_id,
         sourceName: source.source_name,
+        defaultPlayerVisibility:
+          settingsLibraryDefaults.get(source.settings_library_id) ?? "gm_only",
       };
     }
 
     return [];
   });
+}
+
+async function loadCompendiumDefaultVisibility(
+  supabase: SupabaseClient,
+  compendiumIds: string[],
+) {
+  return loadSourceDefaultVisibility(supabase, "compendiums", compendiumIds, "visible");
+}
+
+async function loadSettingsLibraryDefaultVisibility(
+  supabase: SupabaseClient,
+  settingsLibraryIds: string[],
+) {
+  return loadSourceDefaultVisibility(
+    supabase,
+    "settings_libraries",
+    settingsLibraryIds,
+    "gm_only",
+  );
+}
+
+async function loadSourceDefaultVisibility(
+  supabase: SupabaseClient,
+  tableName: "compendiums" | "settings_libraries",
+  sourceIds: string[],
+  fallback: LibrarySourcePlayerVisibility,
+) {
+  if (sourceIds.length === 0) {
+    return new Map<string, LibrarySourcePlayerVisibility>();
+  }
+
+  const { data, error } = await supabase
+    .from(tableName)
+    .select("id, default_player_visibility")
+    .in("id", sourceIds);
+
+  if (error) {
+    throw error;
+  }
+
+  return new Map(
+    ((data ?? []) as { id: string; default_player_visibility: string }[]).map(
+      (source) => [
+        source.id,
+        isLibrarySourcePlayerVisibility(source.default_player_visibility)
+          ? source.default_player_visibility
+          : fallback,
+      ],
+    ),
+  );
 }
 
 async function loadCompendiumEntries(
@@ -351,6 +507,25 @@ function getSourceIds(
     .map((source) => source.sourceId);
 }
 
+function getProjectSourceIds(
+  sources: ProjectSourceRow[],
+  sourceType: ProjectLibrarySourceContext["sourceType"],
+) {
+  if (sourceType === "compendium") {
+    return sources.flatMap((source) =>
+      source.source_type === "compendium" && source.compendium_id
+        ? [source.compendium_id]
+        : [],
+    );
+  }
+
+  return sources.flatMap((source) =>
+    source.source_type === "settings_library" && source.settings_library_id
+      ? [source.settings_library_id]
+      : [],
+  );
+}
+
 function findSourceContextForEntry(
   entry: MasterEntryRow,
   sources: ProjectLibrarySourceContext[],
@@ -380,12 +555,17 @@ function buildProjectLibraryEntry(
   override: ProjectEntryOverrideRow | null,
 ): ProjectLibraryEntryListItem {
   const original = toProjectEntryOriginal(entry);
+  const effective = resolveProjectEntry(original, override);
 
   return {
     ...entry,
     source,
     override,
-    effective: resolveProjectEntry(original, override),
+    effective,
+    resolvedVisibility: resolveProjectLibraryVisibility({
+      sourceDefaultVisibility: source.defaultPlayerVisibility,
+      overrideVisibility: override?.override_visibility ?? null,
+    }),
     overrideStatus: getProjectEntryOverrideStatus(original, override),
   };
 }
@@ -416,5 +596,85 @@ function sortProjectLibraryEntries(entries: ProjectLibraryEntryListItem[]) {
     }
 
     return first.effective.title.localeCompare(second.effective.title);
+  });
+}
+
+async function loadReadableProjectLibraryEntries(
+  supabase: SupabaseClient,
+  projectId: string,
+  masterEntryId: string | null = null,
+): Promise<Extract<ProjectLibraryEntriesResult, { mode: "read" }>> {
+  const { data, error } = await supabase.rpc("read_project_library_entries", {
+    target_project_id: projectId,
+    target_master_entry_id: masterEntryId,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  const rows = (data ?? []) as ProjectLibraryReadRpcRow[];
+  const entries = sortReadModeEntries(
+    rows.map((row) =>
+      shapeProjectLibraryEntryForReadMode({
+        masterEntryId: row.master_entry_id,
+        sourceName: row.source_name,
+        sourceType: row.source_type,
+        effective: {
+          id: row.master_entry_id,
+          title: row.effective_title,
+          summary: row.effective_summary,
+          body: row.effective_body,
+          properties: row.effective_properties ?? {},
+          visibility: "visible",
+          original: {
+            id: row.master_entry_id,
+            title: row.effective_title,
+            summary: row.effective_summary,
+            body: row.effective_body,
+            properties: row.effective_properties,
+            visibility: "visible",
+          },
+          override: null,
+        },
+      }),
+    ),
+  );
+
+  return {
+    mode: "read",
+    sources: getReadModeSources(rows),
+    entries,
+  };
+}
+
+function getReadModeSources(
+  rows: ProjectLibraryReadRpcRow[],
+): ProjectLibraryReadSourceContext[] {
+  const sourcesByKey = new Map<string, ProjectLibraryReadSourceContext>();
+
+  for (const row of rows) {
+    const key = `${row.source_type}:${row.source_id}`;
+    sourcesByKey.set(key, {
+      sourceType: row.source_type,
+      sourceId: row.source_id,
+      sourceName: row.source_name,
+    });
+  }
+
+  return Array.from(sourcesByKey.values()).sort((first, second) =>
+    first.sourceName.localeCompare(second.sourceName),
+  );
+}
+
+function sortReadModeEntries(entries: ProjectLibraryReadEntry[]) {
+  return [...entries].sort((first, second) => {
+    const sourceCompare = first.sourceName.localeCompare(second.sourceName);
+
+    if (sourceCompare !== 0) {
+      return sourceCompare;
+    }
+
+    return first.title.localeCompare(second.title);
   });
 }

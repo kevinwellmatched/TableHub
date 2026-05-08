@@ -685,6 +685,57 @@ npm run build
 
 ---
 
+## Slice 5E: Project Library Visibility and Player Read Mode
+
+### Expected
+
+- Slice 5E SQL is documented in `SUPABASE_SETUP.md`.
+- Owners and GMs can still open `/projects/[projectId]/library` and see all
+  reachable Project Library entries.
+- Owners and GMs can still open
+  `/projects/[projectId]/library/[masterEntryId]`, view original/effective
+  values, see override reasons, and save or reset Project Entry Overrides.
+- Players and Viewers can open the Project Library in read-only mode.
+- Players and Viewers see only entries resolved as `visible`.
+- Players and Viewers do not see hidden entries, GM-only entries, override
+  reasons, edit/reset controls, or original vs overridden comparison sections.
+- `master_entries.visibility` remains master-library visibility and is not used
+  as Project player visibility.
+- Rich text, wiki links, inline reveal blocks, imports, tags/folders, Project
+  search, and campaign overrides are not included.
+
+### Manual Tests
+
+- [ ] Apply the Slice 5E SQL from `SUPABASE_SETUP.md`.
+- [ ] Use or create a Project with a primary System.
+- [ ] Attach a Compendium source with default player visibility `visible`.
+- [ ] Attach a Settings Library source with default player visibility `gm_only`.
+- [ ] Create at least one Master Entry in each attached source.
+- [ ] As Owner/GM, confirm Project Library shows all reachable entries.
+- [ ] As Owner/GM, set an override visibility to `hidden` and confirm it
+  disappears for Player/Viewer.
+- [ ] As Owner/GM, set an override visibility to `gm_only` and confirm it
+  disappears for Player/Viewer.
+- [ ] As Owner/GM, set an override visibility to `visible` on a default
+  `gm_only` source and confirm it appears for Player/Viewer.
+- [ ] As Player/Viewer, confirm no edit/reset controls appear.
+- [ ] As Player/Viewer, confirm no override reason appears.
+- [ ] As Player/Viewer, try opening a hidden/GM-only entry URL directly and
+  confirm no title/body leaks.
+- [ ] Confirm original Master Entry remains unchanged after overrides.
+- [ ] Run `npm.cmd run test`.
+- [ ] Run `npm.cmd run lint`.
+- [ ] Run `npm.cmd run build`.
+
+### Known Issues
+
+- Slice 5E does not add rich text, Markdown paste conversion, wiki links,
+  imports, tags/folders, Project search, inline reveal blocks, or campaign
+  overrides.
+- Player/Viewer read mode depends on applying the Slice 5E SQL before testing.
+
+---
+
 ## Slice 6: Rich Text Wiki and Entry Editing
 
 ### Expected

@@ -181,9 +181,21 @@ The effective Project Entry is resolved by combining the original Master Entry
 with the override row. The original `master_entries` row is never updated from a
 Project page.
 
-The Project Library entry pages are Owner/GM-only in Slice 5D. Player-facing
-visibility filtering, reveal controls, Project search, imports, tags/folders,
-wiki links, rich text, and campaign-level overrides remain later work.
+Slice 5E adds the first player-safe read mode for the Project Library. Owners
+and GMs still get the management experience with all reachable entries,
+original values, effective values, override reasons, and edit/reset controls.
+Players and Viewers get a read-only Project Library that returns only entries
+resolved as visible to them.
+
+Project Library player visibility is resolved from the attached source default
+player visibility plus `project_entry_overrides.override_visibility`.
+`master_entries.visibility` remains master-library visibility and must not be
+treated as Project player visibility. Player and Viewer read mode must not
+return hidden entries, GM-only entries, override reasons, or original vs
+overridden comparison data.
+
+Reveal controls, Project search, imports, tags/folders, wiki links, rich text,
+inline reveal blocks, and campaign-level overrides remain later work.
 
 ### 3. Campaign Layer
 
@@ -246,8 +258,10 @@ Current implementation status:
 - Slice 5D begins `project_entry_overrides`, effective Project Entry
   resolution, original vs overridden field display, and reset/delete override
   actions.
+- Slice 5E adds Project Library visibility resolution and Player/Viewer
+  read-only mode for entries resolved as visible.
 - Manual master updates, imports, search, tags/folders, wiki links, rich text
-  editing, campaign-level overrides, and player-facing reveal controls are
+  editing, campaign-level overrides, and inline reveal controls are
   still deferred.
 
 Benefits:

@@ -8,9 +8,11 @@ import {
 import { getProjectLibraryEntry } from "@/lib/project-entry-override-data";
 import {
   formatProjectEntryOverrideVisibility,
+  formatProjectLibraryResolvedVisibility,
   PROJECT_ENTRY_OVERRIDE_VISIBILITIES,
+  type ProjectLibraryReadEntry,
 } from "@/lib/project-entry-overrides";
-import { formatProjectRole, getProjectById } from "@/lib/projects";
+import { getProjectById } from "@/lib/projects";
 
 type ProjectLibraryEntryPageProps = {
   params: Promise<{
@@ -37,19 +39,23 @@ export default async function ProjectLibraryEntryPage({
     return <ProjectEntryUnavailableState />;
   }
 
-  const canManageOverrides = ["owner", "gm"].includes(
-    (project.role ?? "").toLowerCase(),
+  const entryResult = await getProjectLibraryEntry(
+    project.id,
+    masterEntryId,
+    project.role,
   );
 
-  if (!canManageOverrides) {
-    return <ProjectEntryRoleState projectId={project.id} role={project.role} />;
-  }
-
-  const entry = await getProjectLibraryEntry(project.id, masterEntryId);
-
-  if (!entry) {
+  if (!entryResult) {
     return <ProjectEntryUnavailableState projectId={project.id} />;
   }
+
+  if (entryResult.mode === "read") {
+    return (
+      <ReadOnlyProjectEntryPage projectId={project.id} entry={entryResult.entry} />
+    );
+  }
+
+  const entry = entryResult.entry;
 
   return (
     <div className="space-y-8">
@@ -84,10 +90,16 @@ export default async function ProjectLibraryEntryPage({
               {entry.source.sourceName}
             </p>
             <p className="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-[#FCA311]">
-              Override status
+              Player visibility
             </p>
             <p className="mt-2 text-sm font-semibold text-[var(--text-main)]">
-              {entry.override ? "Project override exists" : "Original values"}
+              {formatProjectLibraryResolvedVisibility(entry.resolvedVisibility)}
+            </p>
+            <p className="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-[#FCA311]">
+              Visibility source
+            </p>
+            <p className="mt-2 text-sm font-semibold text-[var(--text-main)]">
+              {entry.overrideStatus.visibility ? "Override set" : "Inherited"}
             </p>
           </div>
         </div>
@@ -129,8 +141,8 @@ export default async function ProjectLibraryEntryPage({
               preserveLines
             />
             <EffectiveField
-              label="Visibility"
-              value={entry.effective.visibility}
+              label="Project player visibility"
+              value={formatProjectLibraryResolvedVisibility(entry.resolvedVisibility)}
               overridden={entry.overrideStatus.visibility}
             />
           </div>
@@ -156,7 +168,7 @@ export default async function ProjectLibraryEntryPage({
               value={formatJson(entry.properties ?? {})}
               preserveLines
             />
-            <OriginalField label="Visibility" value={entry.visibility} />
+            <OriginalField label="Master library visibility" value={entry.visibility} />
           </dl>
         </article>
       </section>
@@ -232,6 +244,96 @@ export default async function ProjectLibraryEntryPage({
           </form>
         ) : null}
       </section>
+    </div>
+  );
+}
+
+function ReadOnlyProjectEntryPage({
+  projectId,
+  entry,
+}: {
+  projectId: string;
+  entry: ProjectLibraryReadEntry;
+}) {
+  return (
+    <div className="space-y-8">
+      <Link
+        href={`/projects/${projectId}/library`}
+        className="inline-flex items-center gap-2 text-sm font-semibold text-[#FCA311] transition hover:text-[#ffb33c]"
+      >
+        <ArrowLeft aria-hidden="true" className="h-4 w-4" />
+        Back to Project Library
+      </Link>
+
+      <section className="rounded-lg border border-[#FCA311]/30 bg-[#FCA311]/10 p-6">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+          <div className="max-w-3xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#FCA311]">
+              Project Library
+            </p>
+            <h1 className="mt-3 text-3xl font-semibold tracking-normal text-[var(--text-main)] sm:text-4xl">
+              {entry.title}
+            </h1>
+            <p className="mt-3 text-base leading-7 text-[var(--text-muted)]">
+              {entry.summary || "No summary yet."}
+            </p>
+          </div>
+
+          <div className="rounded-lg border border-[var(--line)] bg-black/25 p-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#FCA311]">
+              Source
+            </p>
+            <p className="mt-2 text-sm font-semibold text-[var(--text-main)]">
+              {entry.sourceName}
+            </p>
+            <p className="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-[#FCA311]">
+              View
+            </p>
+            <p className="mt-2 text-sm font-semibold text-[var(--text-main)]">
+              Project Library
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <article className="rounded-lg border border-[var(--line)] bg-[var(--panel-bg)] p-5">
+        <h2 className="text-xl font-semibold text-[var(--text-main)]">
+          Entry
+        </h2>
+        <div className="mt-5 space-y-5">
+          <ReadOnlyField label="Body" value={entry.body || "No body."} preserveLines />
+          <ReadOnlyField
+            label="Properties"
+            value={formatJson(entry.properties ?? {})}
+            preserveLines
+          />
+        </div>
+      </article>
+    </div>
+  );
+}
+
+function ReadOnlyField({
+  label,
+  value,
+  preserveLines = false,
+}: {
+  label: string;
+  value: string;
+  preserveLines?: boolean;
+}) {
+  return (
+    <div>
+      <h3 className="text-sm font-semibold text-[#FCA311]">{label}</h3>
+      <p
+        className={
+          preserveLines
+            ? "mt-2 whitespace-pre-wrap rounded-lg border border-[var(--line)] bg-black/20 p-3 text-sm leading-6 text-[var(--text-main)]"
+            : "mt-2 text-sm leading-6 text-[var(--text-main)]"
+        }
+      >
+        {value}
+      </p>
     </div>
   );
 }
@@ -378,36 +480,6 @@ function MessageBanner({
     >
       {message}
     </section>
-  );
-}
-
-function ProjectEntryRoleState({
-  projectId,
-  role,
-}: {
-  projectId: string;
-  role: string | null;
-}) {
-  return (
-    <div className="space-y-8">
-      <Link
-        href={`/projects/${projectId}`}
-        className="inline-flex items-center gap-2 text-sm font-semibold text-[#FCA311] transition hover:text-[#ffb33c]"
-      >
-        <ArrowLeft aria-hidden="true" className="h-4 w-4" />
-        Back to Project
-      </Link>
-      <section className="rounded-lg border border-[#FCA311]/30 bg-[#FCA311]/10 p-8">
-        <h1 className="text-2xl font-semibold text-[var(--text-main)]">
-          Project Entry overrides are GM-facing for now
-        </h1>
-        <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">
-          Your current role is {formatProjectRole(role)}. Player-facing
-          visibility filters and reveal controls come later, so this first
-          override editor is limited to Project Owners and GMs.
-        </p>
-      </section>
-    </div>
   );
 }
 

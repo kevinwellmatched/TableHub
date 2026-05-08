@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import { SectionCard } from "@/components/section-card";
+import { canProjectRoleManageOverrides } from "@/lib/project-entry-overrides";
 import {
   formatProjectSourceType,
   type ProjectSourceType,
@@ -99,6 +100,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
   }
 
   const sources = await getProjectSources(project.id);
+  const canManageProjectLibrary = canProjectRoleManageOverrides(project.role);
 
   return (
     <div className="space-y-8">
@@ -148,7 +150,9 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                 Project Library
               </h2>
               <p className="text-sm text-[var(--text-muted)]">
-                Linked Library Sources attached to this Project.
+                {canManageProjectLibrary
+                  ? "Linked Library Sources attached to this Project."
+                  : "Entries your GM has made visible in this Project."}
               </p>
             </div>
           </div>
@@ -161,13 +165,15 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
               <FileText aria-hidden="true" className="h-4 w-4" />
               Open Project Library
             </Link>
-            <Link
-              href={`/projects/${project.id}/sources`}
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-[#FCA311]/50 px-4 text-sm font-semibold text-[#FCA311] transition hover:bg-[#FCA311] hover:text-black"
-            >
-              <LinkIcon aria-hidden="true" className="h-4 w-4" />
-              Manage Sources
-            </Link>
+            {canManageProjectLibrary ? (
+              <Link
+                href={`/projects/${project.id}/sources`}
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-[#FCA311]/50 px-4 text-sm font-semibold text-[#FCA311] transition hover:bg-[#FCA311] hover:text-black"
+              >
+                <LinkIcon aria-hidden="true" className="h-4 w-4" />
+                Manage Sources
+              </Link>
+            ) : null}
           </div>
         </div>
 

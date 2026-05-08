@@ -8,7 +8,11 @@ import {
   getProjectLibraryEntry,
   upsertProjectEntryOverride,
 } from "@/lib/project-entry-override-data";
-import { validateProjectEntryOverrideInput } from "@/lib/project-entry-overrides";
+import {
+  canProjectRoleManageOverrides,
+  validateProjectEntryOverrideInput,
+} from "@/lib/project-entry-overrides";
+import { getProjectById } from "@/lib/projects";
 
 function readString(formData: FormData, key: string) {
   const value = formData.get(key);
@@ -84,12 +88,26 @@ export async function saveProjectEntryOverrideAction(formData: FormData) {
     );
   }
 
+  const project = await getProjectById(validation.values.project_id);
+
+  if (!project || !canProjectRoleManageOverrides(project.role)) {
+    redirect(
+      projectEntryPath(
+        validation.values.project_id,
+        validation.values.master_entry_id,
+        "error",
+        "Only Project Owners and GMs can manage Project Entry Overrides.",
+      ),
+    );
+  }
+
   const reachableEntry = await getProjectLibraryEntry(
     validation.values.project_id,
     validation.values.master_entry_id,
+    project.role,
   );
 
-  if (!reachableEntry) {
+  if (!reachableEntry || reachableEntry.mode !== "management") {
     redirect(
       projectEntryPath(
         validation.values.project_id,
@@ -141,6 +159,19 @@ export async function resetProjectEntryOverrideAction(formData: FormData) {
         masterEntryId,
         "error",
         "Project and Master Entry are required.",
+      ),
+    );
+  }
+
+  const project = await getProjectById(projectId);
+
+  if (!project || !canProjectRoleManageOverrides(project.role)) {
+    redirect(
+      projectEntryPath(
+        projectId,
+        masterEntryId,
+        "error",
+        "Only Project Owners and GMs can manage Project Entry Overrides.",
       ),
     );
   }

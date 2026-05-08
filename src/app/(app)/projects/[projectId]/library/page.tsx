@@ -2,7 +2,15 @@ import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import { ArrowLeft, BookOpen, FileText, Library, LinkIcon } from "lucide-react";
 
-import { getProjectLibraryEntries } from "@/lib/project-entry-override-data";
+import {
+  getProjectLibraryEntries,
+  type ProjectLibraryEntryListItem,
+} from "@/lib/project-entry-override-data";
+import {
+  formatProjectLibraryResolvedVisibility,
+  type ProjectLibraryReadEntry,
+  type ProjectLibraryResolvedVisibility,
+} from "@/lib/project-entry-overrides";
 import {
   formatProjectSourceType,
   type ProjectSourceType,
@@ -34,15 +42,8 @@ export default async function ProjectLibraryPage({
     return <ProjectLibraryUnavailableState />;
   }
 
-  const canViewProjectLibrary = ["owner", "gm"].includes(
-    (project.role ?? "").toLowerCase(),
-  );
-
-  if (!canViewProjectLibrary) {
-    return <ProjectLibraryRoleState projectId={project.id} role={project.role} />;
-  }
-
-  const library = await getProjectLibraryEntries(project.id);
+  const library = await getProjectLibraryEntries(project.id, project.role);
+  const isManagementMode = library.mode === "management";
 
   return (
     <div className="space-y-8">
@@ -59,8 +60,10 @@ export default async function ProjectLibraryPage({
             </h1>
             <p className="mt-3 text-base leading-7 text-[var(--text-muted)]">
               View Master Entries from attached Compendium and Settings Library
-              sources, then create Project-specific overrides without changing
-              the originals.
+              sources
+              {isManagementMode
+                ? ", then create Project-specific overrides without changing the originals."
+                : " the GM has made visible to you."}
             </p>
           </div>
 
@@ -71,13 +74,15 @@ export default async function ProjectLibraryPage({
             <p className="mt-2 text-lg font-semibold text-[var(--text-main)]">
               {formatProjectRole(project.role)}
             </p>
-            <Link
-              href={`/projects/${project.id}/sources`}
-              className="mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-[#FCA311]/50 px-4 text-sm font-semibold text-[#FCA311] transition hover:bg-[#FCA311] hover:text-black"
-            >
-              <LinkIcon aria-hidden="true" className="h-4 w-4" />
-              Manage Sources
-            </Link>
+            {isManagementMode ? (
+              <Link
+                href={`/projects/${project.id}/sources`}
+                className="mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-[#FCA311]/50 px-4 text-sm font-semibold text-[#FCA311] transition hover:bg-[#FCA311] hover:text-black"
+              >
+                <LinkIcon aria-hidden="true" className="h-4 w-4" />
+                Manage Sources
+              </Link>
+            ) : null}
           </div>
         </div>
       </section>
@@ -87,15 +92,20 @@ export default async function ProjectLibraryPage({
           Attached entry sources
         </h2>
         <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
-          Game System links are metadata-only for now, so this page lists entries
-          from attached Compendiums and Settings Libraries only.
+          {isManagementMode
+            ? "Game System links are metadata-only for now, so this page lists entries from attached Compendiums and Settings Libraries only."
+            : "This Project Library shows entries the GM has made visible to you."}
         </p>
 
         {library.sources.length > 0 ? (
           <div className="mt-4 flex flex-wrap gap-2">
             {library.sources.map((source) => (
               <span
-                key={source.projectSourceId}
+                key={
+                  "projectSourceId" in source
+                    ? source.projectSourceId
+                    : `${source.sourceType}:${source.sourceId}`
+                }
                 className="rounded-md border border-[#FCA311]/30 bg-[#FCA311]/10 px-3 py-2 text-sm font-medium text-[#FCA311]"
               >
                 {source.sourceName}
@@ -107,27 +117,21 @@ export default async function ProjectLibraryPage({
 
       {library.entries.length > 0 ? (
         <section className="grid gap-4 lg:grid-cols-2">
-          {library.entries.map((entry) => (
-            <Link
-              key={entry.id}
-              href={`/projects/${project.id}/library/${entry.id}`}
-              className="rounded-lg border border-[var(--line)] bg-[var(--panel-bg)] p-5 shadow-[0_18px_60px_rgba(0,0,0,0.2)] transition hover:border-[#FCA311]/70"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <SourceBadge sourceType={entry.source.sourceType} />
-                <OverrideBadge hasOverride={Boolean(entry.override)} />
-              </div>
-              <h2 className="mt-5 text-xl font-semibold text-[var(--text-main)]">
-                {entry.effective.title}
-              </h2>
-              <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
-                {entry.effective.summary || "No summary yet."}
-              </p>
-              <p className="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-[#FCA311]">
-                {entry.source.sourceName}
-              </p>
-            </Link>
-          ))}
+          {library.mode === "management"
+            ? library.entries.map((entry) => (
+                <ManagementEntryCard
+                  key={entry.id}
+                  projectId={project.id}
+                  entry={entry}
+                />
+              ))
+            : library.entries.map((entry) => (
+                <ReadEntryCard
+                  key={entry.id}
+                  projectId={project.id}
+                  entry={entry}
+                />
+              ))}
         </section>
       ) : (
         <section className="rounded-lg border border-[#FCA311]/30 bg-[#FCA311]/10 p-8 text-center">
@@ -138,12 +142,72 @@ export default async function ProjectLibraryPage({
             No Project Library entries yet
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-[var(--text-muted)]">
-            Attach a Compendium or Settings Library source, then create at least
-            one Master Entry inside that source.
+            {isManagementMode
+              ? "Attach a Compendium or Settings Library source, then create at least one Master Entry inside that source."
+              : "No Project Library entries are available right now."}
           </p>
         </section>
       )}
     </div>
+  );
+}
+
+function ManagementEntryCard({
+  projectId,
+  entry,
+}: {
+  projectId: string;
+  entry: ProjectLibraryEntryListItem;
+}) {
+  return (
+    <Link
+      href={`/projects/${projectId}/library/${entry.id}`}
+      className="rounded-lg border border-[var(--line)] bg-[var(--panel-bg)] p-5 shadow-[0_18px_60px_rgba(0,0,0,0.2)] transition hover:border-[#FCA311]/70"
+    >
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <SourceBadge sourceType={entry.source.sourceType} />
+        <ProjectVisibilityBadge visibility={entry.resolvedVisibility} />
+        <InheritanceBadge inherited={!entry.overrideStatus.visibility} />
+      </div>
+      <h2 className="mt-5 text-xl font-semibold text-[var(--text-main)]">
+        {entry.effective.title}
+      </h2>
+      <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
+        {entry.effective.summary || "No summary yet."}
+      </p>
+      <p className="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-[#FCA311]">
+        {entry.source.sourceName}
+      </p>
+    </Link>
+  );
+}
+
+function ReadEntryCard({
+  projectId,
+  entry,
+}: {
+  projectId: string;
+  entry: ProjectLibraryReadEntry;
+}) {
+  return (
+    <Link
+      href={`/projects/${projectId}/library/${entry.id}`}
+      className="rounded-lg border border-[var(--line)] bg-[var(--panel-bg)] p-5 shadow-[0_18px_60px_rgba(0,0,0,0.2)] transition hover:border-[#FCA311]/70"
+    >
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <SourceBadge sourceType={entry.sourceType} />
+        <ReadModeBadge />
+      </div>
+      <h2 className="mt-5 text-xl font-semibold text-[var(--text-main)]">
+        {entry.title}
+      </h2>
+      <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
+        {entry.summary || "No summary yet."}
+      </p>
+      <p className="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-[#FCA311]">
+        {entry.sourceName}
+      </p>
+    </Link>
   );
 }
 
@@ -162,35 +226,31 @@ function SourceBadge({
   );
 }
 
-function OverrideBadge({ hasOverride }: { hasOverride: boolean }) {
+function ProjectVisibilityBadge({
+  visibility,
+}: {
+  visibility: ProjectLibraryResolvedVisibility;
+}) {
   return (
     <span className="rounded-md border border-[var(--line)] bg-black/25 px-2 py-1 text-xs font-medium text-[var(--text-muted)]">
-      {hasOverride ? "Overridden" : "Original"}
+      {formatProjectLibraryResolvedVisibility(visibility)}
     </span>
   );
 }
 
-function ProjectLibraryRoleState({
-  projectId,
-  role,
-}: {
-  projectId: string;
-  role: string | null;
-}) {
+function InheritanceBadge({ inherited }: { inherited: boolean }) {
   return (
-    <div className="space-y-8">
-      <BackToProjectLink projectId={projectId} />
-      <section className="rounded-lg border border-[#FCA311]/30 bg-[#FCA311]/10 p-8">
-        <h1 className="text-2xl font-semibold text-[var(--text-main)]">
-          Project Library groundwork is GM-facing for now
-        </h1>
-        <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">
-          Your current role is {formatProjectRole(role)}. Player-facing
-          visibility filters and reveal controls come later, so this first
-          Project Entry Override slice is limited to Project Owners and GMs.
-        </p>
-      </section>
-    </div>
+    <span className="rounded-md border border-[var(--line)] bg-black/25 px-2 py-1 text-xs font-medium text-[var(--text-muted)]">
+      {inherited ? "Inherited" : "Override set"}
+    </span>
+  );
+}
+
+function ReadModeBadge() {
+  return (
+    <span className="rounded-md border border-[var(--line)] bg-black/25 px-2 py-1 text-xs font-medium text-[var(--text-muted)]">
+      Project Library
+    </span>
   );
 }
 

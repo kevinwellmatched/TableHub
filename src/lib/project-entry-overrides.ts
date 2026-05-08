@@ -1,3 +1,5 @@
+import type { LibrarySourcePlayerVisibility } from "@/lib/library-source-taxonomy";
+
 export const PROJECT_ENTRY_OVERRIDE_VISIBILITIES = [
   "inherit",
   "visible",
@@ -7,6 +9,10 @@ export const PROJECT_ENTRY_OVERRIDE_VISIBILITIES = [
 
 export type ProjectEntryOverrideVisibility =
   (typeof PROJECT_ENTRY_OVERRIDE_VISIBILITIES)[number];
+
+export type ProjectLibraryRole = "owner" | "gm" | "player" | "viewer" | string | null;
+
+export type ProjectLibraryResolvedVisibility = "visible" | "gm_only" | "hidden";
 
 export type ProjectEntryProperties = Record<string, unknown>;
 
@@ -45,6 +51,16 @@ export type EffectiveProjectEntry = {
   override: ProjectEntryOverrideRow | null;
 };
 
+export type ProjectLibraryReadEntry = {
+  id: string;
+  sourceName: string;
+  sourceType: "compendium" | "settings_library";
+  title: string;
+  summary: string | null;
+  body: string | null;
+  properties: ProjectEntryProperties | null;
+};
+
 export type ProjectEntryOverrideStatus = {
   title: boolean;
   summary: boolean;
@@ -75,6 +91,18 @@ export type ValidProjectEntryOverrideInput = {
   override_reason: string | null;
 };
 
+export type ProjectLibraryVisibilityInput = {
+  sourceDefaultVisibility: LibrarySourcePlayerVisibility;
+  overrideVisibility: ProjectEntryOverrideVisibility | null;
+};
+
+export type ProjectLibraryReadModeShapeInput = {
+  masterEntryId: string;
+  sourceName: string;
+  sourceType: ProjectLibraryReadEntry["sourceType"];
+  effective: EffectiveProjectEntry;
+};
+
 export type ProjectEntryOverrideFieldErrors = {
   projectId?: string;
   masterEntryId?: string;
@@ -101,6 +129,70 @@ export function resolveProjectEntry(
         : masterEntry.visibility,
     original: masterEntry,
     override,
+  };
+}
+
+export function resolveProjectLibraryVisibility({
+  sourceDefaultVisibility,
+  overrideVisibility,
+}: ProjectLibraryVisibilityInput): ProjectLibraryResolvedVisibility {
+  if (overrideVisibility === "visible") {
+    return "visible";
+  }
+
+  if (overrideVisibility === "gm_only") {
+    return "gm_only";
+  }
+
+  if (overrideVisibility === "hidden") {
+    return "hidden";
+  }
+
+  if (sourceDefaultVisibility === "visible") {
+    return "visible";
+  }
+
+  if (sourceDefaultVisibility === "gm_only") {
+    return "gm_only";
+  }
+
+  return "gm_only";
+}
+
+export function canProjectRoleReadResolvedVisibility(
+  role: ProjectLibraryRole,
+  resolvedVisibility: ProjectLibraryResolvedVisibility,
+) {
+  if (canProjectRoleManageOverrides(role)) {
+    return true;
+  }
+
+  if (role?.toLowerCase() === "player" || role?.toLowerCase() === "viewer") {
+    return resolvedVisibility === "visible";
+  }
+
+  return false;
+}
+
+export function canProjectRoleManageOverrides(role: ProjectLibraryRole) {
+  const normalizedRole = role?.toLowerCase();
+  return normalizedRole === "owner" || normalizedRole === "gm";
+}
+
+export function shapeProjectLibraryEntryForReadMode({
+  masterEntryId,
+  sourceName,
+  sourceType,
+  effective,
+}: ProjectLibraryReadModeShapeInput): ProjectLibraryReadEntry {
+  return {
+    id: masterEntryId,
+    sourceName,
+    sourceType,
+    title: effective.title,
+    summary: effective.summary,
+    body: effective.body,
+    properties: effective.properties,
   };
 }
 
@@ -176,6 +268,18 @@ export function formatProjectEntryOverrideVisibility(
     inherit: "Inherit original",
     visible: "Visible",
     gm_only: "GM only",
+    hidden: "Hidden",
+  };
+
+  return labels[visibility];
+}
+
+export function formatProjectLibraryResolvedVisibility(
+  visibility: ProjectLibraryResolvedVisibility,
+) {
+  const labels: Record<ProjectLibraryResolvedVisibility, string> = {
+    visible: "Visible to players",
+    gm_only: "GM-only",
     hidden: "Hidden",
   };
 

@@ -495,17 +495,25 @@ Rules:
 - Empty text override fields inherit the original Master Entry value.
 - `override_properties` shallow-merges over `master_entries.properties`.
 - `override_visibility` is empty or one of `inherit`, `visible`, `gm_only`, or
-  `hidden`.
+  `hidden`. This is Project player visibility, not master-library visibility.
 - Overrides are only valid for Master Entries reachable through an attached
   Compendium or Settings Library Project Source.
 - Game System Project Sources do not list entries yet because Systems are still
   metadata containers.
-- Slice 5D keeps the new Project Library pages Owner/GM-only until
-  player-facing visibility and reveal controls are designed.
+- Slice 5E resolves Project Library visibility from the attached source default
+  player visibility plus `project_entry_overrides.override_visibility`.
+- `master_entries.visibility` remains master-library visibility
+  (`private`, `shared`, `public`). Do not reinterpret it as player-facing
+  Project visibility.
+- Owners and GMs can read all reachable Project Library entries and manage
+  Project Entry Overrides.
+- Players and Viewers can read only Project Library entries resolved as
+  `visible`. They should not receive override reasons, hidden entries, or
+  original-vs-overridden comparison data.
 
 This table is critical. It prevents Project edits from mutating master content.
 Rich text, wiki links, imports, tags/folders, Project search, campaign
-overrides, and player-facing reveal controls remain later work.
+overrides, and inline reveal controls remain later work.
 
 ---
 

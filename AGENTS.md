@@ -97,8 +97,14 @@ Pattern:
 - Manual update from master content should be possible later.
 
 Slice 5D begins this safely with `project_entry_overrides` and Project-scoped
-library routes. Keep Project Entry Override work separate from Master Entry
-editing, and keep player-facing reveal controls for a later approved slice.
+library routes. Slice 5E adds Player/Viewer read mode for only the Project
+Library entries resolved as visible. Keep Project Entry Override work separate
+from Master Entry editing, and keep player-facing reveal controls for a later
+approved slice.
+
+Project Library player visibility resolves from Library Source default player
+visibility plus `project_entry_overrides.override_visibility`. Do not
+reinterpret `master_entries.visibility` as player-facing Project visibility.
 
 ## Permissions
 
