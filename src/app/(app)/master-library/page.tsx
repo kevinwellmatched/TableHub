@@ -3,8 +3,6 @@ import {
   BookOpen,
   Boxes,
   FileText,
-  FolderTree,
-  GitBranch,
   Library,
   Search,
   Tags,
@@ -21,27 +19,14 @@ export const dynamic = "force-dynamic";
 
 const comingLater = [
   {
-    title: "Project Sources",
-    description:
-      "Projects attach compatible Library Sources into a Project Library.",
-    meta: "Project Library",
-    icon: GitBranch,
-  },
-  {
-    title: "Overrides",
-    description: "Project customization will use linked copies with field-level changes.",
-    meta: "Later slice",
-    icon: FolderTree,
-  },
-  {
     title: "Tags & Folders",
     description: "Organization tools will help larger libraries stay readable.",
     meta: "Later slice",
     icon: Tags,
   },
   {
-    title: "Rich Text Editor",
-    description: "Rich editing, Markdown paste, and wiki-link tools come later.",
+    title: "Advanced Wiki Editing",
+    description: "Markdown paste, wiki links, reveal blocks, and tabs come later.",
     meta: "Later slice",
     icon: TextCursorInput,
   },

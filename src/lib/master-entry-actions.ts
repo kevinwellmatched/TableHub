@@ -4,8 +4,11 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import type { MasterEntryFormState } from "@/lib/master-entry-form-state";
-import { createMasterEntry } from "@/lib/master-entries";
-import { validateMasterEntryInput } from "@/lib/master-entry-validation";
+import { createMasterEntry, updateMasterEntryBody } from "@/lib/master-entries";
+import {
+  validateMasterEntryBodyInput,
+  validateMasterEntryInput,
+} from "@/lib/master-entry-validation";
 import { getCurrentUserProfile } from "@/lib/profiles";
 import { hasSupabaseEnv } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
@@ -21,6 +24,27 @@ function missingSupabaseState(): MasterEntryFormState {
     message:
       "Supabase is not configured yet. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to .env.local, then restart the dev server.",
   };
+}
+
+function masterEntryPath(masterEntryId: string, status?: string, message?: string) {
+  const fallbackPath = masterEntryId
+    ? `/master-entries/${masterEntryId}`
+    : "/master-entries";
+
+  if (!status || !message || !masterEntryId) {
+    return fallbackPath;
+  }
+
+  const params = new URLSearchParams({
+    status,
+    message,
+  });
+
+  return `${fallbackPath}?${params.toString()}`;
+}
+
+function firstFieldError(fieldErrors: Record<string, string | undefined>) {
+  return Object.values(fieldErrors).find(Boolean) ?? "Please check the form.";
 }
 
 export async function createMasterEntryAction(
@@ -105,4 +129,71 @@ export async function createMasterEntryAction(
   }
 
   redirect(`/master-entries/${data.id}`);
+}
+
+export async function updateMasterEntryBodyAction(formData: FormData) {
+  const masterEntryId = readString(formData, "masterEntryId");
+  const validation = validateMasterEntryBodyInput({
+    masterEntryId,
+    body: readString(formData, "body"),
+    bodyFormat: readString(formData, "bodyFormat"),
+  });
+
+  if (!validation.ok) {
+    redirect(
+      masterEntryPath(
+        masterEntryId,
+        "error",
+        firstFieldError(validation.fieldErrors),
+      ),
+    );
+  }
+
+  if (!hasSupabaseEnv()) {
+    redirect(
+      masterEntryPath(
+        validation.values.id,
+        "error",
+        missingSupabaseState().message,
+      ),
+    );
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    redirect("/login");
+  }
+
+  const profile = await getCurrentUserProfile(supabase, user.id);
+
+  if (!profile) {
+    redirect("/onboarding");
+  }
+
+  const { data, error } = await updateMasterEntryBody(validation.values);
+
+  if (error || !data) {
+    redirect(
+      masterEntryPath(
+        validation.values.id,
+        "error",
+        error?.message ||
+          "Master Entry body could not be updated. Supabase may not allow this change for your account.",
+      ),
+    );
+  }
+
+  revalidatePath(`/master-entries/${validation.values.id}`);
+  redirect(
+    masterEntryPath(
+      validation.values.id,
+      "success",
+      "Master Entry body saved as rich text HTML.",
+    ),
+  );
 }

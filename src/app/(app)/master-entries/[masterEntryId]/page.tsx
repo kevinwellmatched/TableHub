@@ -2,16 +2,17 @@ import Link from "next/link";
 import {
   ArrowLeft,
   ClipboardList,
+  Edit3,
   FileArchive,
   FileText,
   FolderTree,
   GitBranch,
   Link2,
   Tags,
-  TextCursorInput,
   type LucideIcon,
 } from "lucide-react";
 
+import { EntryBodyRenderer } from "@/components/editor/entry-body-renderer";
 import { MasterLibraryBreadcrumbs } from "@/components/master-library/master-library-breadcrumbs";
 import { MasterLibraryLinkPanel } from "@/components/master-library/master-library-link-panel";
 import { SectionCard } from "@/components/section-card";
@@ -29,15 +30,13 @@ type MasterEntryDetailPageProps = {
   params: Promise<{
     masterEntryId: string;
   }>;
+  searchParams: Promise<{
+    status?: string;
+    message?: string;
+  }>;
 };
 
 const futureMasterEntrySections = [
-  {
-    title: "Rich Text Editor",
-    description: "A richer editor and Markdown paste conversion come later.",
-    meta: "Later slice",
-    icon: TextCursorInput,
-  },
   {
     title: "Tags & Folders",
     description: "Future organization tools will help browse larger libraries.",
@@ -72,8 +71,10 @@ const futureMasterEntrySections = [
 
 export default async function MasterEntryDetailPage({
   params,
+  searchParams,
 }: MasterEntryDetailPageProps) {
   const { masterEntryId } = await params;
+  const messageParams = await searchParams;
   const masterEntry = await getMasterEntryById(masterEntryId);
 
   if (!masterEntry) {
@@ -106,6 +107,13 @@ export default async function MasterEntryDetailPage({
         <ArrowLeft aria-hidden="true" className="h-4 w-4" />
         Back to Master Entries
       </Link>
+
+      {messageParams.message ? (
+        <MessageBanner
+          status={messageParams.status === "success" ? "success" : "error"}
+          message={messageParams.message}
+        />
+      ) : null}
 
       <section className="rounded-lg border border-[#FCA311]/30 bg-[#FCA311]/10 p-6">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
@@ -147,6 +155,14 @@ export default async function MasterEntryDetailPage({
         links={relatedLinks}
       />
 
+      <Link
+        href={`/master-entries/${masterEntry.id}/edit`}
+        className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-[#FCA311] px-4 text-sm font-semibold text-black transition hover:bg-[#ffb33c]"
+      >
+        <Edit3 aria-hidden="true" className="h-4 w-4" />
+        Edit Body
+      </Link>
+
       <section className="rounded-lg border border-[var(--line)] bg-[var(--panel-bg)] p-5 shadow-[0_18px_60px_rgba(0,0,0,0.2)]">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[#FCA311]/30 bg-[#14213D] text-[#FCA311]">
@@ -183,9 +199,10 @@ export default async function MasterEntryDetailPage({
             <DetailItem
               label="Body"
               value={
-                <pre className="whitespace-pre-wrap rounded-lg border border-[var(--line)] bg-black/25 p-4 font-sans text-sm leading-6 text-[var(--text-main)]">
-                  {masterEntry.body || "No body content yet."}
-                </pre>
+                <EntryBodyRenderer
+                  body={masterEntry.body}
+                  format={masterEntry.body_format}
+                />
               }
             />
             <DetailItem
@@ -387,6 +404,28 @@ function SafeLink({
     >
       {children}
     </a>
+  );
+}
+
+function MessageBanner({
+  status,
+  message,
+}: {
+  status: "success" | "error";
+  message: string;
+}) {
+  const isSuccess = status === "success";
+
+  return (
+    <section
+      className={
+        isSuccess
+          ? "rounded-lg border border-emerald-400/30 bg-emerald-500/10 p-4 text-sm text-emerald-100"
+          : "rounded-lg border border-[#FCA311]/30 bg-[#FCA311]/10 p-4 text-sm text-[#FCA311]"
+      }
+    >
+      {message}
+    </section>
   );
 }
 

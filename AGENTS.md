@@ -170,6 +170,15 @@ Use subtle hover effects and transitions. Do not overdo animations.
 
 ## Rich Text and Wiki Direction
 
+Slice 6A adds the shared rich text foundation:
+
+- Use `src/components/editor/rich-text-editor.tsx` for Master Entry and Project Override body editing.
+- Use the shared safe body renderer before showing stored entry HTML.
+- Sanitize rich text output before rendering.
+- Store Master Entry rich text in `master_entries.body` with `body_format = 'html'` when the database allows it.
+- Store Project Override rich text in `project_entry_overrides.override_body`.
+- Do not add wiki links, backlinks, broken-link placeholders, reveal blocks, tabs, file/image embeds, imports, AI generation, or collaboration without a later approved slice.
+
 Future entries should support:
 
 - Rich text

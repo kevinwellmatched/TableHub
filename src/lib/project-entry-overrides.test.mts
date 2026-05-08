@@ -56,6 +56,7 @@ test("resolves an effective Project Entry from original values and overrides", (
     mood: "tense",
   });
   assert.equal(effectiveEntry.original.title, "Original title");
+  assert.equal(effectiveEntry.original.body, "Original body");
   assert.equal(effectiveEntry.override, overrideRow);
 });
 

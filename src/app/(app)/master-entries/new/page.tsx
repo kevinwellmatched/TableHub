@@ -29,7 +29,7 @@ export default async function NewMasterEntryPage() {
 
       <PageHeader
         title="Create Master Entry"
-        description="Create a basic original entry for one Compendium or one Settings Library. Body content is plain text or Markdown in a textarea for now."
+        description="Create an original entry for one Compendium or one Settings Library. Body content now uses the shared rich text editor and saves to the existing body field."
       />
 
       {!canCreateAnyEntry ? <MissingFoundationsState /> : null}
@@ -41,8 +41,8 @@ export default async function NewMasterEntryPage() {
           </h2>
           <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
             Each entry belongs to exactly one parent library and one Entry Type.
-            Do not add imports, rich text editing, tags, folders, wiki links,
-            project links, or overrides in Slice 4E.
+            Do not add imports, tags, folders, wiki links, project links, or
+            overrides in this rich text foundation slice.
           </p>
 
           <ReadinessNotes

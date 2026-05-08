@@ -98,11 +98,15 @@ overrides.
 Master Entries are the fifth concrete Master Library foundation record. A Master
 Entry is shared by Compendiums and Settings Libraries through one
 `master_entries` model. Each entry belongs to exactly one parent library, points
-to one Entry Type, and stores simple plain text or Markdown textarea content,
-aliases, summary, JSON properties, visibility, version, and source/provenance
-metadata. Slice 4E does not add rich text editing, Markdown paste conversion,
-wiki links, tags, folders, imports, Project links, Project overrides, public
-marketplace behavior, SRD content, copyrighted book text, or 5etools imports.
+to one Entry Type, and stores aliases, summary, body content, JSON properties,
+visibility, version, and source/provenance metadata. Slice 6A adds the basic
+rich text editor foundation for the existing body fields. It uses the shared
+Tiptap editor component for writing and a shared safe body renderer for reading.
+Existing text fields still store the content; no rich text tables are added.
+Slice 6A does not add Markdown paste conversion, wiki links, reveal blocks, GM
+sections, tabs, tags, folders, imports, file embeds, AI generation,
+collaboration, public marketplace behavior, SRD content, copyrighted book text,
+or 5etools imports.
 
 System provenance fields record license and source information so future SRD
 imports, private Markdown/PDF/CSV imports, manual entries, and external
@@ -194,8 +198,13 @@ treated as Project player visibility. Player and Viewer read mode must not
 return hidden entries, GM-only entries, override reasons, or original vs
 overridden comparison data.
 
-Reveal controls, Project search, imports, tags/folders, wiki links, rich text,
-inline reveal blocks, and campaign-level overrides remain later work.
+Slice 6A also lets Project Owners and GMs write rich text HTML into
+`project_entry_overrides.override_body` through the same shared editor. Project
+Library rendering uses the safe body renderer and resolves Project override
+body format conservatively: override bodies that look like HTML render as
+sanitized HTML, while legacy plain text continues to render safely. Reveal
+controls, Project search, imports, tags/folders, wiki links, inline reveal
+blocks, and campaign-level overrides remain later work.
 
 ### 3. Campaign Layer
 
@@ -260,8 +269,8 @@ Current implementation status:
   actions.
 - Slice 5E adds Project Library visibility resolution and Player/Viewer
   read-only mode for entries resolved as visible.
-- Manual master updates, imports, search, tags/folders, wiki links, rich text
-  editing, campaign-level overrides, and inline reveal controls are
+- Manual master updates, imports, search, tags/folders, wiki links, advanced
+  rich text/wiki editing, campaign-level overrides, and inline reveal controls are
   still deferred.
 
 Benefits:

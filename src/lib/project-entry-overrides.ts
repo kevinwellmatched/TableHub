@@ -1,4 +1,5 @@
 import type { LibrarySourcePlayerVisibility } from "@/lib/library-source-taxonomy";
+import { looksLikeHtml, normalizeStoredEntryBody } from "./entry-body.ts";
 
 export const PROJECT_ENTRY_OVERRIDE_VISIBILITIES = [
   "inherit",
@@ -219,7 +220,7 @@ export function validateProjectEntryOverrideInput(
   const masterEntryId = input.masterEntryId.trim();
   const overrideTitle = input.overrideTitle.trim();
   const overrideSummary = input.overrideSummary.trim();
-  const overrideBody = input.overrideBody.trim();
+  const overrideBody = normalizeOverrideBody(input.overrideBody);
   const overrideVisibility = input.overrideVisibility.trim() || "inherit";
   const overrideReason = input.overrideReason.trim();
   const overrideProperties = parseOverrideProperties(
@@ -291,6 +292,18 @@ function readOverrideText<T extends string | null>(
   fallbackValue: T,
 ) {
   return hasOverrideText(overrideValue) ? overrideValue.trim() : fallbackValue;
+}
+
+function normalizeOverrideBody(value: string) {
+  const trimmedValue = value.trim();
+
+  if (!trimmedValue) {
+    return "";
+  }
+
+  return looksLikeHtml(trimmedValue)
+    ? normalizeStoredEntryBody(trimmedValue, "html")
+    : trimmedValue;
 }
 
 function hasOverrideText(value: string | null | undefined): value is string {

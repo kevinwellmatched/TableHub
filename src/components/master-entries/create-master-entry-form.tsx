@@ -3,12 +3,11 @@
 import { useActionState, useState } from "react";
 import { FileText, Sparkles } from "lucide-react";
 
+import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import { createMasterEntryAction } from "@/lib/master-entry-actions";
 import { initialMasterEntryFormState } from "@/lib/master-entry-form-state";
 import type { MasterEntryFormOptions } from "@/lib/master-entries";
 import {
-  MASTER_ENTRY_BODY_FORMATS,
-  MASTER_ENTRY_BODY_MAX_LENGTH,
   MASTER_ENTRY_LIBRARY_KINDS,
   MASTER_ENTRY_SORT_ORDER_MAX,
   MASTER_ENTRY_SORT_ORDER_MIN,
@@ -140,11 +139,6 @@ const libraryKindLabels: Record<MasterEntryLibraryKind, string> = {
   settings_library: "Settings Library",
 };
 
-const bodyFormatLabels: Record<MasterEntryBodyFormat, string> = {
-  plain_text: "Plain text",
-  markdown: "Markdown",
-};
-
 const visibilityLabels: Record<MasterEntryVisibility, string> = {
   private: "Private",
   shared: "Shared later",
@@ -176,6 +170,7 @@ export function CreateMasterEntryForm({ options }: { options: MasterEntryFormOpt
       options.entryTypes.find((entryType) => entryType.library_kind === "compendium")
         ?.id ?? "",
   });
+  const [editorRevision, setEditorRevision] = useState(0);
 
   const selectedLibraryKind = values.libraryKind as MasterEntryLibraryKind;
   const matchingEntryTypes = options.entryTypes.filter(
@@ -239,6 +234,7 @@ export function CreateMasterEntryForm({ options }: { options: MasterEntryFormOpt
           : "",
       entryTypeId: firstEntryType,
     }));
+    setEditorRevision((currentRevision) => currentRevision + 1);
   }
 
   return (
@@ -370,29 +366,19 @@ export function CreateMasterEntryForm({ options }: { options: MasterEntryFormOpt
         error={state.fieldErrors?.summary}
       />
 
-      <section className="grid gap-5 lg:grid-cols-[0.4fr_1fr]">
-        <Select
-          label="Body format"
-          name="bodyFormat"
-          value={values.bodyFormat}
-          onChange={(event) => updateValue("bodyFormat", event.target.value)}
-          error={state.fieldErrors?.bodyFormat}
-          options={MASTER_ENTRY_BODY_FORMATS.map((bodyFormat) => ({
-            value: bodyFormat,
-            label: bodyFormatLabels[bodyFormat],
-          }))}
-        />
-        <Textarea
-          label="Body"
-          name="body"
-          rows={8}
-          maxLength={MASTER_ENTRY_BODY_MAX_LENGTH}
-          placeholder="Plain text or Markdown placeholder content."
-          value={values.body}
-          onChange={(event) => updateValue("body", event.target.value)}
-          error={state.fieldErrors?.body}
-        />
-      </section>
+      <RichTextEditor
+        key={editorRevision}
+        label="Body"
+        name="body"
+        initialContent={values.body}
+        initialFormat={values.bodyFormat as MasterEntryBodyFormat}
+        description="Rich text saves as sanitized HTML. Legacy plain text and Markdown-looking content can still be opened and saved."
+        placeholder="Write the entry body."
+        minHeight={260}
+        formatFieldName="bodyFormat"
+        formatFieldValue="html"
+        error={state.fieldErrors?.body ?? state.fieldErrors?.bodyFormat}
+      />
 
       <Textarea
         label="Properties JSON"

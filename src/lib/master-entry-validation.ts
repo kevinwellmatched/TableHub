@@ -1,4 +1,5 @@
 import type { MasterEntryFormFieldErrors } from "@/lib/master-entry-form-state";
+import { normalizeStoredEntryBody } from "./entry-body.ts";
 
 export const MASTER_ENTRY_TITLE_MAX_LENGTH = 160;
 export const MASTER_ENTRY_ALIAS_MAX_COUNT = 20;
@@ -13,7 +14,11 @@ export const MASTER_ENTRY_LIBRARY_KINDS = [
   "compendium",
   "settings_library",
 ] as const;
-export const MASTER_ENTRY_BODY_FORMATS = ["plain_text", "markdown"] as const;
+export const MASTER_ENTRY_BODY_FORMATS = [
+  "plain_text",
+  "markdown",
+  "html",
+] as const;
 export const MASTER_ENTRY_VISIBILITIES = ["private", "shared", "public"] as const;
 export const MASTER_ENTRY_SOURCE_TYPES = [
   "manual",
@@ -77,6 +82,18 @@ export type ValidMasterEntryInput = {
   version: string;
 };
 
+export type MasterEntryBodyInput = {
+  masterEntryId: string;
+  body: string;
+  bodyFormat: string;
+};
+
+export type ValidMasterEntryBodyInput = {
+  id: string;
+  body: string;
+  body_format: MasterEntryBodyFormat;
+};
+
 export function createMasterEntrySlugFromTitle(title: string) {
   return title
     .trim()
@@ -96,8 +113,10 @@ export function validateMasterEntryInput(input: MasterEntryInput) {
   const title = input.title.trim();
   const aliases = parseAliases(input.aliases);
   const summary = input.summary.trim();
-  const body = input.body.trim();
   const bodyFormat = input.bodyFormat.trim();
+  const body = isMasterEntryBodyFormat(bodyFormat)
+    ? normalizeStoredEntryBody(input.body, bodyFormat)
+    : input.body.trim();
   const propertiesText = input.properties.trim();
   const visibility = input.visibility.trim();
   const sortOrderText = input.sortOrder.trim();
@@ -164,7 +183,7 @@ export function validateMasterEntryInput(input: MasterEntryInput) {
   }
 
   if (!isMasterEntryBodyFormat(bodyFormat)) {
-    fieldErrors.bodyFormat = "Choose plain text or Markdown.";
+    fieldErrors.bodyFormat = "Choose plain text, Markdown, or rich text HTML.";
   }
 
   if (!isMasterEntryVisibility(visibility)) {
@@ -234,6 +253,46 @@ export function validateMasterEntryInput(input: MasterEntryInput) {
     } satisfies ValidMasterEntryInput,
   };
 }
+
+export function validateMasterEntryBodyInput(input: MasterEntryBodyInput) {
+  const fieldErrors: Pick<MasterEntryFormFieldErrors, "body" | "bodyFormat"> & {
+    masterEntryId?: string;
+  } = {};
+  const masterEntryId = input.masterEntryId.trim();
+  const bodyFormat = input.bodyFormat.trim();
+  const body = isMasterEntryBodyFormat(bodyFormat)
+    ? normalizeStoredEntryBody(input.body, bodyFormat)
+    : input.body.trim();
+
+  if (!masterEntryId) {
+    fieldErrors.masterEntryId = "Master Entry is required.";
+  }
+
+  if (body.length > MASTER_ENTRY_BODY_MAX_LENGTH) {
+    fieldErrors.body = `Body must be ${MASTER_ENTRY_BODY_MAX_LENGTH} characters or fewer.`;
+  }
+
+  if (!isMasterEntryBodyFormat(bodyFormat)) {
+    fieldErrors.bodyFormat = "Choose plain text, Markdown, or rich text HTML.";
+  }
+
+  if (Object.keys(fieldErrors).length > 0) {
+    return {
+      ok: false as const,
+      fieldErrors,
+    };
+  }
+
+  return {
+    ok: true as const,
+    values: {
+      id: masterEntryId,
+      body,
+      body_format: bodyFormat as MasterEntryBodyFormat,
+    } satisfies ValidMasterEntryBodyInput,
+  };
+}
+
 
 function parseAliases(value: string) {
   return value
