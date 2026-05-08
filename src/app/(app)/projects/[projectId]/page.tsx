@@ -153,13 +153,22 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
             </div>
           </div>
 
-          <Link
-            href={`/projects/${project.id}/sources`}
-            className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-[#FCA311]/50 px-4 text-sm font-semibold text-[#FCA311] transition hover:bg-[#FCA311] hover:text-black"
-          >
-            <LinkIcon aria-hidden="true" className="h-4 w-4" />
-            Manage Project Library
-          </Link>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Link
+              href={`/projects/${project.id}/library`}
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#FCA311] px-4 text-sm font-semibold text-black transition hover:bg-[#ffb33c]"
+            >
+              <FileText aria-hidden="true" className="h-4 w-4" />
+              Open Project Library
+            </Link>
+            <Link
+              href={`/projects/${project.id}/sources`}
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-[#FCA311]/50 px-4 text-sm font-semibold text-[#FCA311] transition hover:bg-[#FCA311] hover:text-black"
+            >
+              <LinkIcon aria-hidden="true" className="h-4 w-4" />
+              Manage Sources
+            </Link>
+          </div>
         </div>
 
         {sources.length > 0 ? (

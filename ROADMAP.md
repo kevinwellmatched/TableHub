@@ -500,7 +500,7 @@ Done when:
 
 ### Slice 5D: Project Entry Override Groundwork
 
-Status: Not started.
+Status: Implemented in foundation form.
 
 Goal:
 
@@ -510,10 +510,16 @@ Goal:
 
 Build:
 
-- `project_entry_overrides` schema and RLS
-- Minimal override helper APIs
-- Read-only original vs project-specific value groundwork
-- No rich text editor or full override UI until the data path is safe
+- `project_entry_overrides` schema and RLS documented in `SUPABASE_SETUP.md`
+- Effective Project Entry helper APIs
+- Project Library route at `/projects/[projectId]/library`
+- Project-context entry detail route at
+  `/projects/[projectId]/library/[masterEntryId]`
+- Simple Owner/GM override form for title, summary, body, properties JSON,
+  visibility, and reason
+- Reset/delete override action
+- No rich text editor, imports, wiki links, tags/folders, Project search,
+  campaign overrides, or player-facing reveal controls yet
 
 ### Done When
 
@@ -521,6 +527,8 @@ Build:
 - The Project can override that entry
 - The master entry remains unchanged
 - UI clearly marks overridden fields
+- Tests cover effective entry resolution, field detection, properties merge,
+  override visibility validation, and properties JSON validation
 
 ---
 

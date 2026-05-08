@@ -470,24 +470,42 @@ Rules:
 
 ### project_entry_overrides
 
-Stores project-specific overrides for linked entries.
+Stores Project-specific field overrides for linked Master Entries.
 
-Deferred to Slice 5D.
+Current Slice 5D table:
 
-Likely future fields:
+- id uuid primary key
+- project_id uuid not null references public.projects(id) on delete cascade
+- master_entry_id uuid not null references public.master_entries(id) on delete cascade
+- override_title text
+- override_summary text
+- override_body text
+- override_properties jsonb not null default '{}'
+- override_visibility text
+- override_reason text
+- created_by uuid not null references auth.users(id)
+- created_at timestamptz not null default now()
+- updated_at timestamptz not null default now()
+- unique (project_id, master_entry_id)
 
-- id
-- project_id
-- source_entry_type
-- source_entry_id
-- override_data
-- override_reason
-- created_by
-- created_at
-- updated_at
+Rules:
 
-This table is critical. It prevents project edits from mutating master content.
-It is not implemented in Slice 5A.
+- Master Entries remain unchanged.
+- A Project can have at most one override row per Master Entry.
+- Empty text override fields inherit the original Master Entry value.
+- `override_properties` shallow-merges over `master_entries.properties`.
+- `override_visibility` is empty or one of `inherit`, `visible`, `gm_only`, or
+  `hidden`.
+- Overrides are only valid for Master Entries reachable through an attached
+  Compendium or Settings Library Project Source.
+- Game System Project Sources do not list entries yet because Systems are still
+  metadata containers.
+- Slice 5D keeps the new Project Library pages Owner/GM-only until
+  player-facing visibility and reveal controls are designed.
+
+This table is critical. It prevents Project edits from mutating master content.
+Rich text, wiki links, imports, tags/folders, Project search, campaign
+overrides, and player-facing reveal controls remain later work.
 
 ---
 

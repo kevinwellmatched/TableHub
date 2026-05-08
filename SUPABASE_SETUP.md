@@ -133,6 +133,208 @@ Expected Row Level Security behavior:
 The app uses normal Supabase server clients and relies on RLS. Do not add a
 service role key to the app.
 
+## Slice 5D: Project Entry Overrides Groundwork
+
+Run this SQL in Supabase before manually testing Project Entry Overrides.
+
+This slice documents the database changes only. It does not create a migration
+file and does not change Supabase automatically.
+
+```sql
+create table if not exists public.project_entry_overrides (
+  id uuid primary key default gen_random_uuid(),
+  project_id uuid not null references public.projects(id) on delete cascade,
+  master_entry_id uuid not null references public.master_entries(id) on delete cascade,
+  override_title text,
+  override_summary text,
+  override_body text,
+  override_properties jsonb not null default '{}',
+  override_visibility text,
+  override_reason text,
+  created_by uuid not null references auth.users(id),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (project_id, master_entry_id)
+);
+
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'project_entry_overrides_visibility_check'
+  ) then
+    alter table public.project_entry_overrides
+      add constraint project_entry_overrides_visibility_check
+      check (
+        override_visibility is null
+        or override_visibility in ('inherit', 'visible', 'gm_only', 'hidden')
+      );
+  end if;
+end $$;
+
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'project_entry_overrides_properties_object_check'
+  ) then
+    alter table public.project_entry_overrides
+      add constraint project_entry_overrides_properties_object_check
+      check (jsonb_typeof(override_properties) = 'object');
+  end if;
+end $$;
+
+create or replace function public.set_project_entry_override_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+drop trigger if exists set_project_entry_override_updated_at
+  on public.project_entry_overrides;
+
+create trigger set_project_entry_override_updated_at
+before update on public.project_entry_overrides
+for each row
+execute function public.set_project_entry_override_updated_at();
+
+alter table public.project_entry_overrides enable row level security;
+
+drop policy if exists "Project members can read project entry overrides"
+  on public.project_entry_overrides;
+
+create policy "Project members can read project entry overrides"
+on public.project_entry_overrides
+for select
+to authenticated
+using (
+  exists (
+    select 1
+    from public.project_members pm
+    where pm.project_id = project_entry_overrides.project_id
+      and pm.user_id = auth.uid()
+  )
+);
+
+drop policy if exists "Project owners and GMs can create reachable entry overrides"
+  on public.project_entry_overrides;
+
+create policy "Project owners and GMs can create reachable entry overrides"
+on public.project_entry_overrides
+for insert
+to authenticated
+with check (
+  created_by = auth.uid()
+  and exists (
+    select 1
+    from public.project_members pm
+    where pm.project_id = project_entry_overrides.project_id
+      and pm.user_id = auth.uid()
+      and pm.role in ('owner', 'gm')
+  )
+  and exists (
+    select 1
+    from public.project_sources ps
+    join public.master_entries me
+      on me.id = project_entry_overrides.master_entry_id
+    where ps.project_id = project_entry_overrides.project_id
+      and (
+        (
+          ps.source_type = 'compendium'
+          and me.library_kind = 'compendium'
+          and ps.compendium_id = me.compendium_id
+        )
+        or (
+          ps.source_type = 'settings_library'
+          and me.library_kind = 'settings_library'
+          and ps.settings_library_id = me.settings_library_id
+        )
+      )
+  )
+);
+
+drop policy if exists "Project owners and GMs can update entry overrides"
+  on public.project_entry_overrides;
+
+create policy "Project owners and GMs can update entry overrides"
+on public.project_entry_overrides
+for update
+to authenticated
+using (
+  exists (
+    select 1
+    from public.project_members pm
+    where pm.project_id = project_entry_overrides.project_id
+      and pm.user_id = auth.uid()
+      and pm.role in ('owner', 'gm')
+  )
+)
+with check (
+  exists (
+    select 1
+    from public.project_members pm
+    where pm.project_id = project_entry_overrides.project_id
+      and pm.user_id = auth.uid()
+      and pm.role in ('owner', 'gm')
+  )
+  and exists (
+    select 1
+    from public.project_sources ps
+    join public.master_entries me
+      on me.id = project_entry_overrides.master_entry_id
+    where ps.project_id = project_entry_overrides.project_id
+      and (
+        (
+          ps.source_type = 'compendium'
+          and me.library_kind = 'compendium'
+          and ps.compendium_id = me.compendium_id
+        )
+        or (
+          ps.source_type = 'settings_library'
+          and me.library_kind = 'settings_library'
+          and ps.settings_library_id = me.settings_library_id
+        )
+      )
+  )
+);
+
+drop policy if exists "Project owners and GMs can delete entry overrides"
+  on public.project_entry_overrides;
+
+create policy "Project owners and GMs can delete entry overrides"
+on public.project_entry_overrides
+for delete
+to authenticated
+using (
+  exists (
+    select 1
+    from public.project_members pm
+    where pm.project_id = project_entry_overrides.project_id
+      and pm.user_id = auth.uid()
+      and pm.role in ('owner', 'gm')
+  )
+);
+```
+
+Expected Row Level Security behavior:
+
+- Project members can read overrides for Projects they can access.
+- Project Owners and GMs can create, update, and delete overrides.
+- Players and Viewers cannot create, update, or delete overrides.
+- Overrides are allowed only for Master Entries reachable through a Compendium
+  or Settings Library source attached to the Project.
+- Game System sources stay out of entry override reachability for now because
+  Systems are metadata containers at this app stage.
+
+The app uses normal Supabase server clients and relies on RLS. Do not add a
+service role key to the app.
+
 ## Slice 5C: Library Source Metadata Schema Groundwork
 
 Run this SQL in Supabase before manually testing Slice 5C forms. It is

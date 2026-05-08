@@ -173,6 +173,18 @@ can choose a primary System when one is available, existing Projects can remain
 unset, and Project Source attachment gently prefers sources that match the
 primary System without blocking the existing attach flow.
 
+Slice 5D adds the first Project Entry Override groundwork. Project Owners and
+GMs can open `/projects/[projectId]/library`, view Master Entries reachable
+through attached Compendium and Settings Library sources, and save a
+Project-specific override at `/projects/[projectId]/library/[masterEntryId]`.
+The effective Project Entry is resolved by combining the original Master Entry
+with the override row. The original `master_entries` row is never updated from a
+Project page.
+
+The Project Library entry pages are Owner/GM-only in Slice 5D. Player-facing
+visibility filtering, reveal controls, Project search, imports, tags/folders,
+wiki links, rich text, and campaign-level overrides remain later work.
+
 ### 3. Campaign Layer
 
 A Campaign is an active play space inside a Project.
@@ -231,9 +243,12 @@ Current implementation status:
   Settings Libraries.
 - Slice 5C adds Library Source metadata and optional Project primary System
   groundwork.
-- Slice 5D is expected to begin `project_entry_overrides`.
-- Original vs modified rendering, manual master updates, imports, search,
-  tags/folders, and rich text editing are still deferred.
+- Slice 5D begins `project_entry_overrides`, effective Project Entry
+  resolution, original vs overridden field display, and reset/delete override
+  actions.
+- Manual master updates, imports, search, tags/folders, wiki links, rich text
+  editing, campaign-level overrides, and player-facing reveal controls are
+  still deferred.
 
 Benefits:
 

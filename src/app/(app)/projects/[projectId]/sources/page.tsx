@@ -108,6 +108,13 @@ export default async function ProjectSourcesPage({
             <p className="mt-2 text-sm font-semibold text-[var(--text-main)]">
               {project.primaryGameSystem?.name || "Not set"}
             </p>
+            <Link
+              href={`/projects/${project.id}/library`}
+              className="mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#FCA311] px-4 text-sm font-semibold text-black transition hover:bg-[#ffb33c]"
+            >
+              <BookOpen aria-hidden="true" className="h-4 w-4" />
+              Open Project Library
+            </Link>
           </div>
         </div>
       </section>

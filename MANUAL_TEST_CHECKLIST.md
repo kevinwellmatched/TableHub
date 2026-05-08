@@ -634,6 +634,57 @@ npm run build
 
 ---
 
+## Slice 5D: Project Entry Overrides Groundwork
+
+### Expected
+
+- `project_entry_overrides` SQL is documented in `SUPABASE_SETUP.md`.
+- Project Owners and GMs can open `/projects/[projectId]/library`.
+- Project Library lists Master Entries from attached Compendium and Settings
+  Library sources.
+- Game System sources do not list entries yet.
+- Project-context entries open at
+  `/projects/[projectId]/library/[masterEntryId]`.
+- The Project page can show effective values from original Master Entry data
+  plus a Project override.
+- The original Master Entry remains unchanged.
+- Rich text, wiki links, imports, tags/folders, Project search, campaign
+  overrides, and player-facing reveal controls are not included.
+
+### Manual Tests
+
+- [ ] Apply the Slice 5D SQL from `SUPABASE_SETUP.md`.
+- [ ] Create or use a Project.
+- [ ] Attach a Compendium or Settings Library source to the Project.
+- [ ] Create at least one Master Entry under that source.
+- [ ] Open `/projects/[projectId]/library`.
+- [ ] Confirm the Project Library lists the attached source context.
+- [ ] Confirm entries from unattached sources do not appear.
+- [ ] Open `/projects/[projectId]/library/[masterEntryId]`.
+- [ ] Confirm the effective title, summary, body, properties, and visibility
+  display.
+- [ ] Confirm original Master Entry values display in the original section.
+- [ ] Create an override for title, summary, body, properties JSON, visibility,
+  and reason.
+- [ ] Confirm the Project-context entry page shows the overridden value.
+- [ ] Open the original Master Entry page and confirm it remains unchanged.
+- [ ] Reset/delete the override.
+- [ ] Confirm the Project-context entry page falls back to original values.
+- [ ] Confirm non-GM roles cannot write overrides, if role testing is practical.
+- [ ] Run `npm.cmd run test`.
+- [ ] Run `npm.cmd run lint`.
+- [ ] Run `npm.cmd run build`.
+
+### Known Issues
+
+- Player-facing Project Library visibility is not complete yet, so the new
+  Project Library entry pages are Owner/GM-only in this slice.
+- The override form uses plain text and JSON textareas only.
+- No full Project search, import workflow, rich text editor, wiki links,
+  tags/folders, campaign overrides, or reveal controls are included yet.
+
+---
+
 ## Slice 6: Rich Text Wiki and Entry Editing
 
 ### Expected

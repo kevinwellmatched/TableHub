@@ -96,6 +96,10 @@ Pattern:
 - UI can show original, modified, and override status.
 - Manual update from master content should be possible later.
 
+Slice 5D begins this safely with `project_entry_overrides` and Project-scoped
+library routes. Keep Project Entry Override work separate from Master Entry
+editing, and keep player-facing reveal controls for a later approved slice.
+
 ## Permissions
 
 Permissions must be enforced at the database level with Supabase Row Level Security when data is exposed through Supabase.
