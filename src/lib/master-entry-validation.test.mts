@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   createMasterEntrySlugFromTitle,
+  validateMasterEntryBodyInput,
   validateMasterEntryInput,
 } from "./master-entry-validation.ts";
 
@@ -74,6 +75,34 @@ test("accepts a valid Settings Library master entry", () => {
       "33333333-3333-4333-8333-333333333333",
     );
     assert.equal(result.values.slug, "sample-npc-note");
+  }
+});
+
+test("accepts rich text HTML as a Master Entry body format", () => {
+  const result = validateMasterEntryInput({
+    ...validCompendiumInput,
+    body: "<h2>Scene</h2><p><strong>Read-aloud text.</strong></p>",
+    bodyFormat: "html",
+  });
+
+  assert.equal(result.ok, true);
+  if (result.ok) {
+    assert.equal(result.values.body_format, "html");
+  }
+});
+
+test("validates a rich text Master Entry body update", () => {
+  const result = validateMasterEntryBodyInput({
+    masterEntryId: "entry-1",
+    body: '<p><strong>Updated body</strong><script>alert("no")</script></p>',
+    bodyFormat: "html",
+  });
+
+  assert.equal(result.ok, true);
+  if (result.ok) {
+    assert.equal(result.values.body_format, "html");
+    assert.equal(result.values.body.includes("<script"), false);
+    assert.equal(result.values.body.includes("<strong>Updated body</strong>"), true);
   }
 });
 
@@ -170,12 +199,15 @@ test("rejects too many aliases", () => {
 test("rejects an invalid body format", () => {
   const result = validateMasterEntryInput({
     ...validCompendiumInput,
-    bodyFormat: "html",
+    bodyFormat: "rich_html",
   });
 
   assert.equal(result.ok, false);
   if (!result.ok) {
-    assert.equal(result.fieldErrors.bodyFormat, "Choose plain text or Markdown.");
+    assert.equal(
+      result.fieldErrors.bodyFormat,
+      "Choose plain text, Markdown, or rich text HTML.",
+    );
   }
 });
 

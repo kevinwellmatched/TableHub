@@ -10,6 +10,7 @@ import type {
   MasterEntrySourceType,
   MasterEntryVisibility,
   ValidMasterEntryInput,
+  ValidMasterEntryBodyInput,
 } from "@/lib/master-entry-validation";
 import { hasSupabaseEnv } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
@@ -235,6 +236,28 @@ export async function createMasterEntry(input: ValidMasterEntryInput) {
   return { data, error };
 }
 
+export async function updateMasterEntryBody(input: ValidMasterEntryBodyInput) {
+  if (!hasSupabaseEnv()) {
+    redirect("/login");
+  }
+
+  const supabase = await createClient();
+  await getSignedInUserId(supabase);
+
+  const { data, error } = await supabase
+    .from("master_entries")
+    .update({
+      body: input.body || null,
+      body_format: input.body_format,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", input.id)
+    .select(MASTER_ENTRY_COLUMNS)
+    .single<{ id: string }>();
+
+  return { data, error };
+}
+
 export async function getMasterEntryFormOptions(): Promise<MasterEntryFormOptions> {
   if (!hasSupabaseEnv()) {
     redirect("/login");
@@ -271,6 +294,7 @@ export function formatMasterEntryBodyFormat(bodyFormat: MasterEntryBodyFormat) {
   const labels: Record<MasterEntryBodyFormat, string> = {
     plain_text: "Plain text",
     markdown: "Markdown",
+    html: "Rich text HTML",
   };
 
   return labels[bodyFormat];

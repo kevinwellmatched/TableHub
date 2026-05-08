@@ -289,13 +289,18 @@ Rules:
   empty. If `library_kind` is `settings_library`, `settings_library_id` is
   required and `compendium_id` must be empty.
 - Each Master Entry points to one Entry Type.
-- Body content is simple plain text or Markdown textarea content for now.
+- `body` may contain legacy plain text, legacy Markdown-looking text, or
+  sanitized rich text HTML saved by the Slice 6A editor.
+- `body_format` is app-level controlled as `plain_text`, `markdown`, or `html`.
+  The `html` value means the body should be rendered only through the shared
+  sanitizer-backed body renderer.
 - `properties` stores optional structured JSON object data.
 - Visibility supports `private`, `shared`, and `public`.
 - Access is enforced with Supabase Row Level Security.
-- Slice 4E does not add rich text editing, Markdown paste conversion, wiki
-  links, tags, folders, imports, project linking, project overrides, public
-  marketplace behavior, 5etools imports, SRD content, or copyrighted book text.
+- Slice 6A adds basic rich text editing and rendering without adding tables.
+  It does not add Markdown paste conversion, wiki links, tags, folders, imports,
+  public marketplace behavior, 5etools imports, SRD content, or copyrighted book
+  text.
 - Master Entries are original reusable content. Future Project customization
   must use linked copies with overrides instead of mutating Master Entries
   directly.
@@ -493,6 +498,10 @@ Rules:
 - Master Entries remain unchanged.
 - A Project can have at most one override row per Master Entry.
 - Empty text override fields inherit the original Master Entry value.
+- `override_body` may contain legacy text or sanitized rich text HTML. There is
+  no `override_body_format` column in Slice 6A. Project Library rendering treats
+  an override body that looks like HTML as sanitized HTML; otherwise it falls
+  back to safe plain text rendering.
 - `override_properties` shallow-merges over `master_entries.properties`.
 - `override_visibility` is empty or one of `inherit`, `visible`, `gm_only`, or
   `hidden`. This is Project player visibility, not master-library visibility.
@@ -512,8 +521,9 @@ Rules:
   original-vs-overridden comparison data.
 
 This table is critical. It prevents Project edits from mutating master content.
-Rich text, wiki links, imports, tags/folders, Project search, campaign
-overrides, and inline reveal controls remain later work.
+Wiki links, imports, tags/folders, Project search, campaign overrides, inline
+reveal controls, collaboration, AI generation, and file/image embeds remain
+later work.
 
 ---
 

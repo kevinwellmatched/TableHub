@@ -570,13 +570,52 @@ Build:
 
 ## Slice 6: Rich Text Wiki and Entry Editing
 
+Status: In progress. Slice 6A Rich Text Editor Foundation is complete in this
+foundation slice.
+
 ### Goal
 
 Make lore and compendium content pleasant to write and read.
 
+### Slice 6A: Rich Text Editor Foundation
+
+Status: Complete in the current foundation slice.
+
+Goal:
+
+- Add a basic shared rich text editor for Master Entry bodies and Project Entry
+  Override bodies.
+- Store rich text in the existing `master_entries.body` and
+  `project_entry_overrides.override_body` text fields.
+- Preserve legacy plain text and Markdown-looking content without a bulk
+  migration.
+
+Build:
+
+- Tiptap editor component with a small toolbar for paragraphs, headings, bold,
+  italic, strike, lists, blockquote, code, undo, and redo.
+- Safe body renderer that sanitizes HTML before rendering.
+- Master Entry create body editor.
+- Small Master Entry body edit path.
+- Project Entry Override body editor.
+- Focused tests for `html` body format validation, sanitizing, legacy fallback,
+  and Project override body format selection.
+- No database tables, wiki links, backlinks, reveal blocks, tabs, imports, file
+  embeds, AI generation, collaboration, or unified `library_sources` table.
+
+Done when:
+
+- Master Entry rich text saves as `body_format = 'html'` when supported by the
+  database.
+- Existing plain text and Markdown-looking bodies still render safely.
+- Project Entry Overrides can store rich text body HTML without changing the
+  original Master Entry.
+- Test, lint, and build pass.
+
+### Later Slice 6 Work
+
 ### Build
 
-- Rich-text editor
 - Markdown paste conversion
 - `[[wiki links]]`
 - Broken link placeholders

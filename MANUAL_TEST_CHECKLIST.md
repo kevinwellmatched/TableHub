@@ -736,11 +736,54 @@ npm run build
 
 ---
 
-## Slice 6: Rich Text Wiki and Entry Editing
+## Slice 6A: Rich Text Editor Foundation
 
 ### Expected
 
-- Rich-text editor exists.
+- Shared rich text editor exists for Master Entry bodies.
+- Shared rich text editor exists for Project Entry Override bodies.
+- Rich text saves to existing text fields, not new tables.
+- Stored/rendered HTML is sanitized.
+- Legacy plain text and Markdown-looking bodies still display safely.
+- Advanced wiki features remain deferred.
+
+### Manual Tests
+
+- [ ] Logged-in user can create a Master Entry with rich text body.
+- [ ] Bold, italic, headings, lists, and blockquote save and render.
+- [ ] Existing plain text Master Entry still renders.
+- [ ] Existing Markdown-looking Master Entry still renders without crashing.
+- [ ] Master Entry body save does not change parent library, source, or
+      provenance fields.
+- [ ] Project Owner or GM can edit Project Override body with rich text.
+- [ ] Project override body renders in Project Library.
+- [ ] Original Master Entry remains unchanged after Project Override save.
+- [ ] Reset/delete override falls back to original body.
+- [ ] Player/Viewer read mode still shows only visible effective Project Library
+      entries.
+- [ ] Player/Viewer cannot write override bodies.
+- [ ] Dangerous HTML is not rendered unsanitized.
+- [ ] No wiki links, reveal blocks, tabs, file embeds, imports, AI,
+      collaboration, or new database tables were added.
+- [ ] Run `npm.cmd run test`.
+- [ ] Run `npm.cmd run lint`.
+- [ ] Run `npm.cmd run build`.
+
+### Known Issues
+
+- Slice 6A does not add Markdown paste conversion, wiki links, backlinks,
+  reveal blocks, tabs, file/image embeds, imports, AI generation, or
+  collaboration.
+- If a live Supabase database has a custom `body_format` check constraint that
+  excludes `html`, that database constraint must be updated before rich text
+  Master Entry saves can succeed.
+
+---
+
+## Slice 6 Later: Rich Text Wiki and Entry Editing
+
+### Expected
+
 - Markdown paste conversion works.
 - `[[wiki links]]` work.
 - Overview and GM Notes tabs exist.
@@ -749,9 +792,7 @@ npm run build
 
 ### Manual Tests
 
-- [ ] Create lore entry.
 - [ ] Paste Markdown.
-- [ ] Save rich-text content.
 - [ ] Add `[[linked entry]]`.
 - [ ] Create a broken link placeholder.
 - [ ] Add GM Notes.
@@ -761,7 +802,7 @@ npm run build
 
 ### Known Issues
 
-- Not started.
+- Not started beyond the Slice 6A editor foundation.
 
 ---
 

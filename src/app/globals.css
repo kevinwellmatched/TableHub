@@ -52,3 +52,92 @@ body {
   background: #fca311;
   color: #000000;
 }
+
+.prose-entry-editor :where(p, ul, ol, blockquote, pre, h2, h3) {
+  margin: 0 0 0.85rem;
+}
+
+.prose-entry-editor :where(h2, h3),
+.entry-body-renderer :where(h2, h3) {
+  color: var(--text-main);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.prose-entry-editor h2,
+.entry-body-renderer h2 {
+  font-size: 1.35rem;
+}
+
+.prose-entry-editor h3,
+.entry-body-renderer h3 {
+  font-size: 1.12rem;
+}
+
+.prose-entry-editor :where(ul, ol),
+.entry-body-renderer :where(ul, ol) {
+  padding-left: 1.35rem;
+}
+
+.prose-entry-editor ul,
+.entry-body-renderer ul {
+  list-style: disc;
+}
+
+.prose-entry-editor ol,
+.entry-body-renderer ol {
+  list-style: decimal;
+}
+
+.prose-entry-editor blockquote,
+.entry-body-renderer blockquote {
+  border-left: 3px solid #fca311;
+  color: var(--text-muted);
+  padding-left: 1rem;
+}
+
+.prose-entry-editor :where(code),
+.entry-body-renderer :where(code) {
+  border: 1px solid var(--line);
+  border-radius: 0.35rem;
+  background: rgba(0, 0, 0, 0.3);
+  color: #fca311;
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  padding: 0.1rem 0.28rem;
+}
+
+.prose-entry-editor pre,
+.entry-body-renderer pre {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.85rem;
+}
+
+.prose-entry-editor pre code,
+.entry-body-renderer pre code {
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.entry-body-renderer :where(p, ul, ol, blockquote, pre, h2, h3, hr) {
+  margin: 0 0 0.9rem;
+}
+
+.entry-body-renderer :where(p, ul, ol, blockquote, pre, h2, h3, hr):last-child {
+  margin-bottom: 0;
+}
+
+.entry-body-renderer a {
+  color: #fca311;
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
+}
+
+.entry-body-renderer hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+}

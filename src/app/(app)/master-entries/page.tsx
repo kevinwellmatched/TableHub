@@ -83,10 +83,11 @@ export default async function MasterEntriesPage() {
           Later entry tools are not built yet
         </h2>
         <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
-          Slice 4E keeps entries simple: title, aliases, summary, textarea body,
-          JSON properties, visibility, version, and provenance. Imports, rich
-          text editing, tags, folders, wiki links, project links, and project
-          overrides come later.
+          Slice 6A adds the shared rich text body editor and safe renderer while
+          keeping entries otherwise simple: title, aliases, summary, JSON
+          properties, visibility, version, and provenance. Imports, tags,
+          folders, wiki links, project links, and advanced wiki tools come
+          later.
         </p>
       </section>
     </div>

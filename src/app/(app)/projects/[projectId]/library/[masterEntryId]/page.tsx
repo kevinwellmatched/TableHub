@@ -1,6 +1,12 @@
 import Link from "next/link";
 import { ArrowLeft, RotateCcw, Save } from "lucide-react";
 
+import { EntryBodyRenderer } from "@/components/editor/entry-body-renderer";
+import { RichTextEditor } from "@/components/editor/rich-text-editor";
+import {
+  getProjectEntryBodyRenderFormat,
+  getReadModeEntryBodyRenderFormat,
+} from "@/lib/entry-body";
 import {
   resetProjectEntryOverrideAction,
   saveProjectEntryOverrideAction,
@@ -130,9 +136,17 @@ export default async function ProjectLibraryEntryPage({
             />
             <EffectiveField
               label="Body"
-              value={entry.effective.body || "No body."}
+              value={
+                <EntryBodyRenderer
+                  body={entry.effective.body}
+                  format={getProjectEntryBodyRenderFormat({
+                    masterBodyFormat: entry.body_format,
+                    overrideBody: entry.override?.override_body,
+                  })}
+                  emptyText="No body."
+                />
+              }
               overridden={entry.overrideStatus.body}
-              preserveLines
             />
             <EffectiveField
               label="Properties"
@@ -160,8 +174,13 @@ export default async function ProjectLibraryEntryPage({
             <OriginalField label="Summary" value={entry.summary || "No summary."} />
             <OriginalField
               label="Body"
-              value={entry.body || "No body."}
-              preserveLines
+              value={
+                <EntryBodyRenderer
+                  body={entry.body}
+                  format={entry.body_format}
+                  emptyText="No body."
+                />
+              }
             />
             <OriginalField
               label="Properties"
@@ -197,11 +216,17 @@ export default async function ProjectLibraryEntryPage({
             rows={4}
             defaultValue={entry.override?.override_summary ?? ""}
           />
-          <Textarea
+          <RichTextEditor
             label="Override body"
             name="overrideBody"
-            rows={8}
-            defaultValue={entry.override?.override_body ?? ""}
+            initialContent={entry.override?.override_body ?? ""}
+            initialFormat={getProjectEntryBodyRenderFormat({
+              masterBodyFormat: entry.body_format,
+              overrideBody: entry.override?.override_body,
+            })}
+            description="Leave blank to inherit the original Master Entry body. Saved override bodies are sanitized before rendering."
+            placeholder="Write a Project-specific body override."
+            minHeight={260}
           />
           <Textarea
             label="Override properties JSON"
@@ -301,7 +326,16 @@ function ReadOnlyProjectEntryPage({
           Entry
         </h2>
         <div className="mt-5 space-y-5">
-          <ReadOnlyField label="Body" value={entry.body || "No body."} preserveLines />
+          <ReadOnlyField
+            label="Body"
+            value={
+              <EntryBodyRenderer
+                body={entry.body}
+                format={getReadModeEntryBodyRenderFormat(entry.body)}
+                emptyText="No body."
+              />
+            }
+          />
           <ReadOnlyField
             label="Properties"
             value={formatJson(entry.properties ?? {})}
@@ -319,13 +353,13 @@ function ReadOnlyField({
   preserveLines = false,
 }: {
   label: string;
-  value: string;
+  value: React.ReactNode;
   preserveLines?: boolean;
 }) {
   return (
     <div>
       <h3 className="text-sm font-semibold text-[#FCA311]">{label}</h3>
-      <p
+      <div
         className={
           preserveLines
             ? "mt-2 whitespace-pre-wrap rounded-lg border border-[var(--line)] bg-black/20 p-3 text-sm leading-6 text-[var(--text-main)]"
@@ -333,7 +367,7 @@ function ReadOnlyField({
         }
       >
         {value}
-      </p>
+      </div>
     </div>
   );
 }
@@ -345,7 +379,7 @@ function EffectiveField({
   preserveLines = false,
 }: {
   label: string;
-  value: string;
+  value: React.ReactNode;
   overridden: boolean;
   preserveLines?: boolean;
 }) {
@@ -357,7 +391,7 @@ function EffectiveField({
           {overridden ? "Overridden" : "Original"}
         </span>
       </div>
-      <p
+      <div
         className={
           preserveLines
             ? "mt-2 whitespace-pre-wrap rounded-lg border border-[var(--line)] bg-black/20 p-3 text-sm leading-6 text-[var(--text-main)]"
@@ -365,7 +399,7 @@ function EffectiveField({
         }
       >
         {value}
-      </p>
+      </div>
     </div>
   );
 }
@@ -376,7 +410,7 @@ function OriginalField({
   preserveLines = false,
 }: {
   label: string;
-  value: string;
+  value: React.ReactNode;
   preserveLines?: boolean;
 }) {
   return (
