@@ -1,0 +1,70 @@
+{
+  "manifestVersion": 1,
+  "packageId": "demo20.core-sample",
+  "packageName": "Demo20 Core Sample",
+  "distributionStatus": "tablehub_distributable",
+  "source": {
+    "name": "Demo20 Core Sample",
+    "creator": "TableHub Demo Team",
+    "licenseName": "Original demo content",
+    "sourceKind": "original_demo",
+    "mayTableHubRedistribute": true,
+    "privateToWorkspace": false
+  },
+  "system": {
+    "name": "Demo20",
+    "edition": "Sample Edition",
+    "publisher": "TableHub Demo Team",
+    "rulesetYear": 2026,
+    "version": "1.0.0"
+  },
+  "sourceContainer": {
+    "name": "Demo20 Core Sample",
+    "sourceCategory": "core_rulebook",
+    "sourceSubtype": "core_rulebook",
+    "defaultPlayerVisibility": "visible",
+    "clonePolicy": "locked_to_system",
+    "version": "1.0.0"
+  },
+  "entryTypes": [
+    {
+      "name": "Creature",
+      "libraryKind": "compendium",
+      "description": "Original fake creature entries for importer testing."
+    },
+    {
+      "name": "Spell",
+      "libraryKind": "compendium",
+      "description": "Original fake spell entries for importer testing."
+    },
+    {
+      "name": "Condition",
+      "libraryKind": "compendium",
+      "description": "Original fake condition entries for importer testing."
+    }
+  ],
+  "entries": [
+    {
+      "externalId": "demo20.creature.copper-goblin",
+      "file": "entries/copper-goblin.md",
+      "title": "Copper Goblin",
+      "entryType": "Creature",
+      "aliases": ["Button Collector"],
+      "summary": "A nervous little demo creature used only for TableHub import testing."
+    },
+    {
+      "externalId": "demo20.spell.moonfire-bolt",
+      "file": "entries/moonfire-bolt.md",
+      "title": "Moonfire Bolt",
+      "entryType": "Spell",
+      "summary": "A harmless demo spell used to test Markdown import formatting."
+    },
+    {
+      "externalId": "demo20.condition.rattled",
+      "file": "entries/rattled.md",
+      "title": "Rattled",
+      "entryType": "Condition",
+      "summary": "A fake demo condition used only for import testing."
+    }
+  ]
+}

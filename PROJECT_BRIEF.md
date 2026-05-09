@@ -260,6 +260,11 @@ Local development may use private or restricted source material as test fixtures
 
 Every future import workflow should preserve source/provenance metadata and clearly distinguish TableHub-distributable content from private user uploads, local developer fixtures, and restricted reference-only material. Offline PDF-to-Markdown or AI-assisted cleanup tools should be treated as reviewable preprocessing; TableHub should consume normalized source packages with explicit manifests before any later import execution.
 
+The first import execution is local/admin-only. It consumes normalized Markdown
+source packages, dry-runs by default, and requires an explicit owner ID plus a
+local service role key before writing to existing master-library tables. This is
+not a public upload system, PDF parser, or AI cleanup workflow.
+
 ---
 
 ## First Table-Ready Demo Scenario

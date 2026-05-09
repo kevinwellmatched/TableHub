@@ -984,24 +984,51 @@ Use these checks before committing any future import-related work.
 - The script writes to existing Game System, Compendium, Entry Type, and Master Entry records.
 - The script is not a user-facing upload workflow.
 - No private or restricted fixture content is committed.
+- Dry-run is the default mode and does not require Supabase credentials.
+- Apply mode requires `--apply`, `--owner-id <auth-user-uuid>`,
+  `NEXT_PUBLIC_SUPABASE_URL`, and `SUPABASE_SERVICE_ROLE_KEY`.
+- The service role key is used only by the local/admin script, never by app
+  routes, components, server actions, or normal Supabase helpers.
+- Imported Markdown is sanitized and stored as HTML while preserving wiki-link
+  syntax for the existing renderer.
+- No SQL, schema changes, new tables, PDF parsing, AI calls, Replit code,
+  upload UI, API route, or background job is added.
 
 ### Manual Tests
 
-- [ ] Dry-run a tiny original/fake sample package.
+- [ ] Run
+      `npm.cmd run import:markdown -- --manifest docs/examples/demo20-source-package/manifest.json --dry-run`.
+- [ ] Run the same command without `--dry-run` and confirm it still dry-runs.
 - [ ] Confirm dry-run reports planned systems, sources, entry types, entries, warnings, and errors.
 - [ ] Confirm missing required provenance causes dry-run failure.
-- [ ] Apply the sample package locally.
+- [ ] Confirm missing Markdown files cause dry-run failure.
+- [ ] Confirm empty Markdown files cause dry-run failure.
+- [ ] Confirm manifest entries with inline body content cause dry-run failure.
+- [ ] Confirm non-Compendium entry types are rejected for this first importer.
+- [ ] Confirm `--dry-run` and `--apply` together are rejected.
+- [ ] Confirm `--apply` without `--owner-id` is rejected.
+- [ ] Confirm `--apply` without `SUPABASE_SERVICE_ROLE_KEY` is rejected.
+- [ ] Apply the sample package locally only when a safe local Supabase owner ID
+      is available.
 - [ ] Confirm created records appear in the Library workflow.
 - [ ] Re-run the import and confirm idempotent behavior or safe duplicate reporting.
+- [ ] Confirm a title conflict without matching import markers is skipped rather
+      than overwritten.
 - [ ] Confirm private/restricted imports cannot be marked as TableHub-distributable without explicit metadata.
 - [ ] Confirm no private fixture files are tracked by Git.
+- [ ] Confirm `SUPABASE_SETUP.md` did not change because no SQL is required.
 - [ ] Run `npm.cmd run test`.
 - [ ] Run `npm.cmd run lint`.
 - [ ] Run `npm.cmd run build`.
 
 ### Known Issues
 
-- Planned.
+- Apply mode is local/admin-only and was designed for careful developer use,
+  not public upload.
+- Idempotency uses conservative `source_notes` markers until a later schema
+  slice adds dedicated import batch records or external ID columns.
+- This slice imports Compendium packages only. Settings Library imports remain
+  later work.
 
 ---
 

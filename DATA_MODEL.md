@@ -37,6 +37,10 @@ Slice 6E defines an import source package manifest shape and validation helper
 only. It does not add tables, columns, SQL, import execution, file loading, PDF
 parsing, AI cleanup, or a user-facing upload workflow.
 
+Slice 6F adds a local/admin Markdown import script that consumes the Slice 6E
+manifest plus normalized Markdown files. It still does not add tables, columns,
+SQL, PDF parsing, AI cleanup, upload routes, or user-facing import UI.
+
 ---
 
 ## Identity and Profiles
@@ -135,6 +139,21 @@ not be treated as authoritative rules text, and later import execution should
 require human review before trusting that output.
 
 Import tooling should fail dry-run validation or default to private/restricted handling when provenance or redistribution rights are unclear. Repository tests should use tiny original/fake fixtures rather than private or restricted source files.
+
+Slice 6F stores import idempotency markers in existing `source_notes` fields
+because no schema change is allowed yet:
+
+```text
+Imported by TableHub source package
+packageId: demo20.core-sample
+externalId: demo20.creature.copper-goblin
+distributionStatus: tablehub_distributable
+```
+
+During apply mode, matching markers let the script update entries it imported
+previously. A title or slug conflict without a matching marker is skipped rather
+than overwritten. Dedicated import batch records, unique external ID columns,
+and stronger database-level idempotency remain later schema work.
 
 ---
 
@@ -347,7 +366,9 @@ Rules:
   recognizes `[[Entry Name]]` and `[[Entry Name|label]]` only when rendering
   body content; the original syntax stays in this same `body` text field.
   Slice 6D can resolve that syntax to a unique accessible entry during
-  rendering without changing the stored body value.
+  rendering without changing the stored body value. Slice 6F imports normalized
+  Markdown as sanitized HTML with `body_format = 'html'` and keeps wiki-link
+  syntax as ordinary stored body text for that existing renderer.
 - `body_format` is app-level controlled as `plain_text`, `markdown`, or `html`.
   The `html` value means the body should be rendered only through the shared
   sanitizer-backed body renderer.

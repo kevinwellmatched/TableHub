@@ -209,6 +209,23 @@ Slice 6E defines import source package manifest design only:
 - PDF-to-Markdown tools are offline preprocessing tools for now. Do not copy prototype code, add PDF parsing, add AI calls, or add conversion jobs to TableHub in this slice.
 - Slice 6E does not add import execution, a CLI import script, upload UI, file crawling, database writes, new tables, Supabase SQL, or schema changes.
 
+Slice 6F adds the first local/admin Markdown import script:
+
+- Use `npm.cmd run import:markdown -- --manifest <path>` for a dry-run report.
+- Dry-run is the default and does not require Supabase credentials.
+- Apply mode requires `--apply`, `--owner-id <auth-user-uuid>`,
+  `NEXT_PUBLIC_SUPABASE_URL`, and `SUPABASE_SERVICE_ROLE_KEY`.
+- The service role key is allowed only inside `scripts/import-markdown-source-package.ts`.
+  Do not import service-role helpers into app routes, components, server actions,
+  or normal Supabase helpers.
+- The script consumes normalized Markdown source packages with manifests and
+  writes only to existing Game System, Compendium, Entry Type, and Master Entry
+  tables.
+- Imported Markdown is converted to sanitized HTML before storage and preserves
+  wiki-link syntax for the existing renderer.
+- The script does not parse PDFs, call AI, create upload UI, add background
+  jobs, add SQL, create tables, or import private/restricted fixture content.
+
 Future entries should support:
 
 - Rich text

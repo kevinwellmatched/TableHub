@@ -366,6 +366,25 @@ preprocessing metadata; it is not authoritative TableHub rules text.
 
 Current source/provenance fields on Game Systems, Compendiums, Settings Libraries, and Master Entries remain the active storage path until a later approved schema slice adds dedicated import tables or package records.
 
+Slice 6F adds a local/admin Markdown import script at
+`scripts/import-markdown-source-package.ts`. The script reads one manifest plus
+its normalized Markdown files, validates the package, and prints a dry-run
+report by default. Apply mode is explicit and local-only: it requires
+`--apply`, `--owner-id`, `NEXT_PUBLIC_SUPABASE_URL`, and
+`SUPABASE_SERVICE_ROLE_KEY`.
+
+For this slice, apply mode writes only to the existing `game_systems`,
+`compendiums`, `entry_types`, and `master_entries` tables. It imports into a
+Compendium source container, stores entry bodies as sanitized HTML with
+`body_format = 'html'`, and preserves `[[wiki link]]` syntax for the existing
+safe renderer. The normal browser app continues to use RLS-backed Supabase
+clients and must not use the service role key.
+
+Slice 6F does not add a user-facing import UI, upload route, API route,
+background job, PDF parser, OCR, AI cleanup, Replit integration, SQL, schema
+change, import batch table, or stronger external ID columns. Dedicated import
+batch tracking and database-level external IDs remain later work.
+
 ---
 
 ## Security Principle

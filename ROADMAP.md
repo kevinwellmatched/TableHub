@@ -574,7 +574,7 @@ Status: In progress. Slice 6A Rich Text Editor Foundation, Slice 6A.1 copy
 polish, Slice 6B Markdown paste conversion, Slice 6C wiki-link syntax display
 groundwork, and Slice 6D wiki-link resolution foundation are complete. Slice
 6E import source package and provenance design is implemented in this slice.
-Actual developer Markdown import execution is deferred to Slice 6F.
+Slice 6F adds the first local/admin developer Markdown import script.
 
 ### Goal
 
@@ -705,7 +705,7 @@ Done when:
 
 ### Slice 6F: Developer Markdown Import Script
 
-Status: Planned.
+Status: Complete in the current local/admin script slice.
 
 Goal:
 
@@ -722,10 +722,13 @@ Build:
 - Stable external ID handling for idempotent re-runs.
 - Small original/fake sample fixture in the repository.
 - Support for ignored local private fixture folders for private stress tests.
+- Service role usage only inside the local script apply path.
+- No SQL or schema changes.
 
 Done when:
 
-- A tiny safe sample package can be dry-run and imported locally.
+- A tiny safe sample package can be dry-run and imported locally when a safe
+  owner ID and service role key are provided.
 - Missing or ambiguous license/provenance metadata fails dry-run validation.
 - Private/restricted imports cannot be treated as TableHub-distributable content.
 - No private or restricted fixture content is committed.
