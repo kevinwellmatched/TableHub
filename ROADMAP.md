@@ -570,8 +570,8 @@ Build:
 
 ## Slice 6: Rich Text Wiki and Entry Editing
 
-Status: In progress. Slice 6A Rich Text Editor Foundation is complete in this
-foundation slice.
+Status: In progress. Slice 6A Rich Text Editor Foundation and Slice 6A.1 copy
+polish are complete. Slice 6B adds the narrow Markdown paste conversion bridge.
 
 ### Goal
 
@@ -636,11 +636,45 @@ Build:
 - No schema changes, no unified `library_sources` table, and no new
   `master_entries.library_kind` values.
 
+### Slice 6B: Markdown Paste Conversion Foundation
+
+Status: Complete in the Markdown paste conversion slice.
+
+Goal:
+
+- Convert Markdown-looking plain-text paste inside the shared rich text editor
+  into clean rich text HTML.
+- Keep normal rich HTML paste on the existing editor path.
+- Keep ordinary plain text readable as paragraphs.
+- Reuse the Slice 6A sanitizer before content is stored or rendered.
+
+Build:
+
+- Common Markdown headings, bold, italic, bullet lists, ordered lists,
+  blockquotes, inline code, fenced code blocks, horizontal rules, and links.
+- A focused helper for Markdown detection and sanitized conversion.
+- Master Entry create/edit and Project Entry Override body editing through the
+  existing editor.
+- No import pipeline, wiki links, backlinks, broken-link placeholders, hover
+  previews, reveal blocks, tabs, tags/folders, file embeds, AI generation,
+  collaboration, new database tables, schema changes, or Supabase SQL.
+- No new `master_entries.library_kind` values and no unified `library_sources`
+  table.
+
+Done when:
+
+- Markdown paste converts inside the rich text editor.
+- Unsafe Markdown-generated or pasted HTML is sanitized before rendering.
+- Existing plain text, Markdown-looking legacy content, and rich text HTML stay
+  compatible.
+- Project Entry Override body editing uses the same behavior without changing
+  the original Master Entry.
+- Test, lint, and build pass.
+
 ### Later Slice 6 Work
 
 ### Build
 
-- Markdown paste conversion
 - `[[wiki links]]`
 - Broken link placeholders
 - Aliases
@@ -654,7 +688,6 @@ Build:
 ### Done When
 
 - User can create and edit rich text entries
-- Markdown can be pasted and converted
 - Wiki links can connect entries
 - GM Notes are protected
 - Custom fields display in a sidebar/panel

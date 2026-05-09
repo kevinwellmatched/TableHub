@@ -298,7 +298,8 @@ Rules:
   values.
 - Each Master Entry points to one Entry Type.
 - `body` may contain legacy plain text, legacy Markdown-looking text, or
-  sanitized rich text HTML saved by the Slice 6A editor.
+  sanitized rich text HTML saved by the Slice 6A editor. Slice 6B can convert
+  Markdown-looking pasted text into sanitized HTML before save.
 - `body_format` is app-level controlled as `plain_text`, `markdown`, or `html`.
   The `html` value means the body should be rendered only through the shared
   sanitizer-backed body renderer.
@@ -306,9 +307,9 @@ Rules:
 - Visibility supports `private`, `shared`, and `public`.
 - Access is enforced with Supabase Row Level Security.
 - Slice 6A adds basic rich text editing and rendering without adding tables.
-  It does not add Markdown paste conversion, wiki links, tags, folders, imports,
-  public marketplace behavior, 5etools imports, SRD content, or copyrighted book
-  text.
+  Slice 6B adds Markdown paste conversion inside the editor only. It does not
+  add schema changes, imports, wiki links, tags, folders, public marketplace
+  behavior, 5etools imports, SRD content, or copyrighted book text.
 - Master Entries are original reusable content. Future Project customization
   must use linked copies with overrides instead of mutating Master Entries
   directly.
@@ -507,9 +508,10 @@ Rules:
 - A Project can have at most one override row per Master Entry.
 - Empty text override fields inherit the original Master Entry value.
 - `override_body` may contain legacy text or sanitized rich text HTML. There is
-  no `override_body_format` column in Slice 6A. Project Library rendering treats
-  an override body that looks like HTML as sanitized HTML; otherwise it falls
-  back to safe plain text rendering.
+  no `override_body_format` column in Slice 6A or 6B. Project Library rendering
+  treats an override body that looks like HTML as sanitized HTML; otherwise it
+  falls back to safe plain text rendering. Slice 6B Markdown paste conversion
+  writes sanitized HTML into the same `override_body` field.
 - `override_properties` shallow-merges over `master_entries.properties`.
 - `override_visibility` is empty or one of `inherit`, `visible`, `gm_only`, or
   `hidden`. This is Project player visibility, not master-library visibility.

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEditor, EditorContent, type Editor } from "@tiptap/react";
+import { DOMParser as ProseMirrorDomParser } from "@tiptap/pm/model";
 import StarterKit from "@tiptap/starter-kit";
 import {
   Bold,
@@ -23,6 +24,10 @@ import {
   sanitizeEntryHtml,
   type EntryBodyRenderFormat,
 } from "@/lib/entry-body";
+import {
+  looksLikeMarkdown,
+  normalizePastedTextForEditor,
+} from "@/lib/markdown-paste";
 
 type RichTextEditorProps = {
   name: string;
@@ -64,7 +69,7 @@ export function RichTextEditor({
     extensions: [
       StarterKit.configure({
         heading: {
-          levels: [2, 3],
+          levels: [1, 2, 3],
         },
       }),
     ],
@@ -74,6 +79,44 @@ export function RichTextEditor({
         class:
           "min-h-full outline-none prose-entry-editor text-sm leading-6 text-[var(--text-main)]",
         "aria-label": label,
+      },
+      handlePaste: (view, event) => {
+        const pastedHtml = event.clipboardData?.getData("text/html");
+
+        if (pastedHtml?.trim()) {
+          return false;
+        }
+
+        const pastedText = event.clipboardData?.getData("text/plain");
+
+        if (!pastedText?.trim()) {
+          return false;
+        }
+
+        if (!looksLikeMarkdown(pastedText) && !pastedText.includes("\n")) {
+          return false;
+        }
+
+        const nextHtml = normalizePastedTextForEditor(pastedText);
+
+        if (!nextHtml) {
+          return false;
+        }
+
+        event.preventDefault();
+
+        const wrapper = document.createElement("div");
+        wrapper.innerHTML = nextHtml;
+
+        const parsedContent = ProseMirrorDomParser.fromSchema(
+          view.state.schema,
+        ).parseSlice(wrapper);
+        const transaction = view.state.tr
+          .replaceSelection(parsedContent)
+          .scrollIntoView();
+
+        view.dispatch(transaction);
+        return true;
       },
     },
     onUpdate: ({ editor: currentEditor }) => {

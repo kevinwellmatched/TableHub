@@ -29,9 +29,10 @@ test("sanitizes dangerous HTML before rendering", () => {
 
 test("keeps expected rich text tags when sanitizing HTML", () => {
   const sanitized = sanitizeEntryHtml(
-    "<h2>Heading</h2><p><strong>Bold</strong> and <em>italic</em></p><ul><li>One</li></ul><blockquote>Quote</blockquote><pre><code>code</code></pre>",
+    "<h1>Heading 1</h1><h2>Heading</h2><p><strong>Bold</strong> and <em>italic</em></p><ul><li>One</li></ul><blockquote>Quote</blockquote><pre><code>code</code></pre>",
   );
 
+  assert.equal(sanitized.includes("<h1>Heading 1</h1>"), true);
   assert.equal(sanitized.includes("<h2>Heading</h2>"), true);
   assert.equal(sanitized.includes("<strong>Bold</strong>"), true);
   assert.equal(sanitized.includes("<em>italic</em>"), true);

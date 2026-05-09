@@ -818,11 +818,54 @@ npm run build
 
 ---
 
+## Slice 6B: Markdown Paste Conversion Foundation
+
+### Expected
+
+- Markdown-looking plain text pasted into the rich text editor becomes
+  sanitized rich text HTML.
+- Normal rich HTML paste continues to use the editor's existing safe path.
+- Ordinary plain text remains readable as paragraphs.
+- Master Entry and Project Entry Override bodies use the same existing fields.
+- No SQL or schema changes are required.
+
+### Manual Tests
+
+- [ ] Logged-in user can open `/master-entries/new`.
+- [ ] User can paste Markdown with headings into the rich text editor.
+- [ ] User can paste Markdown with bold and italic text.
+- [ ] User can paste Markdown bullet lists.
+- [ ] User can paste Markdown ordered lists.
+- [ ] User can paste Markdown blockquotes.
+- [ ] User can paste Markdown inline code.
+- [ ] User can paste Markdown fenced code blocks.
+- [ ] User can paste Markdown links.
+- [ ] Saved Markdown paste renders as rich text on the Master Entry detail page.
+- [ ] Existing plain text entries still render.
+- [ ] Existing Markdown-looking legacy entries still render safely.
+- [ ] Project Entry Override body supports Markdown paste through the rich text
+      editor.
+- [ ] Original Master Entry remains unchanged after Project Override save.
+- [ ] Unsafe pasted HTML or Markdown-generated HTML is sanitized.
+- [ ] `[[wiki links]]` are not converted into special links yet.
+- [ ] No imports, tabs, reveal blocks, tags/folders, file embeds, AI,
+      collaboration, new tables, or SQL were added.
+- [ ] Run `npm.cmd run test`.
+- [ ] Run `npm.cmd run lint`.
+- [ ] Run `npm.cmd run build`.
+
+### Known Issues
+
+- Slice 6B is paste handling only. It does not add wiki link parsing,
+  backlinks, imports, tabs, reveal blocks, tags/folders, file embeds, AI, or
+  collaboration.
+
+---
+
 ## Slice 6 Later: Rich Text Wiki and Entry Editing
 
 ### Expected
 
-- Markdown paste conversion works.
 - `[[wiki links]]` work.
 - Overview and GM Notes tabs exist.
 - Custom tabs can be added.
@@ -830,7 +873,6 @@ npm run build
 
 ### Manual Tests
 
-- [ ] Paste Markdown.
 - [ ] Add `[[linked entry]]`.
 - [ ] Create a broken link placeholder.
 - [ ] Add GM Notes.

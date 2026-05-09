@@ -136,6 +136,28 @@ test("validates Project Entry Override input", () => {
   }
 });
 
+test("sanitizes rich text Project Entry Override body HTML", () => {
+  const result = validateProjectEntryOverrideInput({
+    projectId: "project-1",
+    masterEntryId: "entry-1",
+    overrideTitle: "",
+    overrideSummary: "",
+    overrideBody:
+      '<h2>Project body</h2><p onclick="alert(1)">Safe text<script>alert("no")</script></p>',
+    overrideProperties: "{}",
+    overrideVisibility: "inherit",
+    overrideReason: "",
+  });
+
+  assert.equal(result.ok, true);
+
+  if (result.ok) {
+    assert.equal(result.values.override_body?.includes("<h2>Project body</h2>"), true);
+    assert.equal(result.values.override_body?.includes("onclick"), false);
+    assert.equal(result.values.override_body?.includes("<script"), false);
+  }
+});
+
 test("rejects invalid override visibility", () => {
   const result = validateProjectEntryOverrideInput({
     projectId: "project-1",

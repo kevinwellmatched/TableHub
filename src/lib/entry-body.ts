@@ -13,6 +13,7 @@ const allowedRichTextTags = [
   "i",
   "s",
   "strike",
+  "h1",
   "h2",
   "h3",
   "ul",
@@ -50,7 +51,7 @@ export function sanitizeEntryHtml(value: string | null | undefined) {
 export function isBlankRichTextHtml(value: string | null | undefined) {
   const sanitized = sanitizeEntryHtml(value)
     .replace(/<br\s*\/?>/gi, " ")
-    .replace(/<\/(p|h2|h3|li|blockquote|pre)>/gi, " ")
+    .replace(/<\/(p|h1|h2|h3|li|blockquote|pre)>/gi, " ")
     .replace(/<[^>]+>/g, " ")
     .replace(/&nbsp;/g, " ")
     .trim();
