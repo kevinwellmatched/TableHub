@@ -196,13 +196,19 @@ Slice 6B adds Markdown paste conversion inside that existing editor:
 - Keep normal rich HTML paste on the editor's existing safe path.
 - Keep ordinary pasted plain text readable as paragraphs.
 - Do not treat this as an import workflow or a stored Markdown migration.
-- Do not add wiki links, backlinks, broken-link placeholders, reveal blocks, tabs, file/image embeds, imports, AI generation, or collaboration without a later approved slice.
+
+Slice 6C adds wiki-link syntax display groundwork:
+
+- Recognize `[[Entry Name]]` and `[[Entry Name|label]]` only when rendering body content.
+- Store the original syntax as normal body text in the existing fields.
+- Render wiki syntax as non-navigating, link-like text with an accessible target label.
+- Do not resolve links to entries, create backlinks, create broken-link placeholders, add hover previews, autocomplete, search integration, imports, tabs, reveal blocks, tags/folders, file embeds, AI generation, or collaboration without a later approved slice.
 
 Future entries should support:
 
 - Rich text
 - Markdown paste conversion refinements
-- `[[wiki links]]`
+- Wiki link resolution
 - Aliases
 - Tags
 - Folders

@@ -299,7 +299,9 @@ Rules:
 - Each Master Entry points to one Entry Type.
 - `body` may contain legacy plain text, legacy Markdown-looking text, or
   sanitized rich text HTML saved by the Slice 6A editor. Slice 6B can convert
-  Markdown-looking pasted text into sanitized HTML before save.
+  Markdown-looking pasted text into sanitized HTML before save. Slice 6C
+  recognizes `[[Entry Name]]` and `[[Entry Name|label]]` only when rendering
+  body content; the original syntax stays in this same `body` text field.
 - `body_format` is app-level controlled as `plain_text`, `markdown`, or `html`.
   The `html` value means the body should be rendered only through the shared
   sanitizer-backed body renderer.
@@ -307,9 +309,11 @@ Rules:
 - Visibility supports `private`, `shared`, and `public`.
 - Access is enforced with Supabase Row Level Security.
 - Slice 6A adds basic rich text editing and rendering without adding tables.
-  Slice 6B adds Markdown paste conversion inside the editor only. It does not
-  add schema changes, imports, wiki links, tags, folders, public marketplace
-  behavior, 5etools imports, SRD content, or copyrighted book text.
+  Slice 6B adds Markdown paste conversion inside the editor only. Slice 6C adds
+  safe wiki-link syntax display only. These slices do not add schema changes,
+  imports, wiki link resolution, backlinks, broken-link placeholders, hover
+  previews, autocomplete, tags, folders, public marketplace behavior, 5etools
+  imports, SRD content, or copyrighted book text.
 - Master Entries are original reusable content. Future Project customization
   must use linked copies with overrides instead of mutating Master Entries
   directly.
@@ -511,7 +515,8 @@ Rules:
   no `override_body_format` column in Slice 6A or 6B. Project Library rendering
   treats an override body that looks like HTML as sanitized HTML; otherwise it
   falls back to safe plain text rendering. Slice 6B Markdown paste conversion
-  writes sanitized HTML into the same `override_body` field.
+  writes sanitized HTML into the same `override_body` field. Slice 6C styles
+  wiki-link syntax during rendering without storing a separate links array.
 - `override_properties` shallow-merges over `master_entries.properties`.
 - `override_visibility` is empty or one of `inherit`, `visible`, `gm_only`, or
   `hidden`. This is Project player visibility, not master-library visibility.
@@ -531,9 +536,9 @@ Rules:
   original-vs-overridden comparison data.
 
 This table is critical. It prevents Project edits from mutating master content.
-Wiki links, imports, tags/folders, Project search, campaign overrides, inline
-reveal controls, collaboration, AI generation, and file/image embeds remain
-later work.
+Wiki link resolution, imports, tags/folders, Project search, campaign
+overrides, inline reveal controls, collaboration, AI generation, and file/image
+embeds remain later work.
 
 ---
 

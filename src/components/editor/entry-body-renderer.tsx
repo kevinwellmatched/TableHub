@@ -1,6 +1,6 @@
 import {
   getReadModeEntryBodyRenderFormat,
-  sanitizeEntryHtml,
+  renderEntryBodyHtml,
   type EntryBodyRenderFormat,
 } from "@/lib/entry-body";
 
@@ -26,19 +26,12 @@ export function EntryBodyRenderer({
   }
 
   const renderFormat = format ?? getReadModeEntryBodyRenderFormat(content);
-
-  if (renderFormat === "html") {
-    return (
-      <div
-        className="entry-body-renderer rounded-lg border border-[var(--line)] bg-black/20 p-4 text-sm leading-7 text-[var(--text-main)]"
-        dangerouslySetInnerHTML={{ __html: sanitizeEntryHtml(content) }}
-      />
-    );
-  }
+  const renderedHtml = renderEntryBodyHtml(content, renderFormat);
 
   return (
-    <div className="entry-body-renderer whitespace-pre-wrap rounded-lg border border-[var(--line)] bg-black/20 p-4 text-sm leading-7 text-[var(--text-main)]">
-      {content}
-    </div>
+    <div
+      className="entry-body-renderer rounded-lg border border-[var(--line)] bg-black/20 p-4 text-sm leading-7 text-[var(--text-main)]"
+      dangerouslySetInnerHTML={{ __html: renderedHtml }}
+    />
   );
 }

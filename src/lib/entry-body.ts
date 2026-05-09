@@ -1,6 +1,7 @@
 import DOMPurify from "isomorphic-dompurify";
 
 import type { MasterEntryBodyFormat } from "@/lib/master-entry-validation";
+import { renderWikiLinksInSafeHtml } from "./wiki-links.ts";
 
 export type EntryBodyRenderFormat = MasterEntryBodyFormat;
 
@@ -48,6 +49,17 @@ export function sanitizeEntryHtml(value: string | null | undefined) {
   });
 }
 
+export function renderEntryBodyHtml(
+  body: string,
+  bodyFormat: EntryBodyRenderFormat,
+) {
+  if (bodyFormat === "html") {
+    return renderWikiLinksInSafeHtml(sanitizeEntryHtml(body));
+  }
+
+  return renderWikiLinksInSafeHtml(textToLineBreakHtml(body));
+}
+
 export function isBlankRichTextHtml(value: string | null | undefined) {
   const sanitized = sanitizeEntryHtml(value)
     .replace(/<br\s*\/?>/gi, " ")
@@ -92,4 +104,17 @@ export function getReadModeEntryBodyRenderFormat(
   body: string | null | undefined,
 ): EntryBodyRenderFormat {
   return looksLikeHtml(body) ? "html" : "plain_text";
+}
+
+function textToLineBreakHtml(value: string) {
+  return escapeHtml(value).replace(/\n/g, "<br>");
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }

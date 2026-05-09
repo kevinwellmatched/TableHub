@@ -570,8 +570,9 @@ Build:
 
 ## Slice 6: Rich Text Wiki and Entry Editing
 
-Status: In progress. Slice 6A Rich Text Editor Foundation and Slice 6A.1 copy
-polish are complete. Slice 6B adds the narrow Markdown paste conversion bridge.
+Status: In progress. Slice 6A Rich Text Editor Foundation, Slice 6A.1 copy
+polish, and Slice 6B Markdown paste conversion are complete. Slice 6C adds
+wiki-link syntax display groundwork.
 
 ### Goal
 
@@ -671,11 +672,47 @@ Done when:
   the original Master Entry.
 - Test, lint, and build pass.
 
+### Slice 6C: Wiki Link Syntax Foundation
+
+Status: Implemented in this syntax/display slice.
+
+Goal:
+
+- Recognize `[[Entry Name]]` and `[[Entry Name|label]]` inside rendered entry
+  body content.
+- Keep wiki syntax stored as normal text in existing body fields.
+- Render wiki syntax as distinct, non-navigating link-like text.
+- Preserve the existing sanitizer-backed body renderer.
+
+Build:
+
+- Conservative wiki-link parser and text splitter.
+- Safe rendered HTML text-node handling that skips code blocks, inline code,
+  and existing links.
+- Shared body renderer support for Master Entry bodies and Project Entry
+  Override bodies.
+- Focused tests for parsing, malformed syntax, safe rendering, and legacy body
+  compatibility.
+- No link resolution, backlinks, broken-link placeholders, hover previews,
+  autocomplete, search integration, imports, tags/folders, reveal blocks, file
+  embeds, AI generation, collaboration, new database tables, schema changes, or
+  Supabase SQL.
+
+Done when:
+
+- `[[Waterdeep]]` displays as `Waterdeep`.
+- `[[Lord Neverember|the Open Lord]]` displays as `the Open Lord`.
+- Wiki syntax remains normal editable text when the editor is reopened.
+- Unsafe wiki labels or targets do not render executable HTML.
+- Existing plain text, Markdown-looking legacy content, rich text HTML, and
+  Project Entry Override bodies remain compatible.
+- Test, lint, and build pass.
+
 ### Later Slice 6 Work
 
 ### Build
 
-- `[[wiki links]]`
+- Wiki link resolution
 - Broken link placeholders
 - Aliases
 - Hover preview groundwork

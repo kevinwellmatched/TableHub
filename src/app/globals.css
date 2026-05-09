@@ -142,6 +142,19 @@ body {
   text-underline-offset: 0.2rem;
 }
 
+.entry-body-renderer .wiki-link {
+  border-bottom: 1px dotted currentColor;
+  color: #fca311;
+  cursor: default;
+  font-weight: 650;
+  text-decoration: none;
+  text-underline-offset: 0.2rem;
+}
+
+.entry-body-renderer .wiki-link:hover {
+  color: #ffb33c;
+}
+
 .entry-body-renderer hr {
   border: 0;
   border-top: 1px solid var(--line);

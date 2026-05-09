@@ -862,18 +862,61 @@ npm run build
 
 ---
 
+## Slice 6C: Wiki Link Syntax Foundation
+
+### Expected
+
+- `[[Entry Name]]` and `[[Entry Name|label]]` render as distinct wiki-link-style
+  text in body display views.
+- Wiki links do not navigate or resolve to real entries yet.
+- Wiki syntax remains stored as normal text in the existing body fields.
+- Master Entry bodies and Project Entry Override bodies use the same safe
+  rendering behavior.
+- No SQL or schema changes are required.
+
+### Manual Tests
+
+- [ ] Logged-in user can open `/master-entries/new`.
+- [ ] User can type `[[Waterdeep]]` in the rich text editor.
+- [ ] User can type `[[Lord Neverember|the Open Lord]]`.
+- [ ] Saved Master Entry detail renders wiki links with distinct styling.
+- [ ] Wiki links remain normal editable text when reopening the editor.
+- [ ] Markdown paste containing `[[Waterdeep]]` still saves and renders safely.
+- [ ] Existing plain text entries still render.
+- [ ] Existing rich text entries still render.
+- [ ] Wiki syntax inside code blocks does not become a link.
+- [ ] Unsafe wiki labels and targets are sanitized.
+- [ ] Project Entry Override body renders wiki-link syntax safely.
+- [ ] Player/Viewer Project Library read mode still hides entries they should
+      not see.
+- [ ] No backlinks, broken-link creation, hover previews, autocomplete,
+      imports, tabs, reveal blocks, tags/folders, file embeds, AI,
+      collaboration, new tables, or SQL were added.
+- [ ] Run `npm.cmd run test`.
+- [ ] Run `npm.cmd run lint`.
+- [ ] Run `npm.cmd run build`.
+
+### Known Issues
+
+- Slice 6C does not resolve wiki links to real Master Entries or Project Library
+  entries.
+- Backlinks, broken-link placeholders, hover previews, autocomplete, search
+  integration, and entry creation remain later work.
+
+---
+
 ## Slice 6 Later: Rich Text Wiki and Entry Editing
 
 ### Expected
 
-- `[[wiki links]]` work.
+- Wiki links can resolve to real entries.
 - Overview and GM Notes tabs exist.
 - Custom tabs can be added.
 - Custom fields/properties exist.
 
 ### Manual Tests
 
-- [ ] Add `[[linked entry]]`.
+- [ ] Resolve `[[linked entry]]` to a real entry.
 - [ ] Create a broken link placeholder.
 - [ ] Add GM Notes.
 - [ ] Log in as Player and confirm GM Notes are hidden.

@@ -113,7 +113,12 @@ Slice 6B adds Markdown paste conversion inside the existing rich text editor.
 Plain-text paste that looks like common Markdown is converted to sanitized rich
 text HTML before it enters the editor. This is not an import pipeline; it keeps
 using the existing `body` text field and safe renderer.
-Slices 6A through 6B do not add wiki links, reveal blocks, GM sections, tabs,
+Slice 6C adds wiki-link syntax recognition for `[[Entry Name]]` and
+`[[Entry Name|label]]` during display. Wiki links render as distinct,
+non-navigating link-like text with an accessible target label. The original
+syntax remains stored as normal body text in existing fields.
+Slices 6A through 6C do not add wiki link resolution, backlinks, broken-link
+placeholders, hover previews, autocomplete, reveal blocks, GM sections, tabs,
 tags, folders, imports, file embeds, AI generation, collaboration, public
 marketplace behavior, SRD content, copyrighted book text, or 5etools imports.
 
@@ -212,10 +217,12 @@ Slice 6A also lets Project Owners and GMs write rich text HTML into
 Library rendering uses the safe body renderer and resolves Project override
 body format conservatively: override bodies that look like HTML render as
 sanitized HTML, while legacy plain text continues to render safely. Reveal
-controls, Project search, imports, tags/folders, wiki links, inline reveal
-blocks, and campaign-level overrides remain later work. Slice 6B reuses this
-same editor paste behavior for Project Entry Override bodies without adding an
-`override_body_format` column.
+controls, Project search, imports, tags/folders, wiki link resolution, inline
+reveal blocks, and campaign-level overrides remain later work. Slice 6B reuses
+this same editor paste behavior for Project Entry Override bodies without
+adding an `override_body_format` column. Slice 6C uses the same safe renderer to
+style wiki-link syntax in effective Project Library bodies without resolving
+links or returning extra hidden data.
 
 ### 3. Campaign Layer
 
@@ -280,9 +287,10 @@ Current implementation status:
   actions.
 - Slice 5E adds Project Library visibility resolution and Player/Viewer
   read-only mode for entries resolved as visible.
-- Manual master updates, imports, search, tags/folders, wiki links, advanced
-  rich text/wiki editing, campaign-level overrides, and inline reveal controls are
-  still deferred.
+- Slice 6C displays wiki-link syntax safely without resolving it to entries.
+- Manual master updates, imports, search, tags/folders, wiki link resolution,
+  advanced rich text/wiki editing, campaign-level overrides, and inline reveal
+  controls are still deferred.
 
 Benefits:
 

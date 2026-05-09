@@ -63,6 +63,7 @@ export function RichTextEditor({
   );
   const errorId = `${name}-error`;
   const descriptionId = description ? `${name}-description` : undefined;
+  const wikiTipId = `${name}-wiki-tip`;
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -138,12 +139,15 @@ export function RichTextEditor({
             {description}
           </p>
         ) : null}
+        <p id={wikiTipId} className="mt-1 text-xs leading-5 text-[var(--text-muted)]">
+          Tip: type [[Entry Name]] to mark a future wiki link.
+        </p>
       </div>
 
       <div
         className="mt-2 overflow-hidden rounded-lg border border-[var(--line)] bg-black/25 transition focus-within:border-[#FCA311] focus-within:ring-2 focus-within:ring-[#FCA311]/20"
         aria-invalid={error ? "true" : "false"}
-        aria-describedby={[descriptionId, error ? errorId : undefined]
+        aria-describedby={[descriptionId, wikiTipId, error ? errorId : undefined]
           .filter(Boolean)
           .join(" ") || undefined}
       >
