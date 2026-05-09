@@ -15,7 +15,6 @@ The goal is faster, smoother play with fewer context switches.
 TableHub should become the home base for:
 
 - Game system compendiums
-- Library Sources such as core rulebooks, supplements, setting books, adventure modules, GM screens, table collections, homebrew packets, and import batches
 - Campaign/project dashboards
 - Character sheets and character binders
 - Settings/lore libraries
@@ -32,17 +31,12 @@ The first target system is **D&D 5e 2014**.
 
 TableHub has three major faces.
 
-### 1. Reusable Library
+### 1. Compendium Library
 
-A readable, browsable, searchable hub for Systems, Library Sources, Entry Types,
-and Master Entries.
+A book-style, readable, browsable, searchable library for game systems and rules content.
 
 Examples of content:
 
-- Core rulebooks
-- Expansions and supplements
-- Setting and world lore sources
-- Adventures and modules
 - Rules
 - Classes
 - Subclasses
@@ -130,17 +124,14 @@ The app should support dark mode and light mode. GMs should eventually be able t
 Use these labels for the first app shell:
 
 1. Dashboard
-2. Library
+2. Compendium
 3. Systems
-4. Projects
-5. Campaigns
-6. Characters
-7. Files
-8. Account
-
-`Library` opens `/master-library`. Compendium, Settings Library, Entry Types,
-and Master Entries remain real workflows and routes, but they live under the
-broader Library mental model instead of separate top-level sidebar buckets.
+4. Settings Library
+5. Projects
+6. Campaigns
+7. Characters
+8. Files
+9. Account
 
 Search should be prominent globally and should eventually support a `Ctrl+K` command palette.
 
@@ -152,29 +143,13 @@ Search should be prominent globally and should eventually support a `Ctrl+K` com
 
 A ruleset such as D&D 5e 2014, D&D 5e 2024/5.5e, Pathfinder 2e, Daggerheart, Shadowdark, Mothership, or a custom system.
 
-### Library Source
-
-A reusable source/container under a Game System. Library Source is the new product vocabulary for reusable content containers.
-
-Examples:
-
-- Core Rulebooks
-- Expansions & Supplements
-- Setting & World Lore
-- Adventures & Modules
-- Other reusable source collections
-
-Use "Adventures & Modules" instead of "Adventures & Campaigns" so source books are not confused with active Campaign play spaces.
-
-Compendiums and Settings Libraries are the current concrete container tables. Do not destructively migrate or rename them yet.
-
 ### Compendium
 
-A current concrete Library Source for rules/reference content tied to a system or usable generically.
+A reusable master library of rules/reference content tied to a system or usable generically.
 
 ### Settings Library
 
-A current concrete Library Source for lore/world material. This replaces the earlier placeholder term "Worlds."
+A reusable lore/world bible. This replaces the earlier placeholder term "Worlds."
 
 Examples:
 
@@ -190,11 +165,11 @@ Examples:
 
 ### Project
 
-A workspace that should eventually choose one primary System, attach compatible Library Sources into its Project Library, and contain active Campaigns.
+A workspace that combines one or more systems, compendiums, settings, and campaigns.
 
 A Project may contain multiple campaigns.
 
-When a game system, Library Source, campaign template, or settings library is added to a Project, the Project gets editable linked copies/overrides. The original master content must remain safe.
+When a game system, compendium, campaign template, or settings library is added to a Project, the Project gets editable linked copies/overrides. The original master content must remain safe.
 
 ### Campaign
 
@@ -233,7 +208,6 @@ The app must support:
 This rule applies to:
 
 - Game systems
-- Library Sources
 - Compendium entries
 - Settings Library entries
 - Campaign templates
@@ -274,6 +248,17 @@ Rules:
 - Public profiles may exist eventually.
 - Minors may use the app, so safety and privacy defaults matter.
 - Payment information may exist later, but not in the first build.
+
+
+## Content Source Principle
+
+TableHub may ship with SRD, ORC, Creative Commons, public-domain, explicitly permitted, partner-approved, or original demo content.
+
+Users may privately import their own documents, notes, PDFs, Markdown files, and reference material for personal or workspace use. Private imported material must remain private to that user or workspace unless a later approved sharing model explicitly allows otherwise.
+
+Local development may use private or restricted source material as test fixtures, but those files must not be committed, bundled, seeded, marketed, or exposed as TableHub-provided content.
+
+Every future import workflow should preserve source/provenance metadata and clearly distinguish TableHub-distributable content from private user uploads and local developer fixtures.
 
 ---
 
