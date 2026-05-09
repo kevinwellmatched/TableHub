@@ -189,12 +189,19 @@ Slice 6A adds the shared rich text foundation:
 - Sanitize rich text output before rendering.
 - Store Master Entry rich text in `master_entries.body` with `body_format = 'html'` when the database allows it.
 - Store Project Override rich text in `project_entry_overrides.override_body`.
+
+Slice 6B adds Markdown paste conversion inside that existing editor:
+
+- Convert Markdown-looking plain-text paste to sanitized rich text HTML.
+- Keep normal rich HTML paste on the editor's existing safe path.
+- Keep ordinary pasted plain text readable as paragraphs.
+- Do not treat this as an import workflow or a stored Markdown migration.
 - Do not add wiki links, backlinks, broken-link placeholders, reveal blocks, tabs, file/image embeds, imports, AI generation, or collaboration without a later approved slice.
 
 Future entries should support:
 
 - Rich text
-- Markdown paste conversion
+- Markdown paste conversion refinements
 - `[[wiki links]]`
 - Aliases
 - Tags

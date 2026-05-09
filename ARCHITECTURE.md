@@ -109,10 +109,13 @@ Library Source language. Source categories such as Core Rulebooks, Expansions &
 Supplements, Setting & World Lore, and Adventures & Modules live on the parent
 Compendium or Settings Library source container; they are not Master Entry
 `library_kind` values.
-Slice 6A does not add Markdown paste conversion, wiki links, reveal blocks, GM
-sections, tabs, tags, folders, imports, file embeds, AI generation,
-collaboration, public marketplace behavior, SRD content, copyrighted book text,
-or 5etools imports.
+Slice 6B adds Markdown paste conversion inside the existing rich text editor.
+Plain-text paste that looks like common Markdown is converted to sanitized rich
+text HTML before it enters the editor. This is not an import pipeline; it keeps
+using the existing `body` text field and safe renderer.
+Slices 6A through 6B do not add wiki links, reveal blocks, GM sections, tabs,
+tags, folders, imports, file embeds, AI generation, collaboration, public
+marketplace behavior, SRD content, copyrighted book text, or 5etools imports.
 
 System provenance fields record license and source information so future SRD
 imports, private Markdown/PDF/CSV imports, manual entries, and external
@@ -210,7 +213,9 @@ Library rendering uses the safe body renderer and resolves Project override
 body format conservatively: override bodies that look like HTML render as
 sanitized HTML, while legacy plain text continues to render safely. Reveal
 controls, Project search, imports, tags/folders, wiki links, inline reveal
-blocks, and campaign-level overrides remain later work.
+blocks, and campaign-level overrides remain later work. Slice 6B reuses this
+same editor paste behavior for Project Entry Override bodies without adding an
+`override_body_format` column.
 
 ### 3. Campaign Layer
 

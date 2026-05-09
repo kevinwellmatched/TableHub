@@ -53,15 +53,20 @@ body {
   color: #000000;
 }
 
-.prose-entry-editor :where(p, ul, ol, blockquote, pre, h2, h3) {
+.prose-entry-editor :where(p, ul, ol, blockquote, pre, h1, h2, h3) {
   margin: 0 0 0.85rem;
 }
 
-.prose-entry-editor :where(h2, h3),
-.entry-body-renderer :where(h2, h3) {
+.prose-entry-editor :where(h1, h2, h3),
+.entry-body-renderer :where(h1, h2, h3) {
   color: var(--text-main);
   font-weight: 700;
   line-height: 1.25;
+}
+
+.prose-entry-editor h1,
+.entry-body-renderer h1 {
+  font-size: 1.55rem;
 }
 
 .prose-entry-editor h2,
@@ -123,11 +128,11 @@ body {
   padding: 0;
 }
 
-.entry-body-renderer :where(p, ul, ol, blockquote, pre, h2, h3, hr) {
+.entry-body-renderer :where(p, ul, ol, blockquote, pre, h1, h2, h3, hr) {
   margin: 0 0 0.9rem;
 }
 
-.entry-body-renderer :where(p, ul, ol, blockquote, pre, h2, h3, hr):last-child {
+.entry-body-renderer :where(p, ul, ol, blockquote, pre, h1, h2, h3, hr):last-child {
   margin-bottom: 0;
 }
 
