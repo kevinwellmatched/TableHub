@@ -33,6 +33,10 @@ Slice 5C.1 is navigation and copy alignment only. It groups Compendium,
 Settings Library, Entry Types, and Master Entries under the top-level `Library`
 sidebar item without changing routes, tables, columns, or data relationships.
 
+Slice 6E defines an import source package manifest shape and validation helper
+only. It does not add tables, columns, SQL, import execution, file loading, PDF
+parsing, AI cleanup, or a user-facing upload workflow.
+
 ---
 
 ## Identity and Profiles
@@ -119,6 +123,16 @@ Future import packages should preserve:
 - external source IDs
 - whether TableHub may redistribute the content
 - whether the content is private to the importing user or workspace
+
+Slice 6E manifest entries point to normalized files by `file`; they do not
+store entry body content in the manifest. The manifest can also include optional
+offline extraction metadata such as original filename, original file type,
+SHA-256, extraction tool name/version, extraction method, extraction date, page
+count, chunk count, extraction notes, and a review-required flag.
+
+AI-assisted cleanup is treated as reviewable preprocessing metadata. It must
+not be treated as authoritative rules text, and later import execution should
+require human review before trusting that output.
 
 Import tooling should fail dry-run validation or default to private/restricted handling when provenance or redistribution rights are unclear. Repository tests should use tiny original/fake fixtures rather than private or restricted source files.
 
@@ -343,8 +357,9 @@ Rules:
 - Slice 6A adds basic rich text editing and rendering without adding tables.
   Slice 6B adds Markdown paste conversion inside the editor only. Slice 6C adds
   safe wiki-link syntax display only. Slice 6D resolves wiki links to unique
-  safe matches in the current Master Entry or Project Library context. These
-  slices do not add schema changes, imports, backlinks, broken-link
+  safe matches in the current Master Entry or Project Library context. Slice 6E
+  adds import source package manifest validation only. These slices do not add
+  schema changes, import execution, backlinks, broken-link
   placeholders, hover previews, autocomplete, tags, folders, public marketplace
   behavior, 5etools imports, SRD content, or copyrighted book text.
 - Master Entries are original reusable content. Future Project customization

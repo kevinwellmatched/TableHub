@@ -1,0 +1,101 @@
+{
+  "manifestVersion": 1,
+  "packageId": "demo20-core-sample",
+  "packageName": "Demo20 Core Sample",
+  "distributionStatus": "tablehub_distributable",
+  "extraction": {
+    "originalFileName": "demo20-core-sample.pdf",
+    "originalFileType": "pdf",
+    "originalFileSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "extractionToolName": "Example Offline Extractor",
+    "extractionToolVersion": "0.0.0",
+    "extractionMethod": "ai_assisted_cleanup",
+    "extractedAt": "2026-01-01T00:00:00.000Z",
+    "pageCount": 12,
+    "chunkCount": 3,
+    "extractionNotes": "Example metadata only. No real PDF content is included.",
+    "requiresHumanReview": true
+  },
+  "source": {
+    "name": "Demo20 Core Sample",
+    "creator": "TableHub Demo Team",
+    "licenseName": "Original demo content",
+    "sourceKind": "original_demo",
+    "sourceNotes": "Invented sample metadata only. This manifest does not include real source text.",
+    "mayTableHubRedistribute": true,
+    "privateToWorkspace": false
+  },
+  "system": {
+    "name": "Demo20",
+    "edition": "Sample Edition",
+    "publisher": "TableHub Demo Team",
+    "rulesetYear": 2026,
+    "version": "1.0.0"
+  },
+  "sourceContainer": {
+    "name": "Demo20 Core Sample",
+    "sourceCategory": "core_rulebook",
+    "sourceSubtype": "core_rulebook",
+    "defaultPlayerVisibility": "visible",
+    "clonePolicy": "locked_to_system",
+    "version": "1.0.0"
+  },
+  "entryTypes": [
+    {
+      "name": "Creature",
+      "libraryKind": "compendium",
+      "description": "Original sample creature entries."
+    },
+    {
+      "name": "Spell",
+      "libraryKind": "compendium",
+      "description": "Original sample spell entries."
+    },
+    {
+      "name": "Condition",
+      "libraryKind": "compendium",
+      "description": "Original sample condition entries."
+    }
+  ],
+  "entries": [
+    {
+      "externalId": "demo20.copper-goblin",
+      "file": "entries/copper-goblin.md",
+      "title": "Copper Goblin",
+      "entryType": "Creature",
+      "aliases": ["Coin Goblin"],
+      "summary": "A tiny original sample creature.",
+      "sourcePage": "4",
+      "sourcePageStart": 4,
+      "sourcePageEnd": 5,
+      "sourceSection": "Creatures",
+      "extractionConfidence": "medium",
+      "requiresHumanReview": true,
+      "licenseName": "Original demo content"
+    },
+    {
+      "externalId": "demo20.moonfire-bolt",
+      "file": "entries/moonfire-bolt.md",
+      "title": "Moonfire Bolt",
+      "entryType": "Spell",
+      "summary": "A tiny original sample spell.",
+      "sourcePage": "8",
+      "sourcePageStart": 8,
+      "sourcePageEnd": 8,
+      "extractionConfidence": "high",
+      "requiresHumanReview": true
+    },
+    {
+      "externalId": "demo20.rattled",
+      "file": "entries/rattled.md",
+      "title": "Rattled",
+      "entryType": "Condition",
+      "summary": "A tiny original sample condition.",
+      "sourcePage": "10",
+      "sourcePageStart": 10,
+      "sourcePageEnd": 10,
+      "extractionConfidence": "high",
+      "requiresHumanReview": true
+    }
+  ]
+}

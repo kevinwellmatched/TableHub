@@ -122,10 +122,12 @@ safe match in the current rendering context. Master Entry pages resolve against
 accessible sibling entries in the same Compendium or Settings Library. Missing
 or ambiguous matches remain non-navigating wiki-link text.
 Slices 6A through 6D do not add backlinks, broken-link placeholders, hover
-previews, autocomplete, reveal blocks, GM sections, tabs, tags, folders,
-imports, file embeds, AI generation, collaboration, public marketplace
+previews, autocomplete, reveal blocks, GM sections, tabs, tags, folders, import
+execution, file embeds, AI generation, collaboration, public marketplace
 behavior, SRD content, copyrighted book text, 5etools imports, new tables,
-schema changes, or SQL.
+schema changes, or SQL. Slice 6E adds import source package manifest types,
+validation helpers, and a tiny original/fake example manifest only; it still
+does not import records or read source files.
 
 System provenance fields record license and source information so future SRD
 imports, private Markdown/PDF/CSV imports, manual entries, and external
@@ -335,6 +337,11 @@ Source document, PDF, Markdown files, CSV, or external source
 
 PDF-to-Markdown tools should initially be treated as offline preprocessing tools, not direct production import features. The importer should consume normalized source packages with explicit manifests.
 
+Slice 6E defines that manifest shape in `src/lib/import-source-package.ts`.
+Manifests are JSON- or object-shaped metadata for later tooling; this slice does
+not decide YAML support, crawl files, parse Markdown, parse PDFs, call AI
+services, create jobs, or write to the database.
+
 Future import manifests should distinguish between:
 
 - TableHub-provided distributable content, such as SRD, ORC, Creative Commons, public-domain, explicitly licensed, partner-approved, or original demo content
@@ -342,7 +349,20 @@ Future import manifests should distinguish between:
 - Local developer fixtures used only for private development and stress testing
 - Restricted reference material that may help local testing but must not be bundled, seeded, marketed, or exposed as TableHub-provided content
 
-The importer should validate source metadata, entry type mapping, slug strategy, external IDs, and distribution status before writing records. Missing or ambiguous license/provenance metadata should fail dry-run validation or default to private/restricted handling.
+Slice 6E uses these conceptual distribution statuses:
+
+- `tablehub_distributable`
+- `private_user_upload`
+- `local_dev_fixture`
+- `restricted_reference_only`
+
+The importer should validate source metadata, entry type mapping, slug strategy, external IDs, file pointers, and distribution status before writing records. Missing or ambiguous license/provenance metadata should fail dry-run validation or default to private/restricted handling.
+
+Optional extraction metadata may preserve offline preprocessing context such as
+original filename, original file type, SHA-256, extraction tool name/version,
+extraction method, extraction date, page count, chunk count, extraction notes,
+and whether human review is required. AI-assisted extraction is only reviewable
+preprocessing metadata; it is not authoritative TableHub rules text.
 
 Current source/provenance fields on Game Systems, Compendiums, Settings Libraries, and Master Entries remain the active storage path until a later approved schema slice adds dedicated import tables or package records.
 

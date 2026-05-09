@@ -571,10 +571,10 @@ Build:
 ## Slice 6: Rich Text Wiki and Entry Editing
 
 Status: In progress. Slice 6A Rich Text Editor Foundation, Slice 6A.1 copy
-polish, Slice 6B Markdown paste conversion, and Slice 6C wiki-link syntax
-display groundwork are complete. Slice 6D wiki-link resolution foundation is
-implemented in this slice. Upcoming Slice 6 work should focus on safe import
-package/provenance design before building a larger import workflow.
+polish, Slice 6B Markdown paste conversion, Slice 6C wiki-link syntax display
+groundwork, and Slice 6D wiki-link resolution foundation are complete. Slice
+6E import source package and provenance design is implemented in this slice.
+Actual developer Markdown import execution is deferred to Slice 6F.
 
 ### Goal
 
@@ -666,7 +666,7 @@ Done when:
 
 ### Slice 6E: Import Source Package and Provenance Design
 
-Status: Planned.
+Status: Complete in the current manifest design slice.
 
 Goal:
 
@@ -677,15 +677,21 @@ Build:
 - Manifest format for Markdown/source packages.
 - Source ownership and distribution status model.
 - Required provenance fields.
+- Optional offline extraction metadata for future PDF-to-Markdown
+  preprocessing output.
 - Entry type mapping rules.
 - Slug and external ID strategy.
-- Dry-run report shape.
+- Validation issue shape for later dry-run reports.
 - Private user import vs TableHub-distributable content rules.
 - `.gitignore` guidance for local private fixtures if needed.
+- Tiny original/fake example manifest only.
 
 Done when:
 
 - Import packages must declare source/provenance metadata.
+- Supported distribution statuses are `tablehub_distributable`,
+  `private_user_upload`, `local_dev_fixture`, and
+  `restricted_reference_only`.
 - TableHub-provided content is limited to SRD, ORC, Creative Commons,
   public-domain, explicitly licensed, partner-approved, or original demo
   content.
@@ -693,6 +699,8 @@ Done when:
   content.
 - Private test fixture files are not committed.
 - No actual import execution is added yet.
+- No file crawling, Markdown loading, PDF parsing, AI calls, database writes,
+  SQL, schema changes, upload UI, or conversion jobs are added.
 - Test, lint, and build pass if code helpers are added.
 
 ### Slice 6F: Developer Markdown Import Script

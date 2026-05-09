@@ -13,6 +13,11 @@
 # testing
 /coverage
 
+# local/private import workspaces
+private-import-fixtures/
+.local-imports/
+.import-output/
+
 # next.js
 /.next/
 /out/

@@ -200,6 +200,15 @@ Slice 6D adds wiki-link resolution foundation:
 - Missing or ambiguous matches remain non-navigating wiki-link text.
 - Do not add backlinks, broken-link placeholder creation, hover previews, autocomplete, search integration, imports, tabs, reveal blocks, tags/folders, file embeds, AI generation, collaboration, new tables, schema changes, or SQL without a later approved slice.
 
+Slice 6E defines import source package manifest design only:
+
+- Use `src/lib/import-source-package.ts` for manifest types and lightweight validation helpers.
+- Manifest entries point to normalized source files; they must not include entry body content directly.
+- Supported conceptual distribution statuses are `tablehub_distributable`, `private_user_upload`, `local_dev_fixture`, and `restricted_reference_only`.
+- Optional extraction metadata may record offline preprocessing details such as source filename, file type, SHA-256, extraction method, page count, chunk count, extraction notes, and review-required state.
+- PDF-to-Markdown tools are offline preprocessing tools for now. Do not copy prototype code, add PDF parsing, add AI calls, or add conversion jobs to TableHub in this slice.
+- Slice 6E does not add import execution, a CLI import script, upload UI, file crawling, database writes, new tables, Supabase SQL, or schema changes.
+
 Future entries should support:
 
 - Rich text
@@ -291,11 +300,12 @@ No full VTT in MVP.
 
 ## Content Import and Licensing Rules
 
-TableHub must distinguish clearly between three content sources:
+TableHub must distinguish clearly between four content sources:
 
 1. TableHub-provided distributable content
 2. Private user-owned imports
 3. Local developer test fixtures
+4. Restricted reference-only material
 
 TableHub-provided content may only include SRD, ORC, Creative Commons, public-domain, explicitly licensed, partner-approved, or original demo content. Do not seed, bundle, market, or expose restricted/private rules text as TableHub-provided content.
 
@@ -303,7 +313,11 @@ Private user imports may include a user's own documents, notes, PDFs, Markdown f
 
 Local developer fixtures may use private test material during development, but restricted/private files must not be committed, bundled, seeded, marketed, or exposed as TableHub-provided content. Use ignored local folders for private import fixtures and tiny original/fake fixtures for repository tests.
 
+Restricted reference-only material may help a local owner understand or test an import path, but it must stay private/restricted and must not be treated as TableHub-provided distributable content.
+
 Future import workflows must preserve source/provenance metadata, including source name, publisher or creator, license name, license URL when available, source URL when available, source notes, source category, source subtype, external source IDs, and whether TableHub may redistribute the content.
+
+AI-assisted extraction or cleanup metadata is reviewable preprocessing context, not authoritative rules text. Human review should be required before any later import execution trusts that output.
 
 If licensing or redistribution rights are unclear, the importer should treat the content as private/restricted by default and should not make it TableHub-distributable.
 

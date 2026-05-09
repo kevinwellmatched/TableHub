@@ -256,9 +256,9 @@ TableHub may ship with SRD, ORC, Creative Commons, public-domain, explicitly per
 
 Users may privately import their own documents, notes, PDFs, Markdown files, and reference material for personal or workspace use. Private imported material must remain private to that user or workspace unless a later approved sharing model explicitly allows otherwise.
 
-Local development may use private or restricted source material as test fixtures, but those files must not be committed, bundled, seeded, marketed, or exposed as TableHub-provided content.
+Local development may use private or restricted source material as test fixtures, but those files must not be committed, bundled, seeded, marketed, or exposed as TableHub-provided content. Restricted reference-only material must stay private/restricted even when it helps a local owner test a workflow.
 
-Every future import workflow should preserve source/provenance metadata and clearly distinguish TableHub-distributable content from private user uploads and local developer fixtures.
+Every future import workflow should preserve source/provenance metadata and clearly distinguish TableHub-distributable content from private user uploads, local developer fixtures, and restricted reference-only material. Offline PDF-to-Markdown or AI-assisted cleanup tools should be treated as reviewable preprocessing; TableHub should consume normalized source packages with explicit manifests before any later import execution.
 
 ---
 

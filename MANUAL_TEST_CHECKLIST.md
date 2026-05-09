@@ -44,6 +44,7 @@ Use these checks before committing any future import-related work.
 - [ ] Local private fixture folders are ignored by Git when used.
 - [ ] Source packages declare source/provenance metadata.
 - [ ] Source packages identify whether content is TableHub-distributable, a private user upload, a local developer fixture, or restricted reference-only material.
+- [ ] AI-assisted extraction metadata is treated as review-required preprocessing, not authoritative rules text.
 - [ ] Import dry runs report ambiguous or missing license/provenance metadata.
 - [ ] Private imports remain private to the importing user or workspace.
 - [ ] Repository tests use tiny original/fake fixtures rather than private or restricted source files.
@@ -941,25 +942,36 @@ Use these checks before committing any future import-related work.
 
 - Import package manifest shape is documented or represented in helper types.
 - Source ownership and distribution status are explicit.
-- TableHub-distributable content is clearly separated from private user uploads and local developer fixtures.
+- TableHub-distributable content is clearly separated from private user uploads, local developer fixtures, and restricted reference-only material.
+- Optional extraction metadata can describe offline preprocessing output without adding a PDF parser or AI pipeline.
 - No actual import execution is added yet.
+- No file crawling, Markdown loading, upload UI, background jobs, database writes, SQL, schema changes, or new tables are added.
 - No private or restricted fixture files are committed.
 
 ### Manual Tests
 
 - [ ] Confirm the import manifest requires source/provenance metadata.
 - [ ] Confirm distribution statuses distinguish TableHub-distributable content, private user uploads, local developer fixtures, and restricted reference-only material.
+- [ ] Confirm TableHub-distributable manifests require redistribution rights, non-private workspace status, approved source kinds, and a clear license name.
+- [ ] Confirm private/restricted manifests cannot claim TableHub redistribution rights.
+- [ ] Confirm optional extraction metadata validates SHA-256, ISO extraction dates, page count, chunk count, and AI-assisted review warnings.
+- [ ] Confirm manifest entries point to files and do not include body content.
+- [ ] Confirm entry external IDs, file paths, and entry type mappings are validated.
+- [ ] Confirm source category and subtype align with the Library Source taxonomy.
 - [ ] Confirm missing or ambiguous license/provenance metadata is documented as a dry-run failure.
 - [ ] Confirm local private fixture folders are ignored by Git if added.
 - [ ] Confirm no private/restricted rules text is committed.
 - [ ] Confirm no user-facing import UI exists yet.
+- [ ] Confirm no CLI import script exists yet.
+- [ ] Confirm no PDF-to-Markdown prototype code was copied into TableHub.
+- [ ] Confirm `SUPABASE_SETUP.md` was not changed for this slice because no SQL is required.
 - [ ] Run `npm.cmd run test` if code helpers are added.
 - [ ] Run `npm.cmd run lint`.
 - [ ] Run `npm.cmd run build`.
 
 ### Known Issues
 
-- Planned.
+- Slice 6E is design/types/validation only. Actual developer Markdown import execution is deferred to Slice 6F.
 
 ---
 
