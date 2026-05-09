@@ -612,6 +612,30 @@ Done when:
   original Master Entry.
 - Test, lint, and build pass.
 
+### Slice 6A.1: Master Entry Source Container Copy Polish
+
+Status: Complete in the current copy polish slice.
+
+Goal:
+
+- Align Master Entry create/edit copy with Library Source vocabulary without
+  changing the database model.
+- Keep `master_entries.library_kind` limited to `compendium` and
+  `settings_library`.
+- Show parent source category labels beside source container choices where the
+  metadata is available.
+
+Build:
+
+- Rename user-facing Master Entry form labels from "Library kind" to source
+  container language.
+- Label Compendium-backed entries as rules/reference source entries.
+- Label Settings Library-backed entries as setting/lore source entries.
+- Keep source categories such as Core Rulebooks, Expansions & Supplements,
+  Setting & World Lore, and Adventures & Modules on parent Library Sources.
+- No schema changes, no unified `library_sources` table, and no new
+  `master_entries.library_kind` values.
+
 ### Later Slice 6 Work
 
 ### Build

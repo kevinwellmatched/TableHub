@@ -39,8 +39,9 @@ export default async function EditMasterEntryPage({
           {masterEntry.title}
         </h1>
         <p className="mt-3 max-w-3xl text-sm leading-6 text-[var(--text-muted)]">
-          This edits only the original Master Entry body. Project-specific table
-          changes still belong in Project Entry Overrides.
+          This edits only the original Master Entry body inside its current
+          source container. Project-specific table changes still belong in
+          Project Entry Overrides.
         </p>
       </section>
 

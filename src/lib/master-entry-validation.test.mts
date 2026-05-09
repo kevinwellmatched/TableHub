@@ -141,7 +141,10 @@ test("rejects an invalid library kind", () => {
 
   assert.equal(result.ok, false);
   if (!result.ok) {
-    assert.equal(result.fieldErrors.libraryKind, "Choose Compendium or Settings Library.");
+    assert.equal(
+      result.fieldErrors.libraryKind,
+      "Choose a rules/reference source or a setting/lore source.",
+    );
   }
 });
 
@@ -153,7 +156,10 @@ test("rejects a missing parent library id", () => {
 
   assert.equal(result.ok, false);
   if (!result.ok) {
-    assert.equal(result.fieldErrors.compendiumId, "Choose a parent Compendium.");
+    assert.equal(
+      result.fieldErrors.compendiumId,
+      "Choose a parent rules/reference source.",
+    );
   }
 });
 
@@ -167,7 +173,7 @@ test("rejects a parent library mismatch", () => {
   if (!result.ok) {
     assert.equal(
       result.fieldErrors.settingsLibraryId,
-      "Settings Library must be empty for Compendium entries.",
+      "Setting/lore source must be empty for rules/reference entries.",
     );
   }
 });

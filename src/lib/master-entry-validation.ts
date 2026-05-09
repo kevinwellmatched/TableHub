@@ -141,28 +141,29 @@ export function validateMasterEntryInput(input: MasterEntryInput) {
   }
 
   if (!isMasterEntryLibraryKind(libraryKind)) {
-    fieldErrors.libraryKind = "Choose Compendium or Settings Library.";
+    fieldErrors.libraryKind =
+      "Choose a rules/reference source or a setting/lore source.";
   }
 
   if (libraryKind === "compendium") {
     if (!compendiumId) {
-      fieldErrors.compendiumId = "Choose a parent Compendium.";
+      fieldErrors.compendiumId = "Choose a parent rules/reference source.";
     }
 
     if (settingsLibraryId) {
       fieldErrors.settingsLibraryId =
-        "Settings Library must be empty for Compendium entries.";
+        "Setting/lore source must be empty for rules/reference entries.";
     }
   }
 
   if (libraryKind === "settings_library") {
     if (!settingsLibraryId) {
-      fieldErrors.settingsLibraryId = "Choose a parent Settings Library.";
+      fieldErrors.settingsLibraryId = "Choose a parent setting/lore source.";
     }
 
     if (compendiumId) {
       fieldErrors.compendiumId =
-        "Compendium must be empty for Settings Library entries.";
+        "Rules/reference source must be empty for setting/lore entries.";
     }
   }
 

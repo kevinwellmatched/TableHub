@@ -288,6 +288,14 @@ Rules:
   `compendium`, `compendium_id` is required and `settings_library_id` must be
   empty. If `library_kind` is `settings_library`, `settings_library_id` is
   required and `compendium_id` must be empty.
+- `library_kind` remains an internal structural field for the current concrete
+  parent tables. User-facing copy should prefer Library Source or source
+  container language: rules/reference source for Compendium-backed entries and
+  setting/lore source for Settings Library-backed entries.
+- Source categories such as `core_rulebook`, `expansion_supplement`,
+  `setting_world_lore`, `adventure_module`, and `other` belong on the parent
+  Library Source container. They are not valid `master_entries.library_kind`
+  values.
 - Each Master Entry points to one Entry Type.
 - `body` may contain legacy plain text, legacy Markdown-looking text, or
   sanitized rich text HTML saved by the Slice 6A editor.

@@ -82,6 +82,18 @@ System
 
 Library Source is the product vocabulary for reusable source containers under a System. Compendiums and Settings Libraries are the current concrete container tables; do not destructively migrate, delete, or rename them until a later approved schema slice.
 
+For Master Entry UI, prefer source container language over exposing
+`library_kind` directly:
+
+- Use "Source container type" instead of "Library kind."
+- Use "Rules / reference source" for Compendium-backed entries.
+- Use "Setting / lore source" for Settings Library-backed entries.
+- Keep `master_entries.library_kind` limited to `compendium` and
+  `settings_library`.
+- Do not add source category values like `core_rulebook`,
+  `expansion_supplement`, `setting_world_lore`, `adventure_module`, or `other`
+  as Master Entry `library_kind` values.
+
 Use "Adventures & Modules" instead of "Adventures & Campaigns" for source categories so source books are not confused with active Campaigns.
 
 When a system, Library Source, campaign template, entry template, or character sheet template is added to a Project, the Project should use linked copies with overrides.

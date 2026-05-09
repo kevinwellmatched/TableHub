@@ -780,6 +780,44 @@ npm run build
 
 ---
 
+## Slice 6A.1: Master Entry Source Container Copy Polish
+
+### Expected
+
+- Master Entry creation uses source container language instead of exposing
+  "Library kind" as the primary user-facing idea.
+- Rules/reference entries still save with `library_kind = 'compendium'`.
+- Setting/lore entries still save with `library_kind = 'settings_library'`.
+- Parent source options show source category labels where available.
+- Source categories are not offered as Master Entry source container types.
+- No SQL or schema changes are required.
+
+### Manual Tests
+
+- [ ] Open `/master-entries/new`.
+- [ ] Confirm the source container type label is shown.
+- [ ] Confirm options read as rules/reference source and setting/lore source.
+- [ ] Confirm helper text explains Compendium and Settings Library source
+      containers plainly.
+- [ ] Confirm parent source choices show source category metadata where present.
+- [ ] Create a rules/reference Master Entry.
+- [ ] Create a setting/lore Master Entry.
+- [ ] Confirm existing Master Entries still load.
+- [ ] Confirm no source category values such as Core Rulebook, Expansion,
+      Setting & World Lore, or Adventures & Modules appear as `library_kind`
+      choices.
+- [ ] Run `npm.cmd run test`.
+- [ ] Run `npm.cmd run lint`.
+- [ ] Run `npm.cmd run build`.
+
+### Known Issues
+
+- Compendiums and Settings Libraries are still the current concrete database
+  tables. A unified `library_sources` table remains a later approved schema
+  slice.
+
+---
+
 ## Slice 6 Later: Rich Text Wiki and Entry Editing
 
 ### Expected

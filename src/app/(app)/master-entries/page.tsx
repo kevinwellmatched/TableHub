@@ -36,7 +36,7 @@ export default async function MasterEntriesPage() {
       <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
         <PageHeader
           title="Master Entries"
-          description="Reusable original entries for Compendiums and Settings Libraries. Project-specific customization will use linked copies with overrides in a later slice."
+          description="Reusable original entries inside Library Source containers. Rules/reference entries live under Compendium sources, and setting/lore entries live under Settings Library sources."
         />
 
         <Link
@@ -62,14 +62,14 @@ export default async function MasterEntriesPage() {
       {masterEntries.length > 0 ? (
         <div className="space-y-8">
           <MasterEntryGroup
-            title="Compendium Entries"
-            description="Original rules/reference records that belong to one master Compendium."
+            title="Rules / Reference Entries"
+            description="Original records that belong to a rules/reference source container."
             icon={Layers}
             entries={compendiumEntries}
           />
           <MasterEntryGroup
-            title="Settings Library Entries"
-            description="Original lore records that belong to one master Settings Library."
+            title="Setting / Lore Entries"
+            description="Original records that belong to a setting/lore source container."
             icon={Library}
             entries={settingsLibraryEntries}
           />
@@ -157,10 +157,10 @@ function MasterEntryCard({ entry }: { entry: MasterEntryListItem }) {
 
       <dl className="mt-5 grid grid-cols-2 gap-3 text-sm">
         <MetaItem
-          label="Library"
+          label="Source type"
           value={formatMasterEntryLibraryKind(entry.library_kind)}
         />
-        <MetaItem label="Parent" value={getMasterEntryParentName(entry)} />
+        <MetaItem label="Source" value={getMasterEntryParentName(entry)} />
         <MetaItem
           label="Entry Type"
           value={entry.entryType?.name || "Entry Type unavailable"}
@@ -196,9 +196,9 @@ function EmptyMasterEntriesState() {
           No Master Entries yet
         </h2>
         <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">
-          Create original reusable records after you have a parent Compendium or
-          Settings Library and matching Entry Type. Project links and overrides
-          come later.
+          Create original reusable records after you have a parent source
+          container and matching Entry Type. Project links and overrides come
+          later.
         </p>
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
           <Link

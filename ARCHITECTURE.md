@@ -103,6 +103,12 @@ visibility, version, and source/provenance metadata. Slice 6A adds the basic
 rich text editor foundation for the existing body fields. It uses the shared
 Tiptap editor component for writing and a shared safe body renderer for reading.
 Existing text fields still store the content; no rich text tables are added.
+Slice 6A.1 keeps `master_entries.library_kind` as the internal structural field
+for the current concrete parent tables while polishing user-facing copy toward
+Library Source language. Source categories such as Core Rulebooks, Expansions &
+Supplements, Setting & World Lore, and Adventures & Modules live on the parent
+Compendium or Settings Library source container; they are not Master Entry
+`library_kind` values.
 Slice 6A does not add Markdown paste conversion, wiki links, reveal blocks, GM
 sections, tabs, tags, folders, imports, file embeds, AI generation,
 collaboration, public marketplace behavior, SRD content, copyrighted book text,

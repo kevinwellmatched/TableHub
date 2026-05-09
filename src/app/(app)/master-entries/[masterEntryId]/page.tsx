@@ -132,10 +132,10 @@ export default async function MasterEntryDetailPage({
 
           <div className="grid gap-3 rounded-lg border border-[var(--line)] bg-black/25 p-4 sm:grid-cols-2 lg:min-w-80">
             <HeroMeta
-              label="Library"
+              label="Source type"
               value={formatMasterEntryLibraryKind(masterEntry.library_kind)}
             />
-            <HeroMeta label="Parent" value={getMasterEntryParentName(masterEntry)} />
+            <HeroMeta label="Source container" value={getMasterEntryParentName(masterEntry)} />
             <HeroMeta
               label="Entry Type"
               value={masterEntry.entryType?.name || "Entry Type unavailable"}
@@ -256,7 +256,7 @@ export default async function MasterEntryDetailPage({
 function getMasterEntryParentLink(masterEntry: MasterEntryDetail) {
   if (masterEntry.library_kind === "compendium" && masterEntry.compendium) {
     return {
-      label: "Parent Compendium",
+      label: "Rules / Reference Source",
       href: `/compendium/${masterEntry.compendium.id}`,
     };
   }
@@ -266,7 +266,7 @@ function getMasterEntryParentLink(masterEntry: MasterEntryDetail) {
     masterEntry.settingsLibrary
   ) {
     return {
-      label: "Parent Settings Library",
+      label: "Setting / Lore Source",
       href: `/settings-library/${masterEntry.settingsLibrary.id}`,
     };
   }
@@ -280,10 +280,10 @@ function MetadataGrid({ masterEntry }: { masterEntry: MasterEntryDetail }) {
       <DetailItem label="Title" value={masterEntry.title} />
       <DetailItem label="Slug" value={masterEntry.slug} />
       <DetailItem
-        label="Library kind"
+        label="Source container type"
         value={formatMasterEntryLibraryKind(masterEntry.library_kind)}
       />
-      <DetailItem label="Parent library" value={getMasterEntryParentName(masterEntry)} />
+      <DetailItem label="Parent source" value={getMasterEntryParentName(masterEntry)} />
       <DetailItem
         label="Entry Type"
         value={masterEntry.entryType?.name || "Entry Type unavailable"}

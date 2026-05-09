@@ -6,6 +6,11 @@ import { FileText, Sparkles } from "lucide-react";
 import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import { createMasterEntryAction } from "@/lib/master-entry-actions";
 import { initialMasterEntryFormState } from "@/lib/master-entry-form-state";
+import {
+  formatMasterEntryParentSourceOption,
+  formatMasterEntrySourceContainerType,
+  getMasterEntrySourceContainerDescription,
+} from "@/lib/master-entry-source-options";
 import type { MasterEntryFormOptions } from "@/lib/master-entries";
 import {
   MASTER_ENTRY_LIBRARY_KINDS,
@@ -50,7 +55,7 @@ const starterPresets: Array<
   }
 > = [
   {
-    label: "Compendium Rule Note",
+    label: "Rules Source Note",
     libraryKind: "compendium",
     title: "Sample Rule Note",
     aliases: "",
@@ -71,7 +76,7 @@ const starterPresets: Array<
     sourceUrl: "",
   },
   {
-    label: "Compendium Item Note",
+    label: "Reference Item Note",
     libraryKind: "compendium",
     title: "Sample Item Note",
     aliases: "",
@@ -92,7 +97,7 @@ const starterPresets: Array<
     sourceUrl: "",
   },
   {
-    label: "Settings NPC Note",
+    label: "Lore NPC Note",
     libraryKind: "settings_library",
     title: "Sample NPC Note",
     aliases: "",
@@ -112,7 +117,7 @@ const starterPresets: Array<
     sourceUrl: "",
   },
   {
-    label: "Settings Place Note",
+    label: "Lore Place Note",
     libraryKind: "settings_library",
     title: "Sample Place Note",
     aliases: "",
@@ -133,11 +138,6 @@ const starterPresets: Array<
     sourceUrl: "",
   },
 ];
-
-const libraryKindLabels: Record<MasterEntryLibraryKind, string> = {
-  compendium: "Compendium",
-  settings_library: "Settings Library",
-};
 
 const visibilityLabels: Record<MasterEntryVisibility, string> = {
   private: "Private",
@@ -267,30 +267,32 @@ export function CreateMasterEntryForm({ options }: { options: MasterEntryFormOpt
 
       <section className="grid gap-5 lg:grid-cols-2">
         <Select
-          label="Library kind"
+          label="Source container type"
           name="libraryKind"
           value={values.libraryKind}
           onChange={(event) => updateLibraryKind(event.target.value)}
           error={state.fieldErrors?.libraryKind}
+          description="Master Entries still use the current concrete parent tables. Source categories such as Core Rulebook, Expansion, Setting & World Lore, and Adventures & Modules are configured on the parent Library Source."
           options={MASTER_ENTRY_LIBRARY_KINDS.map((libraryKind) => ({
             value: libraryKind,
-            label: libraryKindLabels[libraryKind],
+            label: formatMasterEntrySourceContainerType(libraryKind),
           }))}
         />
 
         {values.libraryKind === "compendium" ? (
           <>
             <Select
-              label="Parent Compendium"
+              label="Rules / reference source"
               name="compendiumId"
               value={values.compendiumId}
               onChange={(event) => updateValue("compendiumId", event.target.value)}
               error={state.fieldErrors?.compendiumId}
+              description={getMasterEntrySourceContainerDescription("compendium")}
               options={[
-                { value: "", label: "Choose a Compendium" },
+                { value: "", label: "Choose a rules / reference source" },
                 ...options.compendiums.map((compendium) => ({
                   value: compendium.id,
-                  label: compendium.name,
+                  label: formatMasterEntryParentSourceOption(compendium),
                 })),
               ]}
             />
@@ -299,18 +301,19 @@ export function CreateMasterEntryForm({ options }: { options: MasterEntryFormOpt
         ) : (
           <>
             <Select
-              label="Parent Settings Library"
+              label="Setting / lore source"
               name="settingsLibraryId"
               value={values.settingsLibraryId}
               onChange={(event) =>
                 updateValue("settingsLibraryId", event.target.value)
               }
               error={state.fieldErrors?.settingsLibraryId}
+              description={getMasterEntrySourceContainerDescription("settings_library")}
               options={[
-                { value: "", label: "Choose a Settings Library" },
+                { value: "", label: "Choose a setting / lore source" },
                 ...options.settingsLibraries.map((settingsLibrary) => ({
                   value: settingsLibrary.id,
-                  label: settingsLibrary.name,
+                  label: formatMasterEntryParentSourceOption(settingsLibrary),
                 })),
               ]}
             />
@@ -549,23 +552,36 @@ function Select({
   label,
   name,
   error,
+  description,
   options,
   ...props
 }: React.SelectHTMLAttributes<HTMLSelectElement> & {
   label: string;
   name: string;
   error?: string;
+  description?: string;
   options: Array<{ value: string; label: string }>;
 }) {
   const errorId = `${name}-error`;
+  const descriptionId = description ? `${name}-description` : undefined;
 
   return (
     <label className="block">
       <span className="text-sm font-medium text-[var(--text-main)]">{label}</span>
+      {description ? (
+        <span
+          id={descriptionId}
+          className="mt-1 block text-sm leading-6 text-[var(--text-muted)]"
+        >
+          {description}
+        </span>
+      ) : null}
       <select
         name={name}
         aria-invalid={error ? "true" : "false"}
-        aria-describedby={error ? errorId : undefined}
+        aria-describedby={[descriptionId, error ? errorId : undefined]
+          .filter(Boolean)
+          .join(" ") || undefined}
         className="mt-2 h-11 w-full rounded-lg border border-[var(--line)] bg-black/25 px-3 text-sm text-[var(--text-main)] outline-none transition focus:border-[#FCA311] focus:ring-2 focus:ring-[#FCA311]/20"
         {...props}
       >

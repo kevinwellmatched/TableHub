@@ -29,7 +29,7 @@ export default async function NewMasterEntryPage() {
 
       <PageHeader
         title="Create Master Entry"
-        description="Create an original entry for one Compendium or one Settings Library. Body content now uses the shared rich text editor and saves to the existing body field."
+        description="Create an original entry inside a Library Source. Rules/reference entries are stored under Compendium source containers, and setting/lore entries are stored under Settings Library source containers."
       />
 
       {!canCreateAnyEntry ? <MissingFoundationsState /> : null}
@@ -40,9 +40,9 @@ export default async function NewMasterEntryPage() {
             Master Entry details
           </h2>
           <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
-            Each entry belongs to exactly one parent library and one Entry Type.
-            Do not add imports, tags, folders, wiki links, project links, or
-            overrides in this rich text foundation slice.
+            Each entry belongs to exactly one source container and one Entry
+            Type. Source category, source subtype, clone policy, and default
+            player visibility stay on the parent Library Source.
           </p>
 
           <ReadinessNotes
@@ -55,8 +55,9 @@ export default async function NewMasterEntryPage() {
               <CreateMasterEntryForm options={options} />
             ) : (
               <p className="rounded-lg border border-[#FCA311]/30 bg-[#FCA311]/10 p-4 text-sm leading-6 text-[var(--text-muted)]">
-                Create at least one Compendium or Settings Library and one
-                matching Entry Type, then return here to create a Master Entry.
+                Create at least one rules/reference or setting/lore source
+                container and one matching Entry Type, then return here to
+                create a Master Entry.
               </p>
             )}
           </div>
@@ -82,17 +83,17 @@ function ReadinessNotes({
       {!hasCompendiumPath ? (
         <FoundationNote
           icon={BookOpen}
-          title="Compendium entries need a Compendium and Compendium Entry Type"
+          title="Rules/reference entries need a source container and matching Entry Type"
           href="/compendium"
-          label="Open Compendium"
+          label="Open rules sources"
         />
       ) : null}
       {!hasSettingsLibraryPath ? (
         <FoundationNote
           icon={Library}
-          title="Settings Library entries need a Settings Library and Settings Library Entry Type"
+          title="Setting/lore entries need a source container and matching Entry Type"
           href="/settings-library"
-          label="Open Settings Library"
+          label="Open lore sources"
         />
       ) : null}
     </div>
@@ -146,9 +147,8 @@ function MissingFoundationsState() {
         Add the foundations first
       </h2>
       <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
-        Master Entries need an accessible parent Compendium or Settings Library
-        and a matching Entry Type. Supabase RLS decides which foundations your
-        account can use.
+        Master Entries need an accessible parent source container and a matching
+        Entry Type. Supabase RLS decides which foundations your account can use.
       </p>
     </section>
   );

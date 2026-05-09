@@ -12,6 +12,7 @@ import type {
   ValidMasterEntryInput,
   ValidMasterEntryBodyInput,
 } from "@/lib/master-entry-validation";
+import { formatMasterEntrySourceContainerType } from "@/lib/master-entry-source-options";
 import { hasSupabaseEnv } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
 
@@ -19,9 +20,9 @@ const MASTER_ENTRY_COLUMNS =
   "id, owner_id, library_kind, compendium_id, settings_library_id, entry_type_id, title, slug, aliases, summary, body, body_format, properties, visibility, sort_order, license_name, license_url, source_type, source_url, source_notes, version, created_at, updated_at";
 
 const COMPENDIUM_FORM_COLUMNS =
-  "id, name, slug, visibility, version, created_at";
+  "id, name, slug, visibility, source_category, version, created_at";
 const SETTINGS_LIBRARY_FORM_COLUMNS =
-  "id, name, slug, visibility, version, created_at";
+  "id, name, slug, visibility, source_category, version, created_at";
 const ENTRY_TYPE_FORM_COLUMNS =
   "id, library_kind, name, slug, visibility, sort_order";
 
@@ -56,6 +57,7 @@ export type MasterEntryCompendiumSummary = {
   name: string;
   slug: string;
   visibility: string;
+  source_category: string | null;
   version: string;
   created_at: string;
 };
@@ -65,6 +67,7 @@ export type MasterEntrySettingsLibrarySummary = {
   name: string;
   slug: string;
   visibility: string;
+  source_category: string | null;
   version: string;
   created_at: string;
 };
@@ -282,12 +285,7 @@ export async function getMasterEntryFormOptions(): Promise<MasterEntryFormOption
 export function formatMasterEntryLibraryKind(
   libraryKind: MasterEntryLibraryKind,
 ) {
-  const labels: Record<MasterEntryLibraryKind, string> = {
-    compendium: "Compendium",
-    settings_library: "Settings Library",
-  };
-
-  return labels[libraryKind];
+  return formatMasterEntrySourceContainerType(libraryKind);
 }
 
 export function formatMasterEntryBodyFormat(bodyFormat: MasterEntryBodyFormat) {
