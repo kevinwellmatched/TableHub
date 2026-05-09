@@ -1,6 +1,7 @@
 import DOMPurify from "isomorphic-dompurify";
 
 import type { MasterEntryBodyFormat } from "@/lib/master-entry-validation";
+import type { WikiLinkResolutionCandidate } from "./wiki-link-resolution.ts";
 import { renderWikiLinksInSafeHtml } from "./wiki-links.ts";
 
 export type EntryBodyRenderFormat = MasterEntryBodyFormat;
@@ -52,12 +53,17 @@ export function sanitizeEntryHtml(value: string | null | undefined) {
 export function renderEntryBodyHtml(
   body: string,
   bodyFormat: EntryBodyRenderFormat,
+  options: { wikiLinkCandidates?: WikiLinkResolutionCandidate[] } = {},
 ) {
   if (bodyFormat === "html") {
-    return renderWikiLinksInSafeHtml(sanitizeEntryHtml(body));
+    return renderWikiLinksInSafeHtml(sanitizeEntryHtml(body), {
+      candidates: options.wikiLinkCandidates,
+    });
   }
 
-  return renderWikiLinksInSafeHtml(textToLineBreakHtml(body));
+  return renderWikiLinksInSafeHtml(textToLineBreakHtml(body), {
+    candidates: options.wikiLinkCandidates,
+  });
 }
 
 export function isBlankRichTextHtml(value: string | null | undefined) {

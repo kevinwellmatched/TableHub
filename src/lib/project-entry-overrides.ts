@@ -1,5 +1,6 @@
 import type { LibrarySourcePlayerVisibility } from "@/lib/library-source-taxonomy";
 import { looksLikeHtml, normalizeStoredEntryBody } from "./entry-body.ts";
+import type { WikiLinkResolutionCandidate } from "./wiki-link-resolution.ts";
 
 export const PROJECT_ENTRY_OVERRIDE_VISIBILITIES = [
   "inherit",
@@ -197,6 +198,40 @@ export function shapeProjectLibraryEntryForReadMode({
   };
 }
 
+export function buildProjectLibraryWikiLinkCandidates(
+  entries: Array<
+    | ProjectLibraryReadEntry
+    | {
+        id: string;
+        title: string;
+        aliases: string[] | null;
+        effective: Pick<EffectiveProjectEntry, "title" | "original">;
+      }
+  >,
+  projectId: string,
+): WikiLinkResolutionCandidate[] {
+  return entries.map((entry) => {
+    if ("effective" in entry) {
+      return {
+        id: entry.id,
+        title: entry.effective.title,
+        aliases: uniqueWikiLinkAliases([
+          entry.effective.original.title,
+          ...(entry.aliases ?? []),
+        ]),
+        href: `/projects/${projectId}/library/${entry.id}`,
+      };
+    }
+
+    return {
+      id: entry.id,
+      title: entry.title,
+      aliases: [],
+      href: `/projects/${projectId}/library/${entry.id}`,
+    };
+  });
+}
+
 export function getProjectEntryOverrideStatus(
   _masterEntry: ProjectEntryOriginal,
   override: ProjectEntryOverrideRow | null,
@@ -292,6 +327,24 @@ function readOverrideText<T extends string | null>(
   fallbackValue: T,
 ) {
   return hasOverrideText(overrideValue) ? overrideValue.trim() : fallbackValue;
+}
+
+function uniqueWikiLinkAliases(values: Array<string | null | undefined>) {
+  const aliases: string[] = [];
+  const seen = new Set<string>();
+
+  for (const value of values) {
+    const alias = value?.trim();
+
+    if (!alias || seen.has(alias)) {
+      continue;
+    }
+
+    seen.add(alias);
+    aliases.push(alias);
+  }
+
+  return aliases;
 }
 
 function normalizeOverrideBody(value: string) {

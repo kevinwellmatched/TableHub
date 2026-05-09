@@ -571,8 +571,10 @@ Build:
 ## Slice 6: Rich Text Wiki and Entry Editing
 
 Status: In progress. Slice 6A Rich Text Editor Foundation, Slice 6A.1 copy
-polish, and Slice 6B Markdown paste conversion are complete. Slice 6C adds
-wiki-link syntax display groundwork.
+polish, Slice 6B Markdown paste conversion, and Slice 6C wiki-link syntax
+display groundwork are complete. Slice 6D wiki-link resolution foundation is
+implemented in this slice. Upcoming Slice 6 work should focus on safe import
+package/provenance design before building a larger import workflow.
 
 ### Goal
 
@@ -591,28 +593,6 @@ Goal:
 - Preserve legacy plain text and Markdown-looking content without a bulk
   migration.
 
-Build:
-
-- Tiptap editor component with a small toolbar for paragraphs, headings, bold,
-  italic, strike, lists, blockquote, code, undo, and redo.
-- Safe body renderer that sanitizes HTML before rendering.
-- Master Entry create body editor.
-- Small Master Entry body edit path.
-- Project Entry Override body editor.
-- Focused tests for `html` body format validation, sanitizing, legacy fallback,
-  and Project override body format selection.
-- No database tables, wiki links, backlinks, reveal blocks, tabs, imports, file
-  embeds, AI generation, collaboration, or unified `library_sources` table.
-
-Done when:
-
-- Master Entry rich text saves as `body_format = 'html'` when supported by the
-  database.
-- Existing plain text and Markdown-looking bodies still render safely.
-- Project Entry Overrides can store rich text body HTML without changing the
-  original Master Entry.
-- Test, lint, and build pass.
-
 ### Slice 6A.1: Master Entry Source Container Copy Polish
 
 Status: Complete in the current copy polish slice.
@@ -626,17 +606,6 @@ Goal:
 - Show parent source category labels beside source container choices where the
   metadata is available.
 
-Build:
-
-- Rename user-facing Master Entry form labels from "Library kind" to source
-  container language.
-- Label Compendium-backed entries as rules/reference source entries.
-- Label Settings Library-backed entries as setting/lore source entries.
-- Keep source categories such as Core Rulebooks, Expansions & Supplements,
-  Setting & World Lore, and Adventures & Modules on parent Library Sources.
-- No schema changes, no unified `library_sources` table, and no new
-  `master_entries.library_kind` values.
-
 ### Slice 6B: Markdown Paste Conversion Foundation
 
 Status: Complete in the Markdown paste conversion slice.
@@ -649,32 +618,9 @@ Goal:
 - Keep ordinary plain text readable as paragraphs.
 - Reuse the Slice 6A sanitizer before content is stored or rendered.
 
-Build:
-
-- Common Markdown headings, bold, italic, bullet lists, ordered lists,
-  blockquotes, inline code, fenced code blocks, horizontal rules, and links.
-- A focused helper for Markdown detection and sanitized conversion.
-- Master Entry create/edit and Project Entry Override body editing through the
-  existing editor.
-- No import pipeline, wiki links, backlinks, broken-link placeholders, hover
-  previews, reveal blocks, tabs, tags/folders, file embeds, AI generation,
-  collaboration, new database tables, schema changes, or Supabase SQL.
-- No new `master_entries.library_kind` values and no unified `library_sources`
-  table.
-
-Done when:
-
-- Markdown paste converts inside the rich text editor.
-- Unsafe Markdown-generated or pasted HTML is sanitized before rendering.
-- Existing plain text, Markdown-looking legacy content, and rich text HTML stay
-  compatible.
-- Project Entry Override body editing uses the same behavior without changing
-  the original Master Entry.
-- Test, lint, and build pass.
-
 ### Slice 6C: Wiki Link Syntax Foundation
 
-Status: Implemented in this syntax/display slice.
+Status: Complete in the syntax/display slice.
 
 Goal:
 
@@ -684,35 +630,103 @@ Goal:
 - Render wiki syntax as distinct, non-navigating link-like text.
 - Preserve the existing sanitizer-backed body renderer.
 
+### Slice 6D: Wiki Link Resolution Foundation
+
+Status: Complete in the resolution foundation slice.
+
+Goal:
+
+- Resolve `[[Entry Name]]` syntax to real entries where the matching context is
+  clear and permission-safe.
+- Keep this slice focused on lookup and safe rendering, not backlinks or broken
+  page creation.
+
 Build:
 
-- Conservative wiki-link parser and text splitter.
-- Safe rendered HTML text-node handling that skips code blocks, inline code,
-  and existing links.
-- Shared body renderer support for Master Entry bodies and Project Entry
-  Override bodies.
-- Focused tests for parsing, malformed syntax, safe rendering, and legacy body
-  compatibility.
-- No link resolution, backlinks, broken-link placeholders, hover previews,
-  autocomplete, search integration, imports, tags/folders, reveal blocks, file
-  embeds, AI generation, collaboration, new database tables, schema changes, or
-  Supabase SQL.
+- Master Entry context resolution for links in reusable Library pages.
+- Project Library context resolution for links in effective Project entries.
+- Alias-aware matching where available.
+- Clear unresolved-link display when no safe unique match exists.
+- Permission-aware behavior so Player/Viewer Project Library mode does not leak
+  hidden or GM-only entries.
+- Stored body fields remain unchanged; resolution happens only in safe
+  rendering.
+- No backlink tables, hover previews, autocomplete, broken-link placeholder
+  creation, search integration, imports, tags/folders, tabs, reveal blocks, AI,
+  collaboration, new database tables, schema changes, or Supabase SQL unless
+  explicitly approved.
 
 Done when:
 
-- `[[Waterdeep]]` displays as `Waterdeep`.
-- `[[Lord Neverember|the Open Lord]]` displays as `the Open Lord`.
-- Wiki syntax remains normal editable text when the editor is reopened.
-- Unsafe wiki labels or targets do not render executable HTML.
-- Existing plain text, Markdown-looking legacy content, rich text HTML, and
-  Project Entry Override bodies remain compatible.
+- A rendered `[[Entry Name]]` can point to a safe matching Master Entry or
+  Project Library entry when a unique accessible match exists.
+- Ambiguous or missing links remain safe and do not leak restricted content.
+- Existing wiki-link syntax storage remains unchanged in body fields.
+- Test, lint, and build pass.
+
+### Slice 6E: Import Source Package and Provenance Design
+
+Status: Planned.
+
+Goal:
+
+Define the safe import package shape before building import execution.
+
+Build:
+
+- Manifest format for Markdown/source packages.
+- Source ownership and distribution status model.
+- Required provenance fields.
+- Entry type mapping rules.
+- Slug and external ID strategy.
+- Dry-run report shape.
+- Private user import vs TableHub-distributable content rules.
+- `.gitignore` guidance for local private fixtures if needed.
+
+Done when:
+
+- Import packages must declare source/provenance metadata.
+- TableHub-provided content is limited to SRD, ORC, Creative Commons,
+  public-domain, explicitly licensed, partner-approved, or original demo
+  content.
+- Private/restricted imports are clearly separated from TableHub-provided
+  content.
+- Private test fixture files are not committed.
+- No actual import execution is added yet.
+- Test, lint, and build pass if code helpers are added.
+
+### Slice 6F: Developer Markdown Import Script
+
+Status: Planned.
+
+Goal:
+
+Import a small local Markdown source package into existing Game System,
+Compendium, Entry Type, and Master Entry records using a manifest.
+
+Build:
+
+- Local/admin script only, not a user-facing upload flow.
+- Dry-run and apply modes.
+- Validation for required provenance and distribution metadata.
+- Entry type mapping.
+- Slug collision handling.
+- Stable external ID handling for idempotent re-runs.
+- Small original/fake sample fixture in the repository.
+- Support for ignored local private fixture folders for private stress tests.
+
+Done when:
+
+- A tiny safe sample package can be dry-run and imported locally.
+- Missing or ambiguous license/provenance metadata fails dry-run validation.
+- Private/restricted imports cannot be treated as TableHub-distributable content.
+- No private or restricted fixture content is committed.
 - Test, lint, and build pass.
 
 ### Later Slice 6 Work
 
-### Build
+Build:
 
-- Wiki link resolution
 - Broken link placeholders
 - Aliases
 - Hover preview groundwork
@@ -722,7 +736,7 @@ Done when:
 - Custom fields/properties panel
 - Entry templates
 
-### Done When
+Done when:
 
 - User can create and edit rich text entries
 - Wiki links can connect entries

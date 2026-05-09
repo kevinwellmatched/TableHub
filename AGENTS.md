@@ -82,18 +82,6 @@ System
 
 Library Source is the product vocabulary for reusable source containers under a System. Compendiums and Settings Libraries are the current concrete container tables; do not destructively migrate, delete, or rename them until a later approved schema slice.
 
-For Master Entry UI, prefer source container language over exposing
-`library_kind` directly:
-
-- Use "Source container type" instead of "Library kind."
-- Use "Rules / reference source" for Compendium-backed entries.
-- Use "Setting / lore source" for Settings Library-backed entries.
-- Keep `master_entries.library_kind` limited to `compendium` and
-  `settings_library`.
-- Do not add source category values like `core_rulebook`,
-  `expansion_supplement`, `setting_world_lore`, `adventure_module`, or `other`
-  as Master Entry `library_kind` values.
-
 Use "Adventures & Modules" instead of "Adventures & Campaigns" for source categories so source books are not confused with active Campaigns.
 
 When a system, Library Source, campaign template, entry template, or character sheet template is added to a Project, the Project should use linked copies with overrides.
@@ -202,13 +190,21 @@ Slice 6C adds wiki-link syntax display groundwork:
 - Recognize `[[Entry Name]]` and `[[Entry Name|label]]` only when rendering body content.
 - Store the original syntax as normal body text in the existing fields.
 - Render wiki syntax as non-navigating, link-like text with an accessible target label.
-- Do not resolve links to entries, create backlinks, create broken-link placeholders, add hover previews, autocomplete, search integration, imports, tabs, reveal blocks, tags/folders, file embeds, AI generation, or collaboration without a later approved slice.
+
+Slice 6D adds wiki-link resolution foundation:
+
+- Resolve `[[Entry Name]]` and `[[Entry Name|label]]` only while rendering body content.
+- Master Entry pages resolve against accessible entries in the same Compendium or Settings Library first.
+- Project Library pages resolve against entries reachable in the same Project Library context.
+- Player and Viewer Project Library resolution must use only visible read-mode entries and must not leak hidden or GM-only targets.
+- Missing or ambiguous matches remain non-navigating wiki-link text.
+- Do not add backlinks, broken-link placeholder creation, hover previews, autocomplete, search integration, imports, tabs, reveal blocks, tags/folders, file embeds, AI generation, collaboration, new tables, schema changes, or SQL without a later approved slice.
 
 Future entries should support:
 
 - Rich text
 - Markdown paste conversion refinements
-- Wiki link resolution
+- Wiki link resolution refinements
 - Aliases
 - Tags
 - Folders
@@ -291,6 +287,25 @@ Future uploads should support:
 - Searchable metadata
 
 No full VTT in MVP.
+
+
+## Content Import and Licensing Rules
+
+TableHub must distinguish clearly between three content sources:
+
+1. TableHub-provided distributable content
+2. Private user-owned imports
+3. Local developer test fixtures
+
+TableHub-provided content may only include SRD, ORC, Creative Commons, public-domain, explicitly licensed, partner-approved, or original demo content. Do not seed, bundle, market, or expose restricted/private rules text as TableHub-provided content.
+
+Private user imports may include a user's own documents, notes, PDFs, Markdown files, or private reference material. These imports must remain private to that user or workspace unless a later approved sharing model explicitly allows otherwise.
+
+Local developer fixtures may use private test material during development, but restricted/private files must not be committed, bundled, seeded, marketed, or exposed as TableHub-provided content. Use ignored local folders for private import fixtures and tiny original/fake fixtures for repository tests.
+
+Future import workflows must preserve source/provenance metadata, including source name, publisher or creator, license name, license URL when available, source URL when available, source notes, source category, source subtype, external source IDs, and whether TableHub may redistribute the content.
+
+If licensing or redistribution rights are unclear, the importer should treat the content as private/restricted by default and should not make it TableHub-distributable.
 
 ## Security Rules
 

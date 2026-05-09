@@ -155,6 +155,16 @@ body {
   color: #ffb33c;
 }
 
+.entry-body-renderer .wiki-link-resolved {
+  border-bottom-style: solid;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.entry-body-renderer .wiki-link-ambiguous {
+  color: #ffd166;
+}
+
 .entry-body-renderer hr {
   border: 0;
   border-top: 1px solid var(--line);

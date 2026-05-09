@@ -21,6 +21,9 @@ import {
   formatMasterEntryLibraryKind,
   formatMasterEntrySourceType,
   formatMasterEntryVisibility,
+  buildMasterEntryWikiLinkCandidates,
+  getMasterEntriesByCompendiumId,
+  getMasterEntriesBySettingsLibraryId,
   getMasterEntryById,
   getMasterEntryParentName,
   type MasterEntryDetail,
@@ -80,6 +83,10 @@ export default async function MasterEntryDetailPage({
   if (!masterEntry) {
     return <MasterEntryUnavailableState />;
   }
+
+  const wikiLinkCandidates = buildMasterEntryWikiLinkCandidates(
+    await getMasterEntrySiblingEntries(masterEntry),
+  );
 
   const relatedLinks = [
     { label: "Back to Master Entries", href: "/master-entries" },
@@ -202,6 +209,7 @@ export default async function MasterEntryDetailPage({
                 <EntryBodyRenderer
                   body={masterEntry.body}
                   format={masterEntry.body_format}
+                  wikiLinkCandidates={wikiLinkCandidates}
                 />
               }
             />
@@ -251,6 +259,21 @@ export default async function MasterEntryDetailPage({
       </section>
     </div>
   );
+}
+
+async function getMasterEntrySiblingEntries(masterEntry: MasterEntryDetail) {
+  if (masterEntry.library_kind === "compendium" && masterEntry.compendium_id) {
+    return getMasterEntriesByCompendiumId(masterEntry.compendium_id);
+  }
+
+  if (
+    masterEntry.library_kind === "settings_library" &&
+    masterEntry.settings_library_id
+  ) {
+    return getMasterEntriesBySettingsLibraryId(masterEntry.settings_library_id);
+  }
+
+  return [masterEntry];
 }
 
 function getMasterEntryParentLink(masterEntry: MasterEntryDetail) {

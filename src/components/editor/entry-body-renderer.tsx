@@ -3,17 +3,20 @@ import {
   renderEntryBodyHtml,
   type EntryBodyRenderFormat,
 } from "@/lib/entry-body";
+import type { WikiLinkResolutionCandidate } from "@/lib/wiki-link-resolution";
 
 type EntryBodyRendererProps = {
   body: string | null | undefined;
   format?: EntryBodyRenderFormat;
   emptyText?: string;
+  wikiLinkCandidates?: WikiLinkResolutionCandidate[];
 };
 
 export function EntryBodyRenderer({
   body,
   format,
   emptyText = "No body content yet.",
+  wikiLinkCandidates,
 }: EntryBodyRendererProps) {
   const content = body?.trim();
 
@@ -26,7 +29,9 @@ export function EntryBodyRenderer({
   }
 
   const renderFormat = format ?? getReadModeEntryBodyRenderFormat(content);
-  const renderedHtml = renderEntryBodyHtml(content, renderFormat);
+  const renderedHtml = renderEntryBodyHtml(content, renderFormat, {
+    wikiLinkCandidates,
+  });
 
   return (
     <div

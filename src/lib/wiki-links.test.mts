@@ -81,7 +81,7 @@ test("renders wiki links in sanitized HTML text nodes", () => {
     "<p>Visit [[Waterdeep]] and [[Lord Neverember|the Open Lord]].</p>",
   );
 
-  assert.equal(html.includes('<span class="wiki-link"'), true);
+  assert.equal(html.includes('<span class="wiki-link wiki-link-unresolved"'), true);
   assert.equal(html.includes("Wiki link target: Waterdeep"), true);
   assert.equal(html.includes(">Waterdeep</span>"), true);
   assert.equal(html.includes("Wiki link target: Lord Neverember"), true);
@@ -127,4 +127,77 @@ test("preserves allowed rich text tags while rendering wiki links", () => {
   assert.equal(html.includes("<ul><li>Ask "), true);
   assert.equal(html.includes("Wiki link target: Mirt"), true);
   assert.equal(html.includes("Wiki link target: Durnan"), true);
+});
+
+test("renders resolved wiki links as safe anchors", () => {
+  const html = renderWikiLinksInSafeHtml("<p>Visit [[Waterdeep|the city]].</p>", {
+    candidates: [
+      {
+        id: "entry-1",
+        title: "Waterdeep",
+        href: "/master-entries/entry-1",
+      },
+    ],
+  });
+
+  assert.equal(
+    html.includes(
+      '<a class="wiki-link wiki-link-resolved" title="Wiki link target: Waterdeep" aria-label="Wiki link target: Waterdeep" href="/master-entries/entry-1">the city</a>',
+    ),
+    true,
+  );
+  assert.equal(html.includes("[["), false);
+});
+
+test("renders unresolved and ambiguous resolved-mode links as safe spans", () => {
+  const html = renderWikiLinksInSafeHtml(
+    "<p>Visit [[Missing|unknown]] and [[Duplicate]].</p>",
+    {
+      candidates: [
+        {
+          id: "entry-1",
+          title: "Duplicate",
+          href: "/master-entries/entry-1",
+        },
+        {
+          id: "entry-2",
+          title: "Duplicate",
+          href: "/master-entries/entry-2",
+        },
+      ],
+    },
+  );
+
+  assert.equal(html.includes('href="/master-entries/entry-1"'), false);
+  assert.equal(html.includes('href="/master-entries/entry-2"'), false);
+  assert.equal(html.includes('class="wiki-link wiki-link-unresolved"'), true);
+  assert.equal(html.includes('class="wiki-link wiki-link-ambiguous"'), true);
+  assert.equal(html.includes(">unknown</span>"), true);
+  assert.equal(html.includes(">Duplicate</span>"), true);
+});
+
+test("keeps unsafe resolved labels and targets as text", () => {
+  const html = renderWikiLinksInSafeHtml(
+    '<p>[[javascript:alert(1)|click me]] [[Waterdeep|<img src=x onerror=alert(1)>]]</p>',
+    {
+      candidates: [
+        {
+          id: "entry-1",
+          title: "javascript:alert(1)",
+          href: "/master-entries/entry-1",
+        },
+        {
+          id: "entry-2",
+          title: "Waterdeep",
+          href: "/master-entries/entry-2",
+        },
+      ],
+    },
+  );
+
+  assert.equal(html.includes('href="javascript:'), false);
+  assert.equal(html.includes("<img"), false);
+  assert.equal(html.includes("onerror"), false);
+  assert.equal(html.includes(">click me</a>"), true);
+  assert.equal(html.includes("[[Waterdeep|]]"), true);
 });

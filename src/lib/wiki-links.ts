@@ -1,5 +1,10 @@
 import DOMPurify from "isomorphic-dompurify";
 
+import {
+  resolveWikiLinkTarget,
+  type WikiLinkResolutionCandidate,
+} from "./wiki-link-resolution.ts";
+
 export type ParsedWikiLink = {
   raw: string;
   target: string;
@@ -9,6 +14,10 @@ export type ParsedWikiLink = {
 export type WikiLinkTextPart =
   | { type: "text"; text: string }
   | { type: "wikiLink"; raw: string; target: string; label: string };
+
+export type RenderWikiLinksOptions = {
+  candidates?: WikiLinkResolutionCandidate[];
+};
 
 const allowedRenderedTags = [
   "p",
@@ -115,7 +124,10 @@ export function splitTextWithWikiLinks(input: string): WikiLinkTextPart[] {
   return parts;
 }
 
-export function renderWikiLinksInSafeHtml(html: string): string {
+export function renderWikiLinksInSafeHtml(
+  html: string,
+  options: RenderWikiLinksOptions = {},
+): string {
   if (!html.trim()) {
     return "";
   }
@@ -129,7 +141,7 @@ export function renderWikiLinksInSafeHtml(html: string): string {
   const textNodes = collectRenderableTextNodes(fragment);
 
   for (const textNode of textNodes) {
-    replaceTextNodeWithWikiLinks(textNode);
+    replaceTextNodeWithWikiLinks(textNode, options);
   }
 
   const ownerDocument = fragment.ownerDocument;
@@ -187,7 +199,10 @@ function hasSkippedAncestor(node: Node) {
   return false;
 }
 
-function replaceTextNodeWithWikiLinks(textNode: Text) {
+function replaceTextNodeWithWikiLinks(
+  textNode: Text,
+  options: RenderWikiLinksOptions,
+) {
   const parts = splitTextWithWikiLinks(textNode.nodeValue ?? "");
 
   if (!parts.some((part) => part.type === "wikiLink")) {
@@ -203,9 +218,27 @@ function replaceTextNodeWithWikiLinks(textNode: Text) {
       continue;
     }
 
-    const wikiLink = ownerDocument.createElement("span");
     const accessibleLabel = `Wiki link target: ${part.target}`;
-    wikiLink.className = "wiki-link";
+    const resolvedLink = options.candidates
+      ? resolveWikiLinkTarget(part.target, options.candidates, part.label)
+      : null;
+
+    if (resolvedLink?.status === "resolved" && resolvedLink.href) {
+      const wikiAnchor = ownerDocument.createElement("a");
+      wikiAnchor.className = "wiki-link wiki-link-resolved";
+      wikiAnchor.setAttribute("title", accessibleLabel);
+      wikiAnchor.setAttribute("aria-label", accessibleLabel);
+      wikiAnchor.setAttribute("href", resolvedLink.href);
+      wikiAnchor.textContent = part.label;
+      fragment.appendChild(wikiAnchor);
+      continue;
+    }
+
+    const wikiLink = ownerDocument.createElement("span");
+    const statusClass = resolvedLink
+      ? `wiki-link-${resolvedLink.status}`
+      : "wiki-link-unresolved";
+    wikiLink.className = `wiki-link ${statusClass}`;
     wikiLink.setAttribute("role", "text");
     wikiLink.setAttribute("title", accessibleLabel);
     wikiLink.setAttribute("aria-label", accessibleLabel);

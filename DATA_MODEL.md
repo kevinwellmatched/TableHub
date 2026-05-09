@@ -94,6 +94,36 @@ Default player visibility by category:
 - Adventures & Modules -> `gm_only`
 - Other -> `mixed`
 
+
+## Future Import Provenance Concepts
+
+Future import workflows should track content distribution status before any source package writes records. This does not require a schema change yet; current provenance fields on Game Systems, Compendiums, Settings Libraries, and Master Entries remain the active storage path.
+
+Conceptual distribution statuses:
+
+- `tablehub_distributable` - SRD, ORC, Creative Commons, public-domain, explicitly licensed, partner-approved, or original demo content that TableHub may provide to users
+- `private_user_upload` - a user's own documents, notes, PDFs, Markdown files, or reference material imported for personal or workspace use only
+- `local_dev_fixture` - local-only developer test material used for private development or stress testing and never committed, bundled, seeded, marketed, or exposed as TableHub-provided content
+- `restricted_reference_only` - material that may help local testing or personal reference but must not be redistributed as TableHub content
+
+Future import packages should preserve:
+
+- source name
+- publisher or creator
+- license name
+- license URL when available
+- source URL when available
+- source notes
+- source category
+- source subtype
+- external source IDs
+- whether TableHub may redistribute the content
+- whether the content is private to the importing user or workspace
+
+Import tooling should fail dry-run validation or default to private/restricted handling when provenance or redistribution rights are unclear. Repository tests should use tiny original/fake fixtures rather than private or restricted source files.
+
+---
+
 ### game_systems
 
 Represents a reusable master-library ruleset.
@@ -302,6 +332,8 @@ Rules:
   Markdown-looking pasted text into sanitized HTML before save. Slice 6C
   recognizes `[[Entry Name]]` and `[[Entry Name|label]]` only when rendering
   body content; the original syntax stays in this same `body` text field.
+  Slice 6D can resolve that syntax to a unique accessible entry during
+  rendering without changing the stored body value.
 - `body_format` is app-level controlled as `plain_text`, `markdown`, or `html`.
   The `html` value means the body should be rendered only through the shared
   sanitizer-backed body renderer.
@@ -310,10 +342,11 @@ Rules:
 - Access is enforced with Supabase Row Level Security.
 - Slice 6A adds basic rich text editing and rendering without adding tables.
   Slice 6B adds Markdown paste conversion inside the editor only. Slice 6C adds
-  safe wiki-link syntax display only. These slices do not add schema changes,
-  imports, wiki link resolution, backlinks, broken-link placeholders, hover
-  previews, autocomplete, tags, folders, public marketplace behavior, 5etools
-  imports, SRD content, or copyrighted book text.
+  safe wiki-link syntax display only. Slice 6D resolves wiki links to unique
+  safe matches in the current Master Entry or Project Library context. These
+  slices do not add schema changes, imports, backlinks, broken-link
+  placeholders, hover previews, autocomplete, tags, folders, public marketplace
+  behavior, 5etools imports, SRD content, or copyrighted book text.
 - Master Entries are original reusable content. Future Project customization
   must use linked copies with overrides instead of mutating Master Entries
   directly.
@@ -534,11 +567,14 @@ Rules:
 - Players and Viewers can read only Project Library entries resolved as
   `visible`. They should not receive override reasons, hidden entries, or
   original-vs-overridden comparison data.
+- Slice 6D Project Library wiki-link resolution uses the same role-aware entry
+  sets as the Project Library page. Hidden or GM-only Player/Viewer targets are
+  not candidate links, so they appear the same as ordinary unresolved links.
 
 This table is critical. It prevents Project edits from mutating master content.
-Wiki link resolution, imports, tags/folders, Project search, campaign
-overrides, inline reveal controls, collaboration, AI generation, and file/image
-embeds remain later work.
+Backlinks, broken-link placeholder creation, imports, tags/folders, Project
+search, campaign overrides, inline reveal controls, collaboration, AI
+generation, and file/image embeds remain later work.
 
 ---
 

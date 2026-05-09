@@ -11,13 +11,18 @@ import {
   resetProjectEntryOverrideAction,
   saveProjectEntryOverrideAction,
 } from "@/lib/project-entry-override-actions";
-import { getProjectLibraryEntry } from "@/lib/project-entry-override-data";
 import {
+  getProjectLibraryEntries,
+  getProjectLibraryEntry,
+} from "@/lib/project-entry-override-data";
+import {
+  buildProjectLibraryWikiLinkCandidates,
   formatProjectEntryOverrideVisibility,
   formatProjectLibraryResolvedVisibility,
   PROJECT_ENTRY_OVERRIDE_VISIBILITIES,
   type ProjectLibraryReadEntry,
 } from "@/lib/project-entry-overrides";
+import type { WikiLinkResolutionCandidate } from "@/lib/wiki-link-resolution";
 import { getProjectById } from "@/lib/projects";
 
 type ProjectLibraryEntryPageProps = {
@@ -55,9 +60,19 @@ export default async function ProjectLibraryEntryPage({
     return <ProjectEntryUnavailableState projectId={project.id} />;
   }
 
+  const projectLibrary = await getProjectLibraryEntries(project.id, project.role);
+  const wikiLinkCandidates = buildProjectLibraryWikiLinkCandidates(
+    projectLibrary.entries,
+    project.id,
+  );
+
   if (entryResult.mode === "read") {
     return (
-      <ReadOnlyProjectEntryPage projectId={project.id} entry={entryResult.entry} />
+      <ReadOnlyProjectEntryPage
+        projectId={project.id}
+        entry={entryResult.entry}
+        wikiLinkCandidates={wikiLinkCandidates}
+      />
     );
   }
 
@@ -143,6 +158,7 @@ export default async function ProjectLibraryEntryPage({
                     masterBodyFormat: entry.body_format,
                     overrideBody: entry.override?.override_body,
                   })}
+                  wikiLinkCandidates={wikiLinkCandidates}
                   emptyText="No body."
                 />
               }
@@ -178,6 +194,7 @@ export default async function ProjectLibraryEntryPage({
                 <EntryBodyRenderer
                   body={entry.body}
                   format={entry.body_format}
+                  wikiLinkCandidates={wikiLinkCandidates}
                   emptyText="No body."
                 />
               }
@@ -276,9 +293,11 @@ export default async function ProjectLibraryEntryPage({
 function ReadOnlyProjectEntryPage({
   projectId,
   entry,
+  wikiLinkCandidates,
 }: {
   projectId: string;
   entry: ProjectLibraryReadEntry;
+  wikiLinkCandidates: WikiLinkResolutionCandidate[];
 }) {
   return (
     <div className="space-y-8">
@@ -332,6 +351,7 @@ function ReadOnlyProjectEntryPage({
               <EntryBodyRenderer
                 body={entry.body}
                 format={getReadModeEntryBodyRenderFormat(entry.body)}
+                wikiLinkCandidates={wikiLinkCandidates}
                 emptyText="No body."
               />
             }

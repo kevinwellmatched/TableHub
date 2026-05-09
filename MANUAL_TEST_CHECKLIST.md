@@ -32,6 +32,22 @@ npm run lint
 npm run build
 ```
 
+
+---
+
+## Content Import Safety Checks
+
+Use these checks before committing any future import-related work.
+
+- [ ] TableHub-provided seed/demo content uses only SRD, ORC, Creative Commons, public-domain, explicitly licensed, partner-approved, or original demo content.
+- [ ] Private user import fixtures are not committed, bundled, seeded, marketed, or exposed as TableHub-provided content.
+- [ ] Local private fixture folders are ignored by Git when used.
+- [ ] Source packages declare source/provenance metadata.
+- [ ] Source packages identify whether content is TableHub-distributable, a private user upload, a local developer fixture, or restricted reference-only material.
+- [ ] Import dry runs report ambiguous or missing license/provenance metadata.
+- [ ] Private imports remain private to the importing user or workspace.
+- [ ] Repository tests use tiny original/fake fixtures rather than private or restricted source files.
+
 ---
 
 ## Slice 0: Repository and Project Setup
@@ -753,30 +769,23 @@ npm run build
 - [ ] Bold, italic, headings, lists, and blockquote save and render.
 - [ ] Existing plain text Master Entry still renders.
 - [ ] Existing Markdown-looking Master Entry still renders without crashing.
-- [ ] Master Entry body save does not change parent library, source, or
-      provenance fields.
+- [ ] Master Entry body save does not change parent library, source, or provenance fields.
 - [ ] Project Owner or GM can edit Project Override body with rich text.
 - [ ] Project override body renders in Project Library.
 - [ ] Original Master Entry remains unchanged after Project Override save.
 - [ ] Reset/delete override falls back to original body.
-- [ ] Player/Viewer read mode still shows only visible effective Project Library
-      entries.
+- [ ] Player/Viewer read mode still shows only visible effective Project Library entries.
 - [ ] Player/Viewer cannot write override bodies.
 - [ ] Dangerous HTML is not rendered unsanitized.
-- [ ] No wiki links, reveal blocks, tabs, file embeds, imports, AI,
-      collaboration, or new database tables were added.
+- [ ] No wiki links, reveal blocks, tabs, file embeds, imports, AI, collaboration, or new database tables were added.
 - [ ] Run `npm.cmd run test`.
 - [ ] Run `npm.cmd run lint`.
 - [ ] Run `npm.cmd run build`.
 
 ### Known Issues
 
-- Slice 6A does not add Markdown paste conversion, wiki links, backlinks,
-  reveal blocks, tabs, file/image embeds, imports, AI generation, or
-  collaboration.
-- If a live Supabase database has a custom `body_format` check constraint that
-  excludes `html`, that database constraint must be updated before rich text
-  Master Entry saves can succeed.
+- Slice 6A does not add Markdown paste conversion, wiki links, backlinks, reveal blocks, tabs, file/image embeds, imports, AI generation, or collaboration.
+- If a live Supabase database has a custom `body_format` check constraint that excludes `html`, that database constraint must be updated before rich text Master Entry saves can succeed.
 
 ---
 
@@ -784,8 +793,7 @@ npm run build
 
 ### Expected
 
-- Master Entry creation uses source container language instead of exposing
-  "Library kind" as the primary user-facing idea.
+- Master Entry creation uses source container language instead of exposing "Library kind" as the primary user-facing idea.
 - Rules/reference entries still save with `library_kind = 'compendium'`.
 - Setting/lore entries still save with `library_kind = 'settings_library'`.
 - Parent source options show source category labels where available.
@@ -797,24 +805,19 @@ npm run build
 - [ ] Open `/master-entries/new`.
 - [ ] Confirm the source container type label is shown.
 - [ ] Confirm options read as rules/reference source and setting/lore source.
-- [ ] Confirm helper text explains Compendium and Settings Library source
-      containers plainly.
+- [ ] Confirm helper text explains Compendium and Settings Library source containers plainly.
 - [ ] Confirm parent source choices show source category metadata where present.
 - [ ] Create a rules/reference Master Entry.
 - [ ] Create a setting/lore Master Entry.
 - [ ] Confirm existing Master Entries still load.
-- [ ] Confirm no source category values such as Core Rulebook, Expansion,
-      Setting & World Lore, or Adventures & Modules appear as `library_kind`
-      choices.
+- [ ] Confirm no source category values such as Core Rulebook, Expansion, Setting & World Lore, or Adventures & Modules appear as `library_kind` choices.
 - [ ] Run `npm.cmd run test`.
 - [ ] Run `npm.cmd run lint`.
 - [ ] Run `npm.cmd run build`.
 
 ### Known Issues
 
-- Compendiums and Settings Libraries are still the current concrete database
-  tables. A unified `library_sources` table remains a later approved schema
-  slice.
+- Compendiums and Settings Libraries are still the current concrete database tables. A unified `library_sources` table remains a later approved schema slice.
 
 ---
 
@@ -822,8 +825,7 @@ npm run build
 
 ### Expected
 
-- Markdown-looking plain text pasted into the rich text editor becomes
-  sanitized rich text HTML.
+- Markdown-looking plain text pasted into the rich text editor becomes sanitized rich text HTML.
 - Normal rich HTML paste continues to use the editor's existing safe path.
 - Ordinary plain text remains readable as paragraphs.
 - Master Entry and Project Entry Override bodies use the same existing fields.
@@ -843,22 +845,18 @@ npm run build
 - [ ] Saved Markdown paste renders as rich text on the Master Entry detail page.
 - [ ] Existing plain text entries still render.
 - [ ] Existing Markdown-looking legacy entries still render safely.
-- [ ] Project Entry Override body supports Markdown paste through the rich text
-      editor.
+- [ ] Project Entry Override body supports Markdown paste through the rich text editor.
 - [ ] Original Master Entry remains unchanged after Project Override save.
 - [ ] Unsafe pasted HTML or Markdown-generated HTML is sanitized.
 - [ ] `[[wiki links]]` are not converted into special links yet.
-- [ ] No imports, tabs, reveal blocks, tags/folders, file embeds, AI,
-      collaboration, new tables, or SQL were added.
+- [ ] No imports, tabs, reveal blocks, tags/folders, file embeds, AI, collaboration, new tables, or SQL were added.
 - [ ] Run `npm.cmd run test`.
 - [ ] Run `npm.cmd run lint`.
 - [ ] Run `npm.cmd run build`.
 
 ### Known Issues
 
-- Slice 6B is paste handling only. It does not add wiki link parsing,
-  backlinks, imports, tabs, reveal blocks, tags/folders, file embeds, AI, or
-  collaboration.
+- Slice 6B is paste handling only. It does not add wiki link parsing, backlinks, imports, tabs, reveal blocks, tags/folders, file embeds, AI, or collaboration.
 
 ---
 
@@ -866,12 +864,10 @@ npm run build
 
 ### Expected
 
-- `[[Entry Name]]` and `[[Entry Name|label]]` render as distinct wiki-link-style
-  text in body display views.
+- `[[Entry Name]]` and `[[Entry Name|label]]` render as distinct wiki-link-style text in body display views.
 - Wiki links do not navigate or resolve to real entries yet.
 - Wiki syntax remains stored as normal text in the existing body fields.
-- Master Entry bodies and Project Entry Override bodies use the same safe
-  rendering behavior.
+- Master Entry bodies and Project Entry Override bodies use the same safe rendering behavior.
 - No SQL or schema changes are required.
 
 ### Manual Tests
@@ -887,21 +883,113 @@ npm run build
 - [ ] Wiki syntax inside code blocks does not become a link.
 - [ ] Unsafe wiki labels and targets are sanitized.
 - [ ] Project Entry Override body renders wiki-link syntax safely.
-- [ ] Player/Viewer Project Library read mode still hides entries they should
-      not see.
-- [ ] No backlinks, broken-link creation, hover previews, autocomplete,
-      imports, tabs, reveal blocks, tags/folders, file embeds, AI,
-      collaboration, new tables, or SQL were added.
+- [ ] Player/Viewer Project Library read mode still hides entries they should not see.
+- [ ] No backlinks, broken-link creation, hover previews, autocomplete, imports, tabs, reveal blocks, tags/folders, file embeds, AI, collaboration, new tables, or SQL were added.
 - [ ] Run `npm.cmd run test`.
 - [ ] Run `npm.cmd run lint`.
 - [ ] Run `npm.cmd run build`.
 
 ### Known Issues
 
-- Slice 6C does not resolve wiki links to real Master Entries or Project Library
-  entries.
-- Backlinks, broken-link placeholders, hover previews, autocomplete, search
-  integration, and entry creation remain later work.
+- Slice 6C does not resolve wiki links to real Master Entries or Project Library entries.
+- Backlinks, broken-link placeholders, hover previews, autocomplete, search integration, and entry creation remain later work.
+
+---
+
+## Slice 6D: Wiki Link Resolution Foundation
+
+### Expected
+
+- `[[Entry Name]]` can resolve to a safe matching entry when there is a unique accessible match.
+- Master Entry links resolve against accessible entries in the same Compendium or Settings Library.
+- Project Library links preserve Project context and resolve to `/projects/[projectId]/library/[masterEntryId]`.
+- Ambiguous or missing links remain visibly unresolved and do not navigate.
+- Project Library link resolution respects Player/Viewer visibility rules and does not reveal hidden or GM-only entries.
+- Wiki syntax remains stored as normal text in existing body fields.
+- No backlink tables, broken-link placeholder creation, hover previews, autocomplete, search integration, imports, tags/folders, tabs, reveal blocks, file embeds, AI, collaboration, new tables, or SQL are added.
+
+### Manual Tests
+
+- [ ] Create two Master Entries in the same source.
+- [ ] Add `[[Other Entry]]` to one entry body.
+- [ ] Confirm the rendered body links to `/master-entries/[matchedMasterEntryId]`.
+- [ ] Add `[[Other Entry|custom label]]`.
+- [ ] Confirm the custom label displays and resolves to the target.
+- [ ] Create a duplicate title or alias in the same source.
+- [ ] Confirm ambiguous links do not navigate.
+- [ ] Confirm missing links remain unresolved and readable.
+- [ ] Confirm wiki syntax remains normal editable text when reopening the editor.
+- [ ] Confirm links inside code/pre blocks do not resolve.
+- [ ] Confirm existing normal anchors are not modified.
+- [ ] Confirm Project Library links resolve to `/projects/[projectId]/library/[masterEntryId]`.
+- [ ] As Player/Viewer, confirm hidden or GM-only Project Library entries are not linked or leaked.
+- [ ] Confirm Project Override body wiki links render safely.
+- [ ] Confirm no backlinks, broken-link creation, hover previews, autocomplete, imports, tabs, reveal blocks, tags/folders, file embeds, AI, collaboration, new tables, or SQL were added.
+- [ ] Run `npm.cmd run test`.
+- [ ] Run `npm.cmd run lint`.
+- [ ] Run `npm.cmd run build`.
+
+### Known Issues
+
+- This slice does not add backlinks, broken-link creation, hover previews, autocomplete, search integration, imports, tags/folders, tabs, reveal blocks, file embeds, AI, collaboration, new tables, or SQL.
+
+---
+
+## Slice 6E: Import Source Package and Provenance Design
+
+### Expected
+
+- Import package manifest shape is documented or represented in helper types.
+- Source ownership and distribution status are explicit.
+- TableHub-distributable content is clearly separated from private user uploads and local developer fixtures.
+- No actual import execution is added yet.
+- No private or restricted fixture files are committed.
+
+### Manual Tests
+
+- [ ] Confirm the import manifest requires source/provenance metadata.
+- [ ] Confirm distribution statuses distinguish TableHub-distributable content, private user uploads, local developer fixtures, and restricted reference-only material.
+- [ ] Confirm missing or ambiguous license/provenance metadata is documented as a dry-run failure.
+- [ ] Confirm local private fixture folders are ignored by Git if added.
+- [ ] Confirm no private/restricted rules text is committed.
+- [ ] Confirm no user-facing import UI exists yet.
+- [ ] Run `npm.cmd run test` if code helpers are added.
+- [ ] Run `npm.cmd run lint`.
+- [ ] Run `npm.cmd run build`.
+
+### Known Issues
+
+- Planned.
+
+---
+
+## Slice 6F: Developer Markdown Import Script
+
+### Expected
+
+- A local/admin script can dry-run and import a small Markdown source package.
+- The script uses a manifest with explicit provenance and distribution metadata.
+- The script writes to existing Game System, Compendium, Entry Type, and Master Entry records.
+- The script is not a user-facing upload workflow.
+- No private or restricted fixture content is committed.
+
+### Manual Tests
+
+- [ ] Dry-run a tiny original/fake sample package.
+- [ ] Confirm dry-run reports planned systems, sources, entry types, entries, warnings, and errors.
+- [ ] Confirm missing required provenance causes dry-run failure.
+- [ ] Apply the sample package locally.
+- [ ] Confirm created records appear in the Library workflow.
+- [ ] Re-run the import and confirm idempotent behavior or safe duplicate reporting.
+- [ ] Confirm private/restricted imports cannot be marked as TableHub-distributable without explicit metadata.
+- [ ] Confirm no private fixture files are tracked by Git.
+- [ ] Run `npm.cmd run test`.
+- [ ] Run `npm.cmd run lint`.
+- [ ] Run `npm.cmd run build`.
+
+### Known Issues
+
+- Planned.
 
 ---
 
@@ -909,14 +997,13 @@ npm run build
 
 ### Expected
 
-- Wiki links can resolve to real entries.
+- Broken link placeholders can be created intentionally.
 - Overview and GM Notes tabs exist.
 - Custom tabs can be added.
 - Custom fields/properties exist.
 
 ### Manual Tests
 
-- [ ] Resolve `[[linked entry]]` to a real entry.
 - [ ] Create a broken link placeholder.
 - [ ] Add GM Notes.
 - [ ] Log in as Player and confirm GM Notes are hidden.
@@ -925,7 +1012,7 @@ npm run build
 
 ### Known Issues
 
-- Not started beyond the Slice 6A editor foundation.
+- Planned beyond the Slice 6A through 6F foundation.
 
 ---
 

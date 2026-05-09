@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  buildProjectLibraryWikiLinkCandidates,
   canProjectRoleManageOverrides,
   canProjectRoleReadResolvedVisibility,
   getProjectEntryOverrideStatus,
@@ -324,4 +325,55 @@ test("shapes read mode without override reasons or original comparison fields", 
   assert.equal("override" in readEntry, false);
   assert.equal("original" in readEntry, false);
   assert.equal("overrideReason" in readEntry, false);
+});
+
+test("builds management wiki link candidates from effective and original fields", () => {
+  const effectiveEntry = resolveProjectEntry(originalEntry, overrideRow);
+
+  const candidates = buildProjectLibraryWikiLinkCandidates(
+    [
+      {
+        id: "entry-1",
+        title: "Original title",
+        aliases: ["Original alias"],
+        effective: effectiveEntry,
+      },
+    ],
+    "project-1",
+  );
+
+  assert.deepEqual(candidates, [
+    {
+      id: "entry-1",
+      title: "Project title",
+      aliases: ["Original title", "Original alias"],
+      href: "/projects/project-1/library/entry-1",
+    },
+  ]);
+});
+
+test("builds read-mode wiki link candidates only from visible read fields", () => {
+  const candidates = buildProjectLibraryWikiLinkCandidates(
+    [
+      {
+        id: "visible-entry",
+        title: "Visible Project Title",
+        sourceName: "Visible Source",
+        sourceType: "compendium",
+        summary: null,
+        body: null,
+        properties: null,
+      },
+    ],
+    "project-1",
+  );
+
+  assert.deepEqual(candidates, [
+    {
+      id: "visible-entry",
+      title: "Visible Project Title",
+      aliases: [],
+      href: "/projects/project-1/library/visible-entry",
+    },
+  ]);
 });

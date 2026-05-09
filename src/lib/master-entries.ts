@@ -15,6 +15,7 @@ import type {
 import { formatMasterEntrySourceContainerType } from "@/lib/master-entry-source-options";
 import { hasSupabaseEnv } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
+import type { WikiLinkResolutionCandidate } from "@/lib/wiki-link-resolution";
 
 const MASTER_ENTRY_COLUMNS =
   "id, owner_id, library_kind, compendium_id, settings_library_id, entry_type_id, title, slug, aliases, summary, body, body_format, properties, visibility, sort_order, license_name, license_url, source_type, source_url, source_notes, version, created_at, updated_at";
@@ -328,6 +329,17 @@ export function getMasterEntryParentName(entry: MasterEntryListItem) {
   }
 
   return entry.settingsLibrary?.name || "Settings Library unavailable";
+}
+
+export function buildMasterEntryWikiLinkCandidates(
+  entries: Array<Pick<MasterEntryRow, "id" | "title" | "aliases">>,
+): WikiLinkResolutionCandidate[] {
+  return entries.map((entry) => ({
+    id: entry.id,
+    title: entry.title,
+    aliases: entry.aliases ?? [],
+    href: `/master-entries/${entry.id}`,
+  }));
 }
 
 async function loadCompendiumOptions(supabase: SupabaseClient) {

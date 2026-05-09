@@ -117,10 +117,15 @@ Slice 6C adds wiki-link syntax recognition for `[[Entry Name]]` and
 `[[Entry Name|label]]` during display. Wiki links render as distinct,
 non-navigating link-like text with an accessible target label. The original
 syntax remains stored as normal body text in existing fields.
-Slices 6A through 6C do not add wiki link resolution, backlinks, broken-link
-placeholders, hover previews, autocomplete, reveal blocks, GM sections, tabs,
-tags, folders, imports, file embeds, AI generation, collaboration, public
-marketplace behavior, SRD content, copyrighted book text, or 5etools imports.
+Slice 6D resolves wiki links to real Master Entries when there is exactly one
+safe match in the current rendering context. Master Entry pages resolve against
+accessible sibling entries in the same Compendium or Settings Library. Missing
+or ambiguous matches remain non-navigating wiki-link text.
+Slices 6A through 6D do not add backlinks, broken-link placeholders, hover
+previews, autocomplete, reveal blocks, GM sections, tabs, tags, folders,
+imports, file embeds, AI generation, collaboration, public marketplace
+behavior, SRD content, copyrighted book text, 5etools imports, new tables,
+schema changes, or SQL.
 
 System provenance fields record license and source information so future SRD
 imports, private Markdown/PDF/CSV imports, manual entries, and external
@@ -217,12 +222,20 @@ Slice 6A also lets Project Owners and GMs write rich text HTML into
 Library rendering uses the safe body renderer and resolves Project override
 body format conservatively: override bodies that look like HTML render as
 sanitized HTML, while legacy plain text continues to render safely. Reveal
-controls, Project search, imports, tags/folders, wiki link resolution, inline
-reveal blocks, and campaign-level overrides remain later work. Slice 6B reuses
-this same editor paste behavior for Project Entry Override bodies without
-adding an `override_body_format` column. Slice 6C uses the same safe renderer to
-style wiki-link syntax in effective Project Library bodies without resolving
-links or returning extra hidden data.
+controls, Project search, imports, tags/folders, inline reveal blocks, and
+campaign-level overrides remain later work. Slice 6B reuses this same editor
+paste behavior for Project Entry Override bodies without adding an
+`override_body_format` column. Slice 6C uses the same safe renderer to style
+wiki-link syntax in effective Project Library bodies without resolving links or
+returning extra hidden data. Slice 6D resolves Project Library wiki links to
+`/projects/[projectId]/library/[masterEntryId]` only when the match is unique
+inside the same Project Library context. Owner and GM candidate sets can include
+all reachable Project Library entries. Player and Viewer candidate sets come
+from the visible-only read mode, so hidden or GM-only entries behave the same as
+unresolved links and are not revealed.
+
+Reveal controls, Project search, imports, tags/folders, wiki-link refinements,
+inline reveal blocks, and campaign-level overrides remain later work.
 
 ### 3. Campaign Layer
 
@@ -287,10 +300,11 @@ Current implementation status:
   actions.
 - Slice 5E adds Project Library visibility resolution and Player/Viewer
   read-only mode for entries resolved as visible.
-- Slice 6C displays wiki-link syntax safely without resolving it to entries.
-- Manual master updates, imports, search, tags/folders, wiki link resolution,
-  advanced rich text/wiki editing, campaign-level overrides, and inline reveal
-  controls are still deferred.
+- Slice 6D resolves wiki links only to unique, safe matches in Master Entry and
+  Project Library body rendering.
+- Manual master updates, imports, search, tags/folders, backlinks, broken-link
+  creation, hover previews, autocomplete, campaign-level overrides, and inline
+  reveal controls are still deferred.
 
 Benefits:
 
@@ -300,6 +314,37 @@ Benefits:
 - Allows manual update from master content
 - Allows original vs modified display
 - Prevents accidental data loss
+
+---
+
+
+## Import Pipeline and Content Provenance Direction
+
+Future imports should use a source package pipeline rather than treating raw PDFs or Markdown blobs as trusted structured data.
+
+Recommended pipeline:
+
+```text
+Source document, PDF, Markdown files, CSV, or external source
+  -> extraction / cleanup tool
+  -> normalized Markdown or structured source package
+  -> manifest with provenance, license, and distribution metadata
+  -> validation / dry run report
+  -> import into Game System, Library Source container, Entry Types, and Master Entries
+```
+
+PDF-to-Markdown tools should initially be treated as offline preprocessing tools, not direct production import features. The importer should consume normalized source packages with explicit manifests.
+
+Future import manifests should distinguish between:
+
+- TableHub-provided distributable content, such as SRD, ORC, Creative Commons, public-domain, explicitly licensed, partner-approved, or original demo content
+- Private user-owned imports, such as a user's own PDFs, notes, Markdown files, or reference material
+- Local developer fixtures used only for private development and stress testing
+- Restricted reference material that may help local testing but must not be bundled, seeded, marketed, or exposed as TableHub-provided content
+
+The importer should validate source metadata, entry type mapping, slug strategy, external IDs, and distribution status before writing records. Missing or ambiguous license/provenance metadata should fail dry-run validation or default to private/restricted handling.
+
+Current source/provenance fields on Game Systems, Compendiums, Settings Libraries, and Master Entries remain the active storage path until a later approved schema slice adds dedicated import tables or package records.
 
 ---
 

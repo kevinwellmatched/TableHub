@@ -48,9 +48,24 @@ test("renders wiki links through the shared HTML body display path", () => {
     "html",
   );
 
-  assert.equal(html.includes('<span class="wiki-link"'), true);
+  assert.equal(html.includes('<span class="wiki-link wiki-link-unresolved"'), true);
   assert.equal(html.includes("Wiki link target: Waterdeep"), true);
   assert.equal(html.includes("<strong>stay alert</strong>"), true);
+});
+
+test("passes wiki link candidates through the shared body display path", () => {
+  const html = renderEntryBodyHtml("<p>Visit [[Waterdeep]].</p>", "html", {
+    wikiLinkCandidates: [
+      {
+        id: "entry-1",
+        title: "Waterdeep",
+        href: "/master-entries/entry-1",
+      },
+    ],
+  });
+
+  assert.equal(html.includes('<a class="wiki-link wiki-link-resolved"'), true);
+  assert.equal(html.includes('href="/master-entries/entry-1"'), true);
 });
 
 test("renders wiki links in legacy plain text without changing stored text", () => {
